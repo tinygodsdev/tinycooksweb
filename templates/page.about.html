@@ -1,0 +1,12 @@
+{{ define "title" }} About {{ end }}
+{{ define "description" }} {{ .SiteDescription }} {{ end }}
+{{ define "view" }}
+
+<main>
+  <div class="section">
+    <h1 class="title is-1 is-size-3-mobile">{{ .SiteTitle }}</h1>
+    <h3 class="title is-3 is-size-5-mobile">{{ .SiteDescription }}</h3>   
+  </div>
+</main>
+
+{{ end }}
