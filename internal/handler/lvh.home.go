@@ -5,6 +5,7 @@ import (
 	"html/template"
 
 	"github.com/jfyne/live"
+	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 )
 
 const (
@@ -18,6 +19,7 @@ const (
 type (
 	HomeInstance struct {
 		*CommonInstance
+		Recipes []*recipe.Recipe
 	}
 )
 
@@ -78,8 +80,13 @@ func (h *Handler) Home() live.Handler {
 		instance := h.NewHomeInstance(s)
 		instance.fromContext(ctx)
 
-		instance.updateForLocale(ctx, s, h)
+		// Get the recipes from the database.
+		instance.Recipes, err = recipe.MockRecipes(100, false)
+		if err != nil {
+			return instance.withError(err), nil
+		}
 
+		instance.updateForLocale(ctx, s, h)
 		return instance.withError(err), nil
 	})
 

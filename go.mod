@@ -12,10 +12,11 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/jfyne/live v0.15.7
 	github.com/tinygodsdev/datasdk v0.0.0-20240728194432-f3a87e64e1e3
+	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56
 )
 
 require (
-	github.com/google/go-cmp v0.5.7 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
 	github.com/gorilla/sessions v1.2.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect

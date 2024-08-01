@@ -11,34 +11,24 @@
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
   >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/styles.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/charts.css/dist/charts.min.css">
 
   {{ if .Assigns.Env }}
   {{ if ne .Assigns.Env "dev" }}
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <!-- FIXME probably need to move id to config  -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3CZLMS4YNP"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
-
-    gtag('config', 'G-3CZLMS4YNP');
-  </script>
+  {{ template "google-analytics" .Assigns }}
   {{ end }}
   {{ end }}
 </head>
 
 <body has-navbar-fixed-bottom>
-  {{ if and (ne .Assigns.CurrentView "test") (ne .Assigns.CurrentView "result") }}
   {{ template "navigation" .Assigns }}
   {{ template "navigation-mobile" .Assigns }}
-  {{ end }}
   <div class="mb-5">
-    {{ template "top-hero" .Assigns }}
     <div id="main-view-content" class="container mt-5">
       {{ template "view" .Assigns }}
       <script type="text/javascript" src="/live.js"></script>
@@ -46,12 +36,6 @@
   </div>
   {{ template "footer" .Assigns }}
 </body>
-
-<script>
-  window.getChartsData = function () {
-    return JSON.parse(document.querySelector("#chartsData").innerHTML);
-  }
-</script>
 
 <script>
   window.Hooks = {
@@ -84,56 +68,47 @@
     <hr>
     <div class="has-text-centered is-size-6">
       <p>
-        <span class="has-text-grey mx-3">{{ .SiteTitle }}</span>
-        {{/*  <a class="mx-3" href="https://twitter.com/ddd" target="_blank">
+        <span class="has-text-grey mx-3 has-text-weight-bold">{{ .UI.Base.Title }}</span>
+        <a class="mx-3" href="https://twitter.com/{{ .UI.Base.TwitterHandle }}" target="_blank">
           <span class="icon is-small has-text-grey-lighter">
             <i class="bi bi-twitter"></i>
           </span>
-        </a>  */}}
+        </a>
         <a class="has-text-grey-light is-underlined mx-3" href="/terms" target="_blank">Terms and conditions</a>
         <a class="has-text-grey-light is-underlined mx-3" href="/privacy" target="_blank">Privacy policy</a>
         <span class="has-text-grey mx-3">{{ .Version }}</span>
       </p>
     </div>
-    <div class="has-text-centered is-size-6">
-
+    <div class="has-text-centered is-size-6 mt-3">
+        <span class="has-text-grey-light">{{ .UI.Footer.DevelopedBy }}&nbsp;</span>
+        <a 
+          class="has-text-grey-light is-underlined" 
+          href="{{ .UI.Footer.DeveloperURL }}" 
+          target="_blank"
+        >{{ .UI.Footer.Developer }}</a>
     </div>
   </div>
 </footer>
 {{ end }}
 
 {{ define "navigation" }}
-<nav class="navbar is-mobile is-hidden-mobile mt-1 px-2" role="navigation"
+<nav class="navbar is-mobile is-hidden-mobile" role="navigation"
   aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-      <div>
-        <h1 class="title is-3 has-text-primary">💫 {{ .SiteTitle }}</h1>
-      </div>
+        <h1 class="title is-4 has-text-primary">🍲 {{ .UI.Base.Title }}</h1>
     </a>
   </div>
 
   <div class="navbar-menu">
-    <div class="navbar-start"></div>
-
-    <div class='navbar-item main-item p-0 m-1 {{ if eq .CurrentView "home"}}is-active{{ end }}'>
-      <a href="/" class='px-5 py-4' title="Home">
-        <p class="title is-3"><i class="bi bi-house-fill"></i></p>
-      </a>
-    </div>
-
-    <div class='navbar-item main-item p-0 m-1 {{ if eq .CurrentView "about"}}is-active{{ end }}'>
-      <a href="/about" class='px-5 py-4' title="About">
-        <p class="title is-3"><i class="bi bi-question"></i></p>
-      </a>
-    </div>
-
     <div class="navbar-end">
-      <div class="navbar-item">
-        {{ if ne .CurrentView "test" }}
-        {{ template "locale-selector-ui" . }}
-        {{ end }}
-      </div>
+      <a href="/" class='navbar-item {{ if eq .CurrentView "home"}}is-active{{ end }}' title="Home">
+        {{ .UI.Menu.Home }}
+      </a>
+
+      <a href="/about" class='navbar-item {{ if eq .CurrentView "about"}}is-active{{ end }}' title="About">
+        {{ .UI.Menu.About }}
+      </a>
     </div>
   </div>
 </nav>
@@ -148,13 +123,13 @@
     </div>
 
     <div class='navbar-item main-item p-0 mr-1 my-1 {{ if eq .CurrentView "home"}}is-active{{ end }}'>
-      <a href="/" class='px-4 py-3' title="Home">
+      <a href="/" class='px-4 py-3' title="{{ .UI.Menu.Home }}">
         <p class="title is-4"><i class="bi bi-house-fill"></i></p>
       </a>
     </div>
 
     <div class='navbar-item main-item p-0 mr-1 my-1 {{ if eq .CurrentView "about"}}is-active{{ end }}'>
-      <a href="/about" class='px-4 py-3' title="About">
+      <a href="/about" class='px-4 py-3' title="{{ .UI.Menu.About }}">
         <p class="title is-4"><i class="bi bi-question"></i></p>
       </a>
     </div>
@@ -162,7 +137,7 @@
     <div class="navbar-end">
       <div class="navbar-item">
         {{ if ne .CurrentView "test" }}
-        {{ template "locale-selector-ui" . }}
+        {{/*  {{ template "locale-selector-ui" . }}  */}}
         {{ end }}
       </div>
     </div>
@@ -175,32 +150,26 @@
   <div class="level-item">
     <div class="mx-3">
       <a href="/" class='{{ if eq .CurrentView "home"}}has-text-white-ter{{else}}has-text-grey-light{{ end }}'
-        title="Home">
-        Home
+        title="{{ .UI.Menu.Home }}">
+        {{ .UI.Menu.Home }}
       </a>
     </div>
   </div>
 
   <div class="level-item">
-    <div class="mx-3" title="About">
+    <div class="mx-3" title="{{ .UI.Menu.About }}">
       <a class='{{ if eq .CurrentView "about"}}has-text-white-ter{{else}}has-text-grey-light{{ end }}' href="/about">
-        About
+        {{ .UI.Menu.About }}
       </a>
     </div>
   </div>
-
-  {{ if ne .CurrentView "test" }}
-  <div class="level-item">
-    {{ template "locale-selector-ui" . }}
-  </div>
-  {{ end }}
 </nav>
 {{ end }}
 
 
 {{ define "back-to-home" }}
 <h3 class="title is-3 mb-6 is-hidden-mobile">
-  <a id="go-back-link" href="/"><i class="bi-arrow-left"></i> Назад</a>
+  <a id="go-back-link" href="/"><i class="bi-arrow-left"></i> {{ .UI.Menu.Back }}</a>
 </h3>
 {{ end }}
 
@@ -214,6 +183,14 @@
 {{end}}
 {{ end }}
 
-{{ define "top-hero" }}
-<!-- no hero for this page -->
+{{ define "google-analytics" }}
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleAnalyticsID }}"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+
+    gtag('config', '{{ .GoogleAnalyticsID }}');
+  </script>
 {{ end }}

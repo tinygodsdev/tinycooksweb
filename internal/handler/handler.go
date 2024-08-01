@@ -46,23 +46,21 @@ type (
 		app *app.App
 		log logger.Logger
 		t   string // template path
-		ui  map[string]*UITranslation
+		ui  map[string]*locale.UITranslation
 	}
 
 	CommonInstance struct {
-		Env             string
-		Domain          string
-		Session         string
-		SiteTitle       string
-		SiteDescription string
-		Error           error
-		Message         *string
-		CurrentView     string
-		Version         string
-		Dark            bool
-		UI              *UITranslation
-		ui              map[string]*UITranslation
-		locale          string
+		Env               string
+		Domain            string
+		Session           string
+		Error             error
+		Message           *string
+		CurrentView       string
+		Version           string
+		GoogleAnalyticsID string
+		UI                *locale.UITranslation
+		ui                map[string]*locale.UITranslation
+		locale            string
 	}
 
 	Constants struct {
@@ -156,10 +154,10 @@ func NewHandler(
 	}
 }
 
-func initTranslationMap() map[string]*UITranslation {
-	m := make(map[string]*UITranslation)
+func initTranslationMap() map[string]*locale.UITranslation {
+	m := make(map[string]*locale.UITranslation)
 	for _, l := range locale.List() {
-		m[l] = newUITranslation(l)
+		m[l] = locale.NewUITranslation(l)
 	}
 
 	return m
@@ -171,17 +169,16 @@ func (h *Handler) NewConstants() *Constants {
 
 func (h *Handler) NewCommon(s live.Socket, currentView string) *CommonInstance {
 	c := &CommonInstance{
-		Env:             h.app.Cfg.Env,
-		Domain:          h.app.Cfg.HTTPHost,
-		Session:         fmt.Sprint(s.Session()),
-		SiteTitle:       "TinyCooks",
-		SiteDescription: "When in doubt - eat",
-		Error:           nil,
-		Message:         nil,
-		CurrentView:     currentView,
-		Version:         h.app.Cfg.Version,
-		ui:              h.ui,
-		locale:          locale.Default(), // it's private because changing requires additional logic
+		Env:               h.app.Cfg.Env,
+		Domain:            h.app.Cfg.HTTPHost,
+		Session:           fmt.Sprint(s.Session()),
+		Error:             nil,
+		Message:           nil,
+		CurrentView:       currentView,
+		Version:           h.app.Cfg.Version,
+		GoogleAnalyticsID: h.app.Cfg.GoogleAnalyticsID,
+		ui:                h.ui,
+		locale:            locale.Default(), // it's private because changing requires additional logic
 	}
 
 	c.SetLocale(c.locale)
@@ -204,7 +201,7 @@ func (h *Handler) NotFoundRedirect(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, h.url404().String(), http.StatusTemporaryRedirect)
 }
 
-func (c *CommonInstance) getTranslation(loc string) *UITranslation {
+func (c *CommonInstance) getTranslation(loc string) *locale.UITranslation {
 	trans, ok := c.ui[loc]
 	if !ok {
 		return c.ui[locale.Default()]

@@ -1,0 +1,18 @@
+
+body {
+    font-family: "Noto Sans", sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Wix Madefor Text", sans-serif;
+}
+
+.has-equal-height {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.has-equal-height .card-footer {
+	margin-top: auto;
+}

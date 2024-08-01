@@ -15,6 +15,8 @@ type Config struct {
 	Secret          string `envconfig:"SECRET" required:"true"`
 	Expire          int    `envconfig:"EXPIRE" default:"2592000"` // seconds
 	LiveSessionName string `envconfig:"LIVE_SESSION_NAME" default:"tcw-go-live-session"`
+
+	GoogleAnalyticsID string `envconfig:"GOOGLE_ANALYTICS_ID" default:""`
 }
 
 func LoadConfig() (*Config, error) {

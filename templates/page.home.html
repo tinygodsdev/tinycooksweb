@@ -1,27 +1,54 @@
-{{ define "title" }} {{ .SiteTitle }} {{ end }}
-{{ define "description" }} {{ .SiteDescription }} {{ end }}
+{{ define "title" }} {{ .UI.Base.Title }} {{ end }}
+{{ define "description" }} {{ .UI.Base.Description }} {{ end }}
 {{ define "view" }}
 <main>
   <div class="section">
-    <div class="block">
-  
-    </div>
-    <div class="columns">
-      <div class="column is-4">
-
-      </div>
-      <div class="column is-4">
-  
-      </div>
-      <div class="column is-4">
-   
-      </div>
-    </div>
+    <h1 class="title is-1 is-size-3-mobile">{{ .UI.Base.Title }}</h1>
+    <h3 class="title is-3 is-size-5-mobile">{{ .UI.Base.Description }}</h3>
   </div>
   <div class="section">
     <div class="columns is-multiline">
-
+      {{ range $i, $recipe := .Recipes }}
+      <div class="column is-4">
+        {{ template "recipe-card" $recipe }}
+      </div>
+      {{ end }}
     </div>
   </div>
 </main>
+{{ end }}
+
+{{ define "recipe-card" }}
+<section class="card has-equal-height">
+  <div class="card-content">
+    <p class="title is-4 is-size-5-mobile"><a href="/recipe/{{ .Slug }}">{{ .Name }}</a></p>
+    <p class="subtitle is-6 is-size-6-mobile">{{ .Description }}</p>
+    {{ template "tags" . }}
+  </div>
+  <div class="card-footer p-3">
+    Footer content
+  </div>
+</section>
+{{ end }}
+
+{{ define "tags" }}
+<div class="block">
+  {{ range .Tags }}
+  <button class='button {{ template "tag-button-style" . }} is-rounded is-small mr-2 mb-1'>
+    <b>{{ .Group }}:{{ .Name }}</b>
+  </button>
+  {{ end }}
+</div>
+{{ end }}
+
+{{ define "tag-button-style" }}
+{{ if eq .Group "theme" }}
+is-primary
+{{ end }}
+{{ if eq .Group "len" }}
+is-success
+{{ end }}
+{{ if eq .Group "feature" }}
+is-info
+{{ end }}
 {{ end }}
