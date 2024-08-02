@@ -13,6 +13,6 @@ func Store(cfg *config.Config) *live.CookieStore {
 	store.Store.MaxAge(cfg.Expire)
 	store.Store.Options.Path = "/"
 	store.Store.Options.HttpOnly = true
-	store.Store.Options.Secure = !(cfg.Env == "dev")
+	store.Store.Options.Secure = !cfg.Dev()
 	return store
 }

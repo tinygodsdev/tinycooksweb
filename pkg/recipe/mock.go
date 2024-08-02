@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/google/uuid"
 	"golang.org/x/exp/rand"
 )
 
@@ -15,119 +14,124 @@ func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
 
 	rand.Seed(123)
 	var recipes []*Recipe
-	for i := 0; i < recipeCount; i++ {
-		recipe := &Recipe{
-			ID:           uuid.New(),
-			Name:         randomString(10),
-			Lang:         randomLang(),
-			Slug:         randomString(10),
-			Description:  randomString(50),
-			Text:         randomString(200),
-			Ingredients:  randomIngredients(),
-			Instructions: randomInstructions(),
-			Tags:         randomTags(),
-			Ideas:        randomIdeas(),
-			Time:         time.Duration(rand.Intn(120)) * time.Minute,
-			Servings:     rand.Intn(10) + 1,
-			Sources:      randomSources(),
-			Nutrition:    randomNutrition(),
-		}
-		recipes = append(recipes, recipe)
-	}
+
 	return recipes, nil
 }
 
-func randomString(n int) string {
-	const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-	b := make([]byte, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
+func PumpkinBuns() *Recipe {
+	recipe := Recipe{
+		Name:        "Тыквенные булочки",
+		Lang:        LangRu,
+		Description: "Шикарные мягкие тыквенные булочки, которые можно подавать вместо хлеба, использовать для бургеров и сэндвичей.",
+		Text:        `Новый тыквенный рецепт, пока сезон тыквы идет. Эти булочки готовятся безопарным методом, что сокращает время приготовления. Тесто готовится без яиц. Булочки получаются мягкими и имеют красивый цвет благодаря тыквенному пюре.`,
+		Ingredients: []*Ingredient{
+			{Product: &Product{Name: "молоко"}, Quantity: "150", Unit: "грамм"},
+			{Product: &Product{Name: "сухие быстродействующие дрожжи"}, Quantity: "5", Unit: "грамм"},
+			{Product: &Product{Name: "сахар"}, Quantity: "40", Unit: "грамм"},
+			{Product: &Product{Name: "соль"}, Quantity: "1/2", Unit: "ч.л."},
+			{Product: &Product{Name: "сливочное масло"}, Quantity: "50", Unit: "грамм"},
+			{Product: &Product{Name: "тыквенное пюре"}, Quantity: "150", Unit: "грамм"},
+			{Product: &Product{Name: "пшеничная мука"}, Quantity: "400", Unit: "грамм"},
+			{Product: &Product{Name: "желтки"}, Quantity: "1", Unit: "шт."},
+			{Product: &Product{Name: "молоко"}, Quantity: "2", Unit: "ст.л."},
+			{Product: &Product{Name: "семена чиа, лен, кунжут или мак (по желанию)"}, Quantity: "", Unit: ""},
+		},
+		Instructions: []Instruction{
+			{Text: "Слегка подогрейте молоко до температуры не выше 45 градусов, добавьте дрожжи и дайте постоять 3-4 минуты. Перемешайте до растворения дрожжей."},
+			{Text: "Добавьте соль, сахар, тыквенное пюре и растопленное сливочное масло (должно быть теплым)."},
+			{Text: "Добавьте 80% от указанного количества муки и начните замешивать тесто. Постепенно добавляйте оставшуюся муку, пока тесто не станет мягким и гладким."},
+			{Text: "Накройте тесто и дайте ему подойти вдвое (1-2 часа)."},
+			{Text: "Разделите подошедшее тесто на 8 частей и сформируйте круглые заготовки. Выложите их на противень, накройте пленкой и оставьте для финальной расстойки на 30 минут."},
+			{Text: "Смажьте заготовки смесью желтка с молоком и по желанию посыпьте семенами. Выпекайте в предварительно разогретой до 180 градусов духовке 20-25 минут."},
+		},
+		Tags: []*Tag{
+			{Name: "выпечка", Group: "тип блюда"},
+			{Name: "вегетарианское", Group: "диета"},
+			{Name: "легкое", Group: "сложность"},
+			{Name: "долгое", Group: "время"},
+			{Name: "сладкое", Group: "вкус"},
+		},
+		Ideas: []*Idea{
+			{Text: "Добавьте в тыквенное пюре чеснок, розмарин или тимьян для пряного вкуса."},
+			{Text: "Используйте курагу вместе сахаром для более сладких булочек."},
+		},
+		Time:     160 * time.Minute,
+		Servings: 8,
+		Sources: []*Source{
+			{
+				Name:        "vkusnyblog.com",
+				Description: "Вкусный блог",
+				URL:         "https://www.vkusnyblog.com/recipe/tykvennye-bulochki/",
+			},
+		},
+		Nutrition: &Nutrition{
+			Calories:  200,
+			Fat:       8,
+			Carbs:     30,
+			Protein:   5,
+			Precision: NutritionPrecisionApprox,
+			Benefits:  []string{"Витамины", "Минералы"},
+		},
 	}
-	return string(b)
+
+	recipe.Slug = Slugify(recipe.Name)
+
+	return &recipe
 }
 
-func randomLang() string {
-	langs := []string{LangEn, LangRu}
-	return langs[rand.Intn(len(langs))]
-}
-
-func randomNutritionPrecision() string {
-	precisions := []string{NutritionPrecisionExact, NutritionPrecisionApprox}
-	return precisions[rand.Intn(len(precisions))]
-}
-
-func randomTags() []Tag {
-	var tags []Tag
-	tagCount := rand.Intn(5) + 1
-	for i := 0; i < tagCount; i++ {
-		tags = append(tags, Tag{
-			ID:    uuid.New(),
-			Name:  randomString(6),
-			Group: randomString(4),
-		})
+func PumpkinSoup() *Recipe {
+	recipe := Recipe{
+		Name:        "Тыквенный суп-пюре",
+		Lang:        LangRu,
+		Description: "Для супа лучше выбирать тыкву не сладких сортов. При приготовлении тыквы, старайтесь не переварить, иначе она потеряет вкус.",
+		Text:        `Для супа лучше выбирать тыкву не сладких сортов. При приготовлении тыквы, старайтесь не переварить, иначе она потеряет вкус.`,
+		Ingredients: []*Ingredient{
+			{Product: &Product{Name: "тыква"}, Quantity: "400", Unit: "г"},
+			{Product: &Product{Name: "лук репчатый"}, Quantity: "1", Unit: "шт."},
+			{Product: &Product{Name: "молоко"}, Quantity: "200", Unit: "мл"},
+			{Product: &Product{Name: "масло сливочное"}, Quantity: "20", Unit: "г"},
+			{Product: &Product{Name: "петрушка"}, Quantity: "по вкусу", Unit: ""},
+			{Product: &Product{Name: "приправа"}, Quantity: "по вкусу", Unit: ""},
+			{Product: &Product{Name: "сливки 35-38%"}, Quantity: "по вкусу", Unit: ""},
+			{Product: &Product{Name: "хлеб белый"}, Quantity: "по вкусу", Unit: ""},
+		},
+		Instructions: []Instruction{
+			{Text: "Лук измельчить, тыкву нарезать кубиками."},
+			{Text: "На сливочном масле слегка обжарить лук. Добавить тыкву, посолить, приправить и потушить с добавлением небольшого количества воды. Примерно 20 минут."},
+			{Text: "Готовую тыкву переложить в блендер и измельчить. Добавить горячее молоко. И еще раз пробить блендером."},
+			{Text: "Перелить в кастрюльку и прогреть, но не доводить до кипения."},
+			{Text: "Разлить по тарелкам, добавить сухарики, приправить сметаной или жирными сливками и украсить зеленью петрушки."},
+		},
+		Tags: []*Tag{
+			{Name: "супы", Group: "тип блюда"},
+			{Name: "вегетарианское", Group: "диета"},
+			{Name: "легкое", Group: "сложность"},
+			{Name: "быстрое", Group: "время"},
+			{Name: "соленое", Group: "вкус"},
+		},
+		Ideas: []*Idea{
+			{Text: "Для пряного вкуса добавьте чеснок, розмарин или тимьян."},
+		},
+		Time:     35 * time.Minute,
+		Servings: 1,
+		Sources: []*Source{
+			{
+				Name:        "edimdoma.ru",
+				Description: "ЕдимДома",
+				URL:         "https://www.edimdoma.ru/retsepty/59418-tykvennyy-sup-pyure",
+			},
+		},
+		Nutrition: &Nutrition{
+			Calories:  427,
+			Fat:       25,
+			Carbs:     49,
+			Protein:   13,
+			Precision: NutritionPrecisionApprox,
+			Benefits:  []string{"Белки", "Жиры", "Углеводы"},
+		},
 	}
-	return tags
-}
 
-func randomIngredients() []Ingredient {
-	var ingredients []Ingredient
-	ingredientCount := rand.Intn(10) + 1
-	for i := 0; i < ingredientCount; i++ {
-		ingredients = append(ingredients, Ingredient{
-			ID:       uuid.New(),
-			Name:     randomString(10),
-			Quantity: randomString(3),
-			Unit:     randomString(2),
-		})
-	}
-	return ingredients
-}
+	recipe.Slug = Slugify(recipe.Name)
 
-func randomInstructions() []Instruction {
-	var instructions []Instruction
-	instructionCount := rand.Intn(10) + 1
-	for i := 0; i < instructionCount; i++ {
-		instructions = append(instructions, Instruction{
-			ID:   uuid.New(),
-			Text: randomString(20),
-		})
-	}
-	return instructions
-}
-
-func randomIdeas() []Idea {
-	var ideas []Idea
-	ideaCount := rand.Intn(5) + 1
-	for i := 0; i < ideaCount; i++ {
-		ideas = append(ideas, Idea{
-			ID:   uuid.New(),
-			Text: randomString(20),
-		})
-	}
-	return ideas
-}
-
-func randomSources() []Source {
-	var sources []Source
-	sourceCount := rand.Intn(3) + 1
-	for i := 0; i < sourceCount; i++ {
-		sources = append(sources, Source{
-			ID:          uuid.New(),
-			Name:        randomString(10),
-			Description: randomString(30),
-			URL:         "http://" + randomString(10) + ".com",
-		})
-	}
-	return sources
-}
-
-func randomNutrition() Nutrition {
-	return Nutrition{
-		Calories:  rand.Intn(500),
-		Fat:       rand.Intn(50),
-		Carbs:     rand.Intn(100),
-		Protein:   rand.Intn(50),
-		Precision: randomNutritionPrecision(),
-		Benefits:  []string{randomString(10), randomString(10)},
-	}
+	return &recipe
 }

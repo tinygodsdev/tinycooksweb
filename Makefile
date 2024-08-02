@@ -4,7 +4,7 @@ ifneq ("$(wildcard env/.env.local)","")
 endif
 
 .PHONY: run
-run:
+run: entgen
 	go run cmd/main.go
 
 .PHONY: build
@@ -32,3 +32,7 @@ tidy:
 deps:
 	go get github.com/tinygodsdev/datasdk
 	go mod tidy
+
+.PHONY: entgen
+entgen:
+	cd ./pkg/storage/entstorage && go generate ./ent

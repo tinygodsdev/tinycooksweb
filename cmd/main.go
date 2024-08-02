@@ -9,6 +9,7 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/internal/app"
 	"github.com/tinygodsdev/tinycooksweb/internal/config"
 	"github.com/tinygodsdev/tinycooksweb/internal/handler"
+	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage"
 )
 
 func main() {
@@ -23,15 +24,23 @@ func main() {
 		fmt.Printf("Loaded config: %+v\n", cfg)
 	}
 
-	store := prepare.Store(cfg)
+	recipeStore, err := entstorage.NewEntStorage(entstorage.Config{
+		StorageDriver: cfg.StorageDriver,
+		StorageDSN:    cfg.StorageDSN,
+		LogQueries:    cfg.LogDBQueries,
+		Migrate:       true,
+	}, logger)
+	if err != nil {
+		logger.Fatal("failed to init recipe store", "err", err)
+	}
 
-	a, err := app.New(cfg, logger)
+	a, err := app.New(cfg, logger, recipeStore)
 	if err != nil {
 		logger.Fatal("failed to init app", "err", err)
 	}
 
 	h := handler.NewHandler(a, logger, "templates/")
-	r := prepare.Mux(cfg, store, h)
+	r := prepare.Mux(cfg, prepare.Store(cfg), h)
 
 	httpServer := prepare.Server(cfg, r)
 	httpServer.Addr = cfg.GetAddress()

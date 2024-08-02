@@ -4,11 +4,14 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/gosimple/slug"
 )
 
 const (
-	NutritionPrecisionExact  = "exact"
-	NutritionPrecisionApprox = "approx"
+	NutritionPrecisionExact        = "exact"
+	NutritionPrecisionApprox       = "approx"
+	NutritionPrecisionProfessional = "professional" // calculated by a professional
+	NutritionPrecisionAuto         = "auto"         // calculated by the system
 
 	LangEn = "en"
 	LangRu = "ru"
@@ -21,26 +24,37 @@ type Recipe struct {
 	Slug         string        `json:"slug"`
 	Description  string        `json:"description"` // Short description for catalog
 	Text         string        `json:"text"`        // Long description for recipe page
-	Ingredients  []Ingredient  `json:"ingredients"`
+	Ingredients  []*Ingredient `json:"ingredients"`
+	Equipment    []*Equipment  `json:"equipment"`
 	Instructions []Instruction `json:"instructions"` // Steps to prepare the recipe
-	Tags         []Tag         `json:"tags"`
-	Ideas        []Idea        `json:"ideas"` // Ideas for variations
+	Tags         []*Tag        `json:"tags"`
+	Ideas        []*Idea       `json:"ideas"` // Ideas for variations
 	Time         time.Duration `json:"time"`
 	Servings     int           `json:"servings"`
-	Sources      []Source      `json:"sources"`
-	Nutrition    Nutrition     `json:"nutrition"`
+	Sources      []*Source     `json:"sources"`
+	Nutrition    *Nutrition    `json:"nutrition"`
 }
 
 type Ingredient struct {
 	ID       uuid.UUID `json:"id"`
-	Name     string    `json:"name"`
+	Product  *Product  `json:"product"`
 	Quantity string    `json:"quantity"`
 	Unit     string    `json:"unit"`
+}
+
+type Product struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
 }
 
 type Instruction struct {
 	ID   uuid.UUID `json:"id"`
 	Text string    `json:"text"`
+}
+
+type Equipment struct {
+	ID   uuid.UUID `json:"id"`
+	Name string    `json:"name"`
 }
 
 type Tag struct {
@@ -68,4 +82,8 @@ type Nutrition struct {
 	Protein   int      `json:"protein"`
 	Precision string   `json:"precision"`
 	Benefits  []string `json:"benefits"`
+}
+
+func Slugify(name string) string {
+	return slug.Make(name)
 }

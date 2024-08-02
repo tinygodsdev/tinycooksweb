@@ -17,6 +17,11 @@ type Config struct {
 	LiveSessionName string `envconfig:"LIVE_SESSION_NAME" default:"tcw-go-live-session"`
 
 	GoogleAnalyticsID string `envconfig:"GOOGLE_ANALYTICS_ID" default:""`
+
+	StorageType   string `envconfig:"STORAGE_TYPE" default:"ent"`
+	StorageDriver string `envconfig:"STORAGE_DRIVER" default:"postgres"`
+	StorageDSN    string `envconfig:"STORAGE_DSN" required:"true"`
+	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
 }
 
 func LoadConfig() (*Config, error) {
