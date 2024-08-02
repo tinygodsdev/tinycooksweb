@@ -7,12 +7,57 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
+	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent"
 	entEquipment "github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/equipment"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/product"
 	entRecipe "github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/tag"
 )
+
+func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error) {
+	q := s.client.Recipe.Query()
+
+	if filter.NameContains != "" {
+		q.Where(entRecipe.NameContains(filter.NameContains))
+	}
+
+	if filter.Limit > 0 {
+		q.Limit(filter.Limit)
+	}
+
+	if filter.Offset > 0 {
+		q.Offset(filter.Offset)
+	}
+
+	if filter.Locale != "" {
+		q.Where(entRecipe.LocaleEQ(entRecipe.Locale(filter.Locale)))
+	}
+
+	// TODO implement filtering by equipment, tags, ingredients
+
+	recipes, err := q.
+		WithIngredients(func(q *ent.IngredientQuery) {
+			q.WithProduct()
+		}).
+		WithInstructions().
+		WithTags().
+		WithIdeas().
+		WithSources().
+		WithNutrition().
+		WithEquipment().
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting recipes: %w", err)
+	}
+
+	var res []*recipe.Recipe
+	for _, r := range recipes {
+		res = append(res, entRecipeToRecipe(r))
+	}
+
+	return res, nil
+}
 
 func (s *EntStorage) GetRecipe(ctx context.Context, id uuid.UUID) (*recipe.Recipe, error) {
 	r, err := s.client.Recipe.
@@ -32,7 +77,7 @@ func (s *EntStorage) GetRecipe(ctx context.Context, id uuid.UUID) (*recipe.Recip
 		return nil, fmt.Errorf("getting recipe by ID: %w", err)
 	}
 
-	return mapEntRecipeToRecipe(r), nil
+	return entRecipeToRecipe(r), nil
 }
 
 func (s *EntStorage) GetRecipeBySlug(ctx context.Context, slug string) (*recipe.Recipe, error) {
@@ -53,14 +98,14 @@ func (s *EntStorage) GetRecipeBySlug(ctx context.Context, slug string) (*recipe.
 		return nil, fmt.Errorf("getting recipe by slug: %w", err)
 	}
 
-	return mapEntRecipeToRecipe(r), nil
+	return entRecipeToRecipe(r), nil
 }
 
 func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	// Check if recipe with the same slug already exists
 	existingRecipe, err := s.GetRecipeBySlug(ctx, rec.Slug)
 	if err == nil && existingRecipe != nil {
-		return fmt.Errorf("recipe with slug %s already exists", rec.Slug)
+		return storage.ErrAlreadyExists
 	}
 	if err != nil && !ent.IsNotFound(err) {
 		return fmt.Errorf("checking existing recipe: %w", err)
@@ -84,7 +129,6 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	// Create recipe
 	r, err := tx.Recipe.
 		Create().
-		SetID(rec.ID).
 		SetName(rec.Name).
 		SetSlug(rec.Slug).
 		SetDescription(rec.Description).
@@ -100,7 +144,6 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	for i, inst := range rec.Instructions {
 		_, err := tx.Instruction.
 			Create().
-			SetID(inst.ID).
 			SetText(inst.Text).
 			SetOrder(i).
 			SetRecipe(r).
@@ -119,7 +162,6 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 
 		_, err = tx.Ingredient.
 			Create().
-			SetID(ing.ID).
 			SetQuantity(ing.Quantity).
 			SetUnit(ing.Unit).
 			SetRecipe(r).
@@ -166,7 +208,6 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	for _, idea := range rec.Ideas {
 		_, err := tx.Idea.
 			Create().
-			SetID(idea.ID).
 			SetText(idea.Text).
 			SetRecipe(r).
 			Save(ctx)
@@ -179,7 +220,6 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	for _, source := range rec.Sources {
 		_, err := tx.Source.
 			Create().
-			SetID(source.ID).
 			SetName(source.Name).
 			SetDescription(source.Description).
 			SetURL(source.URL).
@@ -227,7 +267,6 @@ func getOrCreateProduct(ctx context.Context, tx *ent.Tx, prod *recipe.Product) (
 
 	p, err = tx.Product.
 		Create().
-		SetID(prod.ID).
 		SetName(prod.Name).
 		Save(ctx)
 	if err != nil {
@@ -250,7 +289,6 @@ func getOrCreateTag(ctx context.Context, tx *ent.Tx, tg *recipe.Tag) (*ent.Tag, 
 
 	t, err = tx.Tag.
 		Create().
-		SetID(tg.ID).
 		SetName(tg.Name).
 		SetGroup(tg.Group).
 		Save(ctx)
@@ -274,7 +312,6 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 
 	e, err = tx.Equipment.
 		Create().
-		SetID(equip.ID).
 		SetName(equip.Name).
 		Save(ctx)
 	if err != nil {
@@ -283,7 +320,7 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 	return e, nil
 }
 
-func mapEntRecipeToRecipe(r *ent.Recipe) *recipe.Recipe {
+func entRecipeToRecipe(r *ent.Recipe) *recipe.Recipe {
 	var servings int
 	if r.Servings != nil {
 		servings = *r.Servings

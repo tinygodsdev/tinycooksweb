@@ -2,59 +2,64 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"html/template"
 
-	"github.com/jfyne/live"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
+
+	"github.com/gorilla/mux"
+	"github.com/jfyne/live"
 )
 
 const (
 	// events
-	eventHomeToggleTag        = "toggle-tag"
-	eventHomeToggleFilterMode = "toggle-filter-mode"
 	// params
-	paramHomeTag = "tag"
+	ParamRecipeSlug = "recipeSlug"
 )
 
 type (
-	HomeInstance struct {
+	RecipeInstance struct {
 		*CommonInstance
-		Recipes []*recipe.Recipe
+		*Constants
+		RecipeSlug string
+		Recipe     *recipe.Recipe
 	}
 )
 
-func (h *Handler) NewHomeInstance(s live.Socket) *HomeInstance {
-	m, ok := s.Assigns().(*HomeInstance)
+// must be present in all instances
+func (ins *RecipeInstance) withError(err error) *RecipeInstance {
+	ins.Error = err
+	return ins
+}
+
+// must be present in all instances
+func (ins *RecipeInstance) updateForLocale(ctx context.Context, s live.Socket, h *Handler) error {
+	return nil
+}
+
+func (h *Handler) NewRecipeInstance(s live.Socket) *RecipeInstance {
+	m, ok := s.Assigns().(*RecipeInstance)
 	if !ok {
-		return &HomeInstance{
-			CommonInstance: h.NewCommon(s, viewHome),
+		return &RecipeInstance{
+			CommonInstance: h.NewCommon(s, viewTest),
+			Constants:      h.NewConstants(),
 		}
 	}
 
 	return m
 }
 
-func (ins *HomeInstance) withError(err error) *HomeInstance {
-	ins.Error = err
-	return ins
-}
-
-// must be present in all instances
-func (ins *HomeInstance) updateForLocale(ctx context.Context, s live.Socket, h *Handler) error {
-	return nil
-}
-
-func (h *Handler) Home() live.Handler {
+func (h *Handler) Recipe() live.Handler {
 	t := template.Must(template.New("base.layout.html").Funcs(funcMap).ParseFiles(
 		h.t+"base.layout.html",
-		h.t+"page.home.html",
+		h.t+"page.recipe.html",
 	))
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START
 	// this logic must be present in all handlers
 	{
-		constructor := h.NewHomeInstance // NB: make sure constructor is correct
+		constructor := h.NewRecipeInstance // NB: make sure constructor is correct
 		// SAFE TO COPY
 
 		// update locale logic
@@ -75,22 +80,26 @@ func (h *Handler) Home() live.Handler {
 	}
 	// COMMON BLOCK END
 
-	// Set the mount function for this handler.
 	lvh.HandleMount(func(ctx context.Context, s live.Socket) (i interface{}, err error) {
-		instance := h.NewHomeInstance(s)
-		instance.fromContext(ctx)
+		r := live.Request(ctx)
+		recipeSlug, ok := mux.Vars(r)[ParamRecipeSlug]
+		if !ok {
+			return nil, errors.New("recipe slug is required")
+		}
 
-		instance.Recipes, err = h.app.GetRecipes(ctx, recipe.Filter{
-			Locale: instance.Locale(),
-			Limit:  20,
-			Offset: 0,
-		})
+		instance := h.NewRecipeInstance(s)
+		instance.fromContext(ctx)
+		instance.RecipeSlug = recipeSlug
+
+		// get recipe
+		recipe, err := h.app.GetRecipe(ctx, recipeSlug)
 		if err != nil {
 			return instance.withError(err), nil
 		}
 
+		instance.Recipe = recipe
 		instance.updateForLocale(ctx, s, h)
-		return instance.withError(err), nil
+		return instance, nil
 	})
 
 	return lvh

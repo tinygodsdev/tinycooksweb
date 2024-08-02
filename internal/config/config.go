@@ -22,6 +22,7 @@ type Config struct {
 	StorageDriver string `envconfig:"STORAGE_DRIVER" default:"postgres"`
 	StorageDSN    string `envconfig:"STORAGE_DSN" required:"true"`
 	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
+	UseMocks      bool   `envconfig:"USE_MOCKS" default:"false"`
 }
 
 func LoadConfig() (*Config, error) {

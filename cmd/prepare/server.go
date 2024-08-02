@@ -1,6 +1,7 @@
 package prepare
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -16,6 +17,7 @@ func Mux(cfg *config.Config, store live.HttpSessionStore, h *handler.Handler) *m
 	r.NotFoundHandler = http.HandlerFunc(h.NotFoundRedirect)
 	// main handler
 	sr := r.PathPrefix("/").Subrouter()
+	sr.Handle(fmt.Sprintf("/recipe/{%s}", handler.ParamRecipeSlug), live.NewHttpHandler(store, h.Recipe()))
 	// sr.Handle("/test/{testCode}", live.NewHttpHandler(store, h.Test()))
 	// sr.Handle("/result/{takeID}", live.NewHttpHandler(store, h.Result()))
 	sr.Handle("/about", live.NewHttpHandler(store, h.About()))

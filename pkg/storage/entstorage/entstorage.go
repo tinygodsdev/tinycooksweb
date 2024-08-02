@@ -26,7 +26,7 @@ type Config struct {
 func NewEntStorage(
 	cfg Config,
 	logger logger.Logger,
-) (*EntStorage, error) {
+) (*EntStorage, func() error, error) {
 	var dbOptions []ent.Option
 
 	if cfg.LogQueries {
@@ -35,16 +35,16 @@ func NewEntStorage(
 
 	client, err := ent.Open(cfg.StorageDriver, cfg.StorageDSN, dbOptions...)
 	if err != nil {
-		return nil, fmt.Errorf("EntStorage: failed connecting to database: %w", err)
+		return nil, nil, fmt.Errorf("EntStorage: failed connecting to database: %w", err)
 	}
-	defer client.Close()
 
 	logger.Info("EntStorage: connected")
 
 	if cfg.Migrate {
 		err = Migrate(context.Background(), client) // run db migration
 		if err != nil {
-			return nil, fmt.Errorf("EntStorage: failed creating schema resources: %w", err)
+			client.Close()
+			return nil, nil, fmt.Errorf("EntStorage: failed creating schema resources: %w", err)
 		}
 		logger.Info("EntStorage: migrations done")
 	}
@@ -52,7 +52,7 @@ func NewEntStorage(
 	return &EntStorage{
 		client: client,
 		logger: logger,
-	}, nil
+	}, client.Close, nil
 }
 
 func Migrate(ctx context.Context, client *ent.Client) error {

@@ -24,7 +24,7 @@ func main() {
 		fmt.Printf("Loaded config: %+v\n", cfg)
 	}
 
-	recipeStore, err := entstorage.NewEntStorage(entstorage.Config{
+	recipeStore, closeFunc, err := entstorage.NewEntStorage(entstorage.Config{
 		StorageDriver: cfg.StorageDriver,
 		StorageDSN:    cfg.StorageDSN,
 		LogQueries:    cfg.LogDBQueries,
@@ -33,6 +33,7 @@ func main() {
 	if err != nil {
 		logger.Fatal("failed to init recipe store", "err", err)
 	}
+	defer closeFunc()
 
 	a, err := app.New(cfg, logger, recipeStore)
 	if err != nil {

@@ -16,4 +16,5 @@ type Storage interface {
 	SaveRecipe(ctx context.Context, recipe *recipe.Recipe) error
 	GetRecipe(ctx context.Context, id uuid.UUID) (*recipe.Recipe, error)
 	GetRecipeBySlug(ctx context.Context, slug string) (*recipe.Recipe, error)
+	GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error)
 }

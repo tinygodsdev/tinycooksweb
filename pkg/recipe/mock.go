@@ -3,8 +3,6 @@ package recipe
 import (
 	"errors"
 	"time"
-
-	"golang.org/x/exp/rand"
 )
 
 func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
@@ -12,8 +10,15 @@ func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
 		return nil, errors.New("mock error")
 	}
 
-	rand.Seed(123)
-	var recipes []*Recipe
+	recipes := []*Recipe{
+		PumpkinBuns(),
+		PumpkinSoup(),
+	}
+
+	if recipeCount < len(recipes) {
+		// take only the first N recipes
+		recipes = recipes[:recipeCount]
+	}
 
 	return recipes, nil
 }
@@ -33,7 +38,6 @@ func PumpkinBuns() *Recipe {
 			{Product: &Product{Name: "тыквенное пюре"}, Quantity: "150", Unit: "грамм"},
 			{Product: &Product{Name: "пшеничная мука"}, Quantity: "400", Unit: "грамм"},
 			{Product: &Product{Name: "желтки"}, Quantity: "1", Unit: "шт."},
-			{Product: &Product{Name: "молоко"}, Quantity: "2", Unit: "ст.л."},
 			{Product: &Product{Name: "семена чиа, лен, кунжут или мак (по желанию)"}, Quantity: "", Unit: ""},
 		},
 		Instructions: []Instruction{
@@ -42,7 +46,12 @@ func PumpkinBuns() *Recipe {
 			{Text: "Добавьте 80% от указанного количества муки и начните замешивать тесто. Постепенно добавляйте оставшуюся муку, пока тесто не станет мягким и гладким."},
 			{Text: "Накройте тесто и дайте ему подойти вдвое (1-2 часа)."},
 			{Text: "Разделите подошедшее тесто на 8 частей и сформируйте круглые заготовки. Выложите их на противень, накройте пленкой и оставьте для финальной расстойки на 30 минут."},
-			{Text: "Смажьте заготовки смесью желтка с молоком и по желанию посыпьте семенами. Выпекайте в предварительно разогретой до 180 градусов духовке 20-25 минут."},
+			{Text: "Смажьте заготовки смесью желтка с молоком (2 ст. ложки) и по желанию посыпьте семенами. Выпекайте в предварительно разогретой до 180 градусов духовке 20-25 минут."},
+		},
+		Equipment: []*Equipment{
+			{Name: "печь"},
+			{Name: "противень"},
+			{Name: "миксер"},
 		},
 		Tags: []*Tag{
 			{Name: "выпечка", Group: "тип блюда"},
@@ -101,6 +110,10 @@ func PumpkinSoup() *Recipe {
 			{Text: "Готовую тыкву переложить в блендер и измельчить. Добавить горячее молоко. И еще раз пробить блендером."},
 			{Text: "Перелить в кастрюльку и прогреть, но не доводить до кипения."},
 			{Text: "Разлить по тарелкам, добавить сухарики, приправить сметаной или жирными сливками и украсить зеленью петрушки."},
+		},
+		Equipment: []*Equipment{
+			{Name: "кастрюля"},
+			{Name: "блендер"},
 		},
 		Tags: []*Tag{
 			{Name: "супы", Group: "тип блюда"},
