@@ -5,6 +5,7 @@ import (
 	"html/template"
 
 	"github.com/jfyne/live"
+	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 )
 
@@ -16,18 +17,23 @@ const (
 	paramHomeTag = "tag"
 )
 
-type (
-	HomeInstance struct {
-		*CommonInstance
-		Recipes []*recipe.Recipe
-	}
-)
+type HomeInstance struct {
+	*CommonInstance
+	Recipes      []*recipe.Recipe
+	RecipesCount int
+	Filter       recipe.Filter
+}
 
 func (h *Handler) NewHomeInstance(s live.Socket) *HomeInstance {
 	m, ok := s.Assigns().(*HomeInstance)
 	if !ok {
 		return &HomeInstance{
 			CommonInstance: h.NewCommon(s, viewHome),
+			Filter: recipe.Filter{
+				Limit:    h.app.Cfg.PageSize,
+				Locale:   locale.Default(),
+				UseMocks: h.app.Cfg.MockQueries,
+			},
 		}
 	}
 
@@ -80,11 +86,12 @@ func (h *Handler) Home() live.Handler {
 		instance := h.NewHomeInstance(s)
 		instance.fromContext(ctx)
 
-		instance.Recipes, err = h.app.GetRecipes(ctx, recipe.Filter{
-			Locale: instance.Locale(),
-			Limit:  20,
-			Offset: 0,
-		})
+		instance.Recipes, err = h.app.GetRecipes(ctx, instance.Filter)
+		if err != nil {
+			return instance.withError(err), nil
+		}
+
+		instance.RecipesCount, err = h.app.CountRecipes(ctx, instance.Filter)
 		if err != nil {
 			return instance.withError(err), nil
 		}

@@ -14,7 +14,7 @@ type Config struct {
 
 	Secret          string `envconfig:"SECRET" required:"true"`
 	Expire          int    `envconfig:"EXPIRE" default:"2592000"` // seconds
-	LiveSessionName string `envconfig:"LIVE_SESSION_NAME" default:"tcw-go-live-session"`
+	LiveSessionName string `envconfig:"LIVE_SESSION_NAME" default:"tc-go-live-session"`
 
 	GoogleAnalyticsID string `envconfig:"GOOGLE_ANALYTICS_ID" default:""`
 
@@ -23,6 +23,9 @@ type Config struct {
 	StorageDSN    string `envconfig:"STORAGE_DSN" required:"true"`
 	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
 	UseMocks      bool   `envconfig:"USE_MOCKS" default:"false"`
+	MockQueries   bool   `envconfig:"MOCK_QUERIES" default:"false"`
+
+	PageSize int `envconfig:"PAGE_SIZE" default:"20"`
 }
 
 func LoadConfig() (*Config, error) {

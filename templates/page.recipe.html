@@ -2,17 +2,82 @@
 {{ define "description" }} {{ .Recipe.Description }} {{ end }}
 {{ define "view" }}
 <main>
+  {{ template "back-to-home" }}
+  <!-- Hero -->
   <div class="section">
     <h1 class="title is-1 is-size-3-mobile">{{ .Recipe.Name }}</h1>
+    <div class="level">
+      <div class="level-item">
+        {{ template "share-result-facebook" . }}
+      </div>
+      <div class="level-item">
+        {{ template "share-result-twitter" . }}
+      </div>
+    </div>
     <h3 class="title is-3 is-size-5-mobile">{{ .Recipe.Description }}</h3>
-    <h4 class="title is-4 is-size-6-mobile">{{ .Recipe.Text }}</h4>
+    <p class="">{{ .Recipe.Text }}</p>
+  </div>
+  <!-- Requirements -->
+  <div class="section">
+    <div class="columns">
+      <div class="column is-8">
+        <h4 class="title is-4 is-size-6-mobile">{{ .UI.Recipe.Ingredients }}</h4>
+        {{ range .Recipe.Ingredients }}
+        <div class="">
+          <span class="has-text-weight-bold">{{ Title .Product.Name }} </span>
+          <span class="">{{ .Quantity }} {{ .Unit }} </span>
+          {{ if .Optional}}
+          <span class="tag is-primary is-light">{{ $.UI.Recipe.Optional }}</span>
+          {{ else}}
+          {{ end }}
+        </div>
+        {{ end }}
+      </div>
+      <div class="column is-4">
+        <h4 class="title is-4 is-size-6-mobile">{{ .UI.Recipe.Equipment }}</h4>
+        <ul>
+          {{ range .Recipe.Equipment }}
+          <li>{{ .Name }}</li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Instructions -->
+  <div class="section">
+    <h4 class="title is-4 is-size-6-mobile">{{ .UI.Recipe.Instructions }}</h4>
+    {{ range $i, $inst := .Recipe.Instructions }}
+    <div class="columns">
+      <div class="column is-narrow">
+        <span class="title is-4 is-primary">{{ Plus1 $i }}</span>
+      </div>
+      <div class="column">
+        <span>{{ $inst.Text }}</span>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+  <!-- Ideas -->
+  <div class="section">
+    <h4 class="title is-4 is-size-6-mobile">{{ .UI.Recipe.Ideas }}</h4>
+      {{ range .Recipe.Ideas }}
+      <div class="columns">
+        <div class="column is-narrow">
+          <p class="title is-3 is-primary">{{ RandomEmoji }}</p>
+        </div>
+        <div class="column">
+          {{ .Text }}
+        </div>
+      </div>
+      {{ end }}
+    </div>
   </div>
 </main>
 {{ end }}
 
 {{ define "share-result-twitter" }}
 <a target="_blank" class="button is-fullwidth share-twitter-button"
-  href="https://twitter.com/intent/tweet?original_referer={{ .Test.Link .Domain }}&amp;text={{ .Test.ResultShareText }}&amp;tw_p=tweet&amp;url={{ .Test.Link .Domain }}&amp;via=OrreryLab">
+  href="https://twitter.com/intent/tweet?original_referer={{ .Recipe.Link .Domain }}&amp;text={{ .Recipe.ShareText }}&amp;tw_p=tweet&amp;url={{ .Recipe.Link .Domain }}&amp;via={{ .UI.Base.Title }}">
   <span class="icon">
     <i class="bi bi-twitter"></i>
   </span>
@@ -23,7 +88,7 @@
 {{ define "share-result-facebook" }}
 <a target="_blank" class="button is-fullwidth share-facebook-button"
   onclick="return !window.open(this.href, 'Facebook', 'width=640,height=480')"
-  href="https://www.facebook.com/sharer.php?u={{ .Test.Link .Domain }}" data-url="{{ .Test.Link .Domain }}">
+  href="https://www.facebook.com/sharer.php?u={{ .Recipe.Link .Domain }}" data-url="{{ .Recipe.Link .Domain }}">
   <span class="icon">
     <i class="bi bi-facebook"></i>
   </span>

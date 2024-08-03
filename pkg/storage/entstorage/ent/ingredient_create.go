@@ -91,6 +91,20 @@ func (ic *IngredientCreate) SetProductID(u uuid.UUID) *IngredientCreate {
 	return ic
 }
 
+// SetOptional sets the "optional" field.
+func (ic *IngredientCreate) SetOptional(b bool) *IngredientCreate {
+	ic.mutation.SetOptional(b)
+	return ic
+}
+
+// SetNillableOptional sets the "optional" field if the given value is not nil.
+func (ic *IngredientCreate) SetNillableOptional(b *bool) *IngredientCreate {
+	if b != nil {
+		ic.SetOptional(*b)
+	}
+	return ic
+}
+
 // SetID sets the "id" field.
 func (ic *IngredientCreate) SetID(u uuid.UUID) *IngredientCreate {
 	ic.mutation.SetID(u)
@@ -158,6 +172,10 @@ func (ic *IngredientCreate) defaults() {
 		v := ingredient.DefaultUpdateTime()
 		ic.mutation.SetUpdateTime(v)
 	}
+	if _, ok := ic.mutation.Optional(); !ok {
+		v := ingredient.DefaultOptional
+		ic.mutation.SetOptional(v)
+	}
 	if _, ok := ic.mutation.ID(); !ok {
 		v := ingredient.DefaultID()
 		ic.mutation.SetID(v)
@@ -177,6 +195,9 @@ func (ic *IngredientCreate) check() error {
 	}
 	if _, ok := ic.mutation.ProductID(); !ok {
 		return &ValidationError{Name: "product_id", err: errors.New(`ent: missing required field "Ingredient.product_id"`)}
+	}
+	if _, ok := ic.mutation.Optional(); !ok {
+		return &ValidationError{Name: "optional", err: errors.New(`ent: missing required field "Ingredient.optional"`)}
 	}
 	if len(ic.mutation.RecipeIDs()) == 0 {
 		return &ValidationError{Name: "recipe", err: errors.New(`ent: missing required edge "Ingredient.recipe"`)}
@@ -234,6 +255,10 @@ func (ic *IngredientCreate) createSpec() (*Ingredient, *sqlgraph.CreateSpec) {
 	if value, ok := ic.mutation.Unit(); ok {
 		_spec.SetField(ingredient.FieldUnit, field.TypeString, value)
 		_node.Unit = value
+	}
+	if value, ok := ic.mutation.Optional(); ok {
+		_spec.SetField(ingredient.FieldOptional, field.TypeBool, value)
+		_node.Optional = value
 	}
 	if nodes := ic.mutation.RecipeIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

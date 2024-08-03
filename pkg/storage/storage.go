@@ -17,4 +17,5 @@ type Storage interface {
 	GetRecipe(ctx context.Context, id uuid.UUID) (*recipe.Recipe, error)
 	GetRecipeBySlug(ctx context.Context, slug string) (*recipe.Recipe, error)
 	GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error)
+	CountRecipes(ctx context.Context, filter recipe.Filter) (int, error)
 }

@@ -105,6 +105,20 @@ func (iu *IngredientUpdate) SetNillableProductID(u *uuid.UUID) *IngredientUpdate
 	return iu
 }
 
+// SetOptional sets the "optional" field.
+func (iu *IngredientUpdate) SetOptional(b bool) *IngredientUpdate {
+	iu.mutation.SetOptional(b)
+	return iu
+}
+
+// SetNillableOptional sets the "optional" field if the given value is not nil.
+func (iu *IngredientUpdate) SetNillableOptional(b *bool) *IngredientUpdate {
+	if b != nil {
+		iu.SetOptional(*b)
+	}
+	return iu
+}
+
 // SetRecipe sets the "recipe" edge to the Recipe entity.
 func (iu *IngredientUpdate) SetRecipe(r *Recipe) *IngredientUpdate {
 	return iu.SetRecipeID(r.ID)
@@ -205,6 +219,9 @@ func (iu *IngredientUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if iu.mutation.UnitCleared() {
 		_spec.ClearField(ingredient.FieldUnit, field.TypeString)
+	}
+	if value, ok := iu.mutation.Optional(); ok {
+		_spec.SetField(ingredient.FieldOptional, field.TypeBool, value)
 	}
 	if iu.mutation.RecipeCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -358,6 +375,20 @@ func (iuo *IngredientUpdateOne) SetNillableProductID(u *uuid.UUID) *IngredientUp
 	return iuo
 }
 
+// SetOptional sets the "optional" field.
+func (iuo *IngredientUpdateOne) SetOptional(b bool) *IngredientUpdateOne {
+	iuo.mutation.SetOptional(b)
+	return iuo
+}
+
+// SetNillableOptional sets the "optional" field if the given value is not nil.
+func (iuo *IngredientUpdateOne) SetNillableOptional(b *bool) *IngredientUpdateOne {
+	if b != nil {
+		iuo.SetOptional(*b)
+	}
+	return iuo
+}
+
 // SetRecipe sets the "recipe" edge to the Recipe entity.
 func (iuo *IngredientUpdateOne) SetRecipe(r *Recipe) *IngredientUpdateOne {
 	return iuo.SetRecipeID(r.ID)
@@ -488,6 +519,9 @@ func (iuo *IngredientUpdateOne) sqlSave(ctx context.Context) (_node *Ingredient,
 	}
 	if iuo.mutation.UnitCleared() {
 		_spec.ClearField(ingredient.FieldUnit, field.TypeString)
+	}
+	if value, ok := iuo.mutation.Optional(); ok {
+		_spec.SetField(ingredient.FieldOptional, field.TypeBool, value)
 	}
 	if iuo.mutation.RecipeCleared() {
 		edge := &sqlgraph.EdgeSpec{

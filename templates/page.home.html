@@ -5,11 +5,12 @@
   <div class="section">
     <h1 class="title is-1 is-size-3-mobile">{{ .UI.Base.Title }}</h1>
     <h3 class="title is-3 is-size-5-mobile">{{ .UI.Base.Description }}</h3>
+    <h3 class="title is-3 is-size-5-mobile">{{ .RecipesCount }}</h3>
   </div>
   <div class="section">
     <div class="columns is-multiline">
       {{ range $i, $recipe := .Recipes }}
-      <div class="column is-4">
+      <div class="column is-6">
         {{ template "recipe-card" $recipe }}
       </div>
       {{ end }}
@@ -25,8 +26,25 @@
     <p class="subtitle is-6 is-size-6-mobile">{{ .Description }}</p>
     {{ template "tags" . }}
   </div>
-  <div class="card-footer p-3">
-    Footer content
+  <div class="card-footer">
+    <p class="card-footer-item" title="Rating">
+      <span class="icon-text">
+        <span class="icon"><i class="bi bi-star-fill"></i></span>
+        <span><b>{{printf "%.1f" .Rating}}</b></span>
+      </span>
+    </p>
+    <p class="card-footer-item" title="Average duration">
+      <span class="icon-text">
+        <span class="icon"><i class="bi bi-clock"></i></span>
+        <span><b>{{ FormatDuration .Time }}</b></span>
+      </span>
+    </p>
+    <p class="card-footer-item" title="Questions">
+      <span class="icon-text">
+        <span class="icon"><i class="bi bi-ui-checks"></i></span>
+        <span><b>{{ .Servings }}</b></span>
+      </span>
+    </p>
   </div>
 </section>
 {{ end }}

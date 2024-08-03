@@ -15,6 +15,25 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/tag"
 )
 
+func (s *EntStorage) CountRecipes(ctx context.Context, filter recipe.Filter) (int, error) {
+	q := s.client.Recipe.Query()
+
+	if filter.NameContains != "" {
+		q.Where(entRecipe.NameContains(filter.NameContains))
+	}
+
+	if filter.Locale != "" {
+		q.Where(entRecipe.LocaleEQ(entRecipe.Locale(filter.Locale)))
+	}
+
+	count, err := q.Count(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("counting recipes: %w", err)
+	}
+
+	return count, nil
+}
+
 func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error) {
 	q := s.client.Recipe.Query()
 
@@ -37,15 +56,6 @@ func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*r
 	// TODO implement filtering by equipment, tags, ingredients
 
 	recipes, err := q.
-		WithIngredients(func(q *ent.IngredientQuery) {
-			q.WithProduct()
-		}).
-		WithInstructions().
-		WithTags().
-		WithIdeas().
-		WithSources().
-		WithNutrition().
-		WithEquipment().
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting recipes: %w", err)
@@ -69,7 +79,7 @@ func (s *EntStorage) GetRecipe(ctx context.Context, id uuid.UUID) (*recipe.Recip
 		WithInstructions().
 		WithTags().
 		WithIdeas().
-		WithSources().
+		// WithSources().
 		WithNutrition().
 		WithEquipment().
 		Only(ctx)
@@ -90,7 +100,7 @@ func (s *EntStorage) GetRecipeBySlug(ctx context.Context, slug string) (*recipe.
 		WithInstructions().
 		WithTags().
 		WithIdeas().
-		WithSources().
+		// WithSources().
 		WithNutrition().
 		WithEquipment().
 		Only(ctx)
@@ -164,6 +174,7 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 			Create().
 			SetQuantity(ing.Quantity).
 			SetUnit(ing.Unit).
+			SetOptional(ing.Optional).
 			SetRecipe(r).
 			SetProduct(product).
 			Save(ctx)
@@ -318,34 +329,4 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 		return nil, fmt.Errorf("creating equipment: %w", err)
 	}
 	return e, nil
-}
-
-func entRecipeToRecipe(r *ent.Recipe) *recipe.Recipe {
-	var servings int
-	if r.Servings != nil {
-		servings = *r.Servings
-	}
-
-	var time time.Duration
-	if r.Time != nil {
-		time = *r.Time
-	}
-
-	return &recipe.Recipe{
-		ID:          r.ID,
-		Name:        r.Name,
-		Lang:        r.Locale.String(),
-		Slug:        r.Slug,
-		Description: r.Description,
-		Text:        r.Text,
-		Servings:    servings,
-		Time:        time,
-		// Ingredients:  mapEntIngredientsToIngredients(r.Edges.Ingredients),
-		// Instructions: mapEntInstructionsToInstructions(r.Edges.Instructions),
-		// Tags:         mapEntTagsToTags(r.Edges.Tags),
-		// Ideas:        mapEntIdeasToIdeas(r.Edges.Ideas),
-		// Sources:      mapEntSourcesToSources(r.Edges.Sources),
-		// Nutrition:    mapEntNutritionToNutrition(r.Edges.Nutrition),
-		// Equipment:    mapEntEquipmentToEquipment(r.Edges.Equipment),
-	}
 }

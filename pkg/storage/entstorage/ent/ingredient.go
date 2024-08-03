@@ -32,6 +32,8 @@ type Ingredient struct {
 	RecipeID uuid.UUID `json:"recipe_id,omitempty"`
 	// ProductID holds the value of the "product_id" field.
 	ProductID uuid.UUID `json:"product_id,omitempty"`
+	// Optional holds the value of the "optional" field.
+	Optional bool `json:"optional,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the IngredientQuery when eager-loading is set.
 	Edges        IngredientEdges `json:"edges"`
@@ -76,6 +78,8 @@ func (*Ingredient) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case ingredient.FieldOptional:
+			values[i] = new(sql.NullBool)
 		case ingredient.FieldQuantity, ingredient.FieldUnit:
 			values[i] = new(sql.NullString)
 		case ingredient.FieldCreateTime, ingredient.FieldUpdateTime:
@@ -138,6 +142,12 @@ func (i *Ingredient) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field product_id", values[j])
 			} else if value != nil {
 				i.ProductID = *value
+			}
+		case ingredient.FieldOptional:
+			if value, ok := values[j].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field optional", values[j])
+			} else if value.Valid {
+				i.Optional = value.Bool
 			}
 		default:
 			i.selectValues.Set(columns[j], values[j])
@@ -202,6 +212,9 @@ func (i *Ingredient) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("product_id=")
 	builder.WriteString(fmt.Sprintf("%v", i.ProductID))
+	builder.WriteString(", ")
+	builder.WriteString("optional=")
+	builder.WriteString(fmt.Sprintf("%v", i.Optional))
 	builder.WriteByte(')')
 	return builder.String()
 }

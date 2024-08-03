@@ -878,6 +878,7 @@ type IngredientMutation struct {
 	update_time    *time.Time
 	quantity       *string
 	unit           *string
+	optional       *bool
 	clearedFields  map[string]struct{}
 	recipe         *uuid.UUID
 	clearedrecipe  bool
@@ -1234,6 +1235,42 @@ func (m *IngredientMutation) ResetProductID() {
 	m.product = nil
 }
 
+// SetOptional sets the "optional" field.
+func (m *IngredientMutation) SetOptional(b bool) {
+	m.optional = &b
+}
+
+// Optional returns the value of the "optional" field in the mutation.
+func (m *IngredientMutation) Optional() (r bool, exists bool) {
+	v := m.optional
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOptional returns the old "optional" field's value of the Ingredient entity.
+// If the Ingredient object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *IngredientMutation) OldOptional(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldOptional is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldOptional requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOptional: %w", err)
+	}
+	return oldValue.Optional, nil
+}
+
+// ResetOptional resets all changes to the "optional" field.
+func (m *IngredientMutation) ResetOptional() {
+	m.optional = nil
+}
+
 // ClearRecipe clears the "recipe" edge to the Recipe entity.
 func (m *IngredientMutation) ClearRecipe() {
 	m.clearedrecipe = true
@@ -1322,7 +1359,7 @@ func (m *IngredientMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *IngredientMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 7)
 	if m.create_time != nil {
 		fields = append(fields, ingredient.FieldCreateTime)
 	}
@@ -1340,6 +1377,9 @@ func (m *IngredientMutation) Fields() []string {
 	}
 	if m.product != nil {
 		fields = append(fields, ingredient.FieldProductID)
+	}
+	if m.optional != nil {
+		fields = append(fields, ingredient.FieldOptional)
 	}
 	return fields
 }
@@ -1361,6 +1401,8 @@ func (m *IngredientMutation) Field(name string) (ent.Value, bool) {
 		return m.RecipeID()
 	case ingredient.FieldProductID:
 		return m.ProductID()
+	case ingredient.FieldOptional:
+		return m.Optional()
 	}
 	return nil, false
 }
@@ -1382,6 +1424,8 @@ func (m *IngredientMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldRecipeID(ctx)
 	case ingredient.FieldProductID:
 		return m.OldProductID(ctx)
+	case ingredient.FieldOptional:
+		return m.OldOptional(ctx)
 	}
 	return nil, fmt.Errorf("unknown Ingredient field %s", name)
 }
@@ -1432,6 +1476,13 @@ func (m *IngredientMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetProductID(v)
+		return nil
+	case ingredient.FieldOptional:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOptional(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Ingredient field %s", name)
@@ -1514,6 +1565,9 @@ func (m *IngredientMutation) ResetField(name string) error {
 		return nil
 	case ingredient.FieldProductID:
 		m.ResetProductID()
+		return nil
+	case ingredient.FieldOptional:
+		m.ResetOptional()
 		return nil
 	}
 	return fmt.Errorf("unknown Ingredient field %s", name)

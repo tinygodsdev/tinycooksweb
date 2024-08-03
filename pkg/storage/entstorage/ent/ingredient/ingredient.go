@@ -27,6 +27,8 @@ const (
 	FieldRecipeID = "recipe_id"
 	// FieldProductID holds the string denoting the product_id field in the database.
 	FieldProductID = "product_id"
+	// FieldOptional holds the string denoting the optional field in the database.
+	FieldOptional = "optional"
 	// EdgeRecipe holds the string denoting the recipe edge name in mutations.
 	EdgeRecipe = "recipe"
 	// EdgeProduct holds the string denoting the product edge name in mutations.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldUnit,
 	FieldRecipeID,
 	FieldProductID,
+	FieldOptional,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -77,6 +80,8 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
+	// DefaultOptional holds the default value on creation for the "optional" field.
+	DefaultOptional bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -117,6 +122,11 @@ func ByRecipeID(opts ...sql.OrderTermOption) OrderOption {
 // ByProductID orders the results by the product_id field.
 func ByProductID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldProductID, opts...).ToFunc()
+}
+
+// ByOptional orders the results by the optional field.
+func ByOptional(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldOptional, opts...).ToFunc()
 }
 
 // ByRecipeField orders the results by recipe field.

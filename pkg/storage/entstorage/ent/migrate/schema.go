@@ -46,6 +46,7 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "quantity", Type: field.TypeString, Nullable: true},
 		{Name: "unit", Type: field.TypeString, Nullable: true},
+		{Name: "optional", Type: field.TypeBool, Default: false},
 		{Name: "recipe_id", Type: field.TypeUUID},
 		{Name: "product_id", Type: field.TypeUUID},
 	}
@@ -57,13 +58,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "ingredients_recipes_recipe",
-				Columns:    []*schema.Column{IngredientsColumns[5]},
+				Columns:    []*schema.Column{IngredientsColumns[6]},
 				RefColumns: []*schema.Column{RecipesColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 			{
 				Symbol:     "ingredients_products_product",
-				Columns:    []*schema.Column{IngredientsColumns[6]},
+				Columns:    []*schema.Column{IngredientsColumns[7]},
 				RefColumns: []*schema.Column{ProductsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -72,7 +73,7 @@ var (
 			{
 				Name:    "ingredient_recipe_id_product_id",
 				Unique:  true,
-				Columns: []*schema.Column{IngredientsColumns[5], IngredientsColumns[6]},
+				Columns: []*schema.Column{IngredientsColumns[6], IngredientsColumns[7]},
 			},
 		},
 	}

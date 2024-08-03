@@ -12,6 +12,8 @@ type (
 		Home   *UITransHome
 		Menu   *UITransMenu
 		Footer *UITransFooter
+		Recipe *UITransRecipe
+		Share  *UITransShare
 		// 404
 		// about
 		// profile
@@ -42,6 +44,21 @@ type (
 		DevelopedBy  string
 		Developer    string
 		DeveloperURL string
+	}
+
+	UITransRecipe struct {
+		Ingredients  string
+		Instructions string
+		Equipment    string
+		Ideas        string
+		Optional     string
+		Required     string
+	}
+
+	UITransShare struct {
+		HeaderMessage  string
+		ExploreMessage string
+		ShareMessage   string
 	}
 )
 
@@ -77,6 +94,19 @@ func newTranslationEn() *UITranslation {
 			Developer:    developer,
 			DeveloperURL: developerURL,
 		},
+		Recipe: &UITransRecipe{
+			Ingredients:  "Ingredients",
+			Instructions: "Instructions",
+			Equipment:    "Equipment",
+			Ideas:        "Ideas",
+			Optional:     "Optional",
+			Required:     "Required",
+		},
+		Share: &UITransShare{
+			HeaderMessage:  "recipe 😋",
+			ExploreMessage: "Explore",
+			ShareMessage:   "Share recipe",
+		},
 	}
 }
 
@@ -100,6 +130,19 @@ func newTranslationRu() *UITranslation {
 			DevelopedBy:  "Разработано",
 			Developer:    developer,
 			DeveloperURL: developerURL,
+		},
+		Recipe: &UITransRecipe{
+			Ingredients:  "Ингредиенты",
+			Instructions: "Инструкции",
+			Equipment:    "Оборудование",
+			Ideas:        "Идеи",
+			Optional:     "Опционально",
+			Required:     "Обязательно",
+		},
+		Share: &UITransShare{
+			HeaderMessage:  "рецепт 😋",
+			ExploreMessage: "Посмотреть",
+			ShareMessage:   "Поделиться рецептом",
 		},
 	}
 }

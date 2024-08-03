@@ -10,6 +10,8 @@ import (
 
 	"github.com/bradfitz/iter"
 	"github.com/jfyne/live"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/tinygodsdev/datasdk/pkg/logger"
 	"github.com/tinygodsdev/tinycooksweb/internal/app"
@@ -20,9 +22,7 @@ const (
 	// views
 	view404     = "404"
 	viewAbout   = "about"
-	viewAdmin   = "admin"
-	viewTest    = "test"
-	viewResult  = "result"
+	viewRecipe  = "recipe"
 	viewHome    = "home"
 	viewProfile = "profile"
 	viewPrivacy = "privacy"
@@ -31,11 +31,9 @@ const (
 	// events (common)
 	eventCloseError   = "close-error-notification"
 	eventCloseMessage = "close-message-notification"
-	eventToggleDark   = "toggle-dark"
 	// params (common)
 	paramLocale = "locale"
 	// context
-	userCtxKeyValue   = "user"
 	localeCtxKeyValue = "locale"
 
 	DefaultDisplayTime = time.RFC822
@@ -65,14 +63,6 @@ type (
 
 	Constants struct {
 		// to have constants in templates
-		IntroStatus     string
-		QuestionsStatus string
-		FinishStatus    string
-		ResultStatus    string
-		MethodSten      string
-		MethodPerc      string
-		MethodMean      string
-		MethodSum       string
 	}
 
 	contextKey struct {
@@ -80,7 +70,6 @@ type (
 	}
 )
 
-var userCtxKey = &contextKey{userCtxKeyValue}
 var localeCtxKey = &contextKey{localeCtxKeyValue}
 var funcMap = template.FuncMap{
 	"N":     iter.N,
@@ -137,7 +126,13 @@ var funcMap = template.FuncMap{
 	},
 	"FormatDuration": func(d time.Duration) string {
 		z := time.Unix(0, 0).UTC()
-		return z.Add(d).Format("4:05")
+		return z.Add(d).Format("15:04")
+	},
+	"Title": func(t string) string {
+		return cases.Title(language.Make(locale.Default())).String(t)
+	},
+	"RandomEmoji": func() string {
+		return "🍏"
 	},
 }
 

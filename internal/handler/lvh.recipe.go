@@ -41,7 +41,7 @@ func (h *Handler) NewRecipeInstance(s live.Socket) *RecipeInstance {
 	m, ok := s.Assigns().(*RecipeInstance)
 	if !ok {
 		return &RecipeInstance{
-			CommonInstance: h.NewCommon(s, viewTest),
+			CommonInstance: h.NewCommon(s, viewRecipe),
 			Constants:      h.NewConstants(),
 		}
 	}

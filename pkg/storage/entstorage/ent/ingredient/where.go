@@ -86,6 +86,11 @@ func ProductID(v uuid.UUID) predicate.Ingredient {
 	return predicate.Ingredient(sql.FieldEQ(FieldProductID, v))
 }
 
+// Optional applies equality check predicate on the "optional" field. It's identical to OptionalEQ.
+func Optional(v bool) predicate.Ingredient {
+	return predicate.Ingredient(sql.FieldEQ(FieldOptional, v))
+}
+
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
 func CreateTimeEQ(v time.Time) predicate.Ingredient {
 	return predicate.Ingredient(sql.FieldEQ(FieldCreateTime, v))
@@ -354,6 +359,16 @@ func ProductIDIn(vs ...uuid.UUID) predicate.Ingredient {
 // ProductIDNotIn applies the NotIn predicate on the "product_id" field.
 func ProductIDNotIn(vs ...uuid.UUID) predicate.Ingredient {
 	return predicate.Ingredient(sql.FieldNotIn(FieldProductID, vs...))
+}
+
+// OptionalEQ applies the EQ predicate on the "optional" field.
+func OptionalEQ(v bool) predicate.Ingredient {
+	return predicate.Ingredient(sql.FieldEQ(FieldOptional, v))
+}
+
+// OptionalNEQ applies the NEQ predicate on the "optional" field.
+func OptionalNEQ(v bool) predicate.Ingredient {
+	return predicate.Ingredient(sql.FieldNEQ(FieldOptional, v))
 }
 
 // HasRecipe applies the HasEdge predicate on the "recipe" edge.

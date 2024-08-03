@@ -75,6 +75,10 @@ func (a *App) GetRecipe(ctx context.Context, slug string) (*recipe.Recipe, error
 		return nil, fmt.Errorf("empty slug")
 	}
 
+	if a.Cfg.MockQueries {
+		return recipe.MockRecipe(slug, false)
+	}
+
 	return a.store.GetRecipeBySlug(ctx, slug)
 }
 
@@ -101,4 +105,10 @@ func (a *App) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 	defer a.Timer("SaveRecipe", "slug", rec.Slug)()
 
 	return a.store.SaveRecipe(ctx, rec)
+}
+
+func (a *App) CountRecipes(ctx context.Context, filter recipe.Filter) (int, error) {
+	defer a.Timer("CountRecipes")()
+
+	return a.store.CountRecipes(ctx, filter)
 }

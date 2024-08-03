@@ -52,6 +52,10 @@ func init() {
 	ingredient.DefaultUpdateTime = ingredientDescUpdateTime.Default.(func() time.Time)
 	// ingredient.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	ingredient.UpdateDefaultUpdateTime = ingredientDescUpdateTime.UpdateDefault.(func() time.Time)
+	// ingredientDescOptional is the schema descriptor for optional field.
+	ingredientDescOptional := ingredientFields[5].Descriptor()
+	// ingredient.DefaultOptional holds the default value on creation for the optional field.
+	ingredient.DefaultOptional = ingredientDescOptional.Default.(bool)
 	// ingredientDescID is the schema descriptor for id field.
 	ingredientDescID := ingredientFields[0].Descriptor()
 	// ingredient.DefaultID holds the default value on creation for the id field.

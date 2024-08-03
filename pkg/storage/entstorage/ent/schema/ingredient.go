@@ -21,6 +21,7 @@ func (Ingredient) Fields() []ent.Field {
 		field.String("unit").Optional(),
 		field.UUID("recipe_id", uuid.UUID{}),
 		field.UUID("product_id", uuid.UUID{}),
+		field.Bool("optional").Default(false),
 	}
 }
 

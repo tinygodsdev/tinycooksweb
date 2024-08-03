@@ -23,6 +23,21 @@ func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
 	return recipes, nil
 }
 
+func MockRecipe(slug string, withError bool) (*Recipe, error) {
+	if withError {
+		return nil, errors.New("mock error")
+	}
+
+	switch slug {
+	case PumpkinBuns().Slug:
+		return PumpkinBuns(), nil
+	case PumpkinSoup().Slug:
+		return PumpkinSoup(), nil
+	}
+
+	return nil, errors.New("not found")
+}
+
 func PumpkinBuns() *Recipe {
 	recipe := Recipe{
 		Name:        "Тыквенные булочки",
@@ -38,7 +53,7 @@ func PumpkinBuns() *Recipe {
 			{Product: &Product{Name: "тыквенное пюре"}, Quantity: "150", Unit: "грамм"},
 			{Product: &Product{Name: "пшеничная мука"}, Quantity: "400", Unit: "грамм"},
 			{Product: &Product{Name: "желтки"}, Quantity: "1", Unit: "шт."},
-			{Product: &Product{Name: "семена чиа, лен, кунжут или мак (по желанию)"}, Quantity: "", Unit: ""},
+			{Product: &Product{Name: "семена чиа, лен, кунжут или мак (по желанию)"}, Quantity: "", Unit: "", Optional: true},
 		},
 		Instructions: []Instruction{
 			{Text: "Слегка подогрейте молоко до температуры не выше 45 градусов, добавьте дрожжи и дайте постоять 3-4 минуты. Перемешайте до растворения дрожжей."},
@@ -99,8 +114,8 @@ func PumpkinSoup() *Recipe {
 			{Product: &Product{Name: "лук репчатый"}, Quantity: "1", Unit: "шт."},
 			{Product: &Product{Name: "молоко"}, Quantity: "200", Unit: "мл"},
 			{Product: &Product{Name: "масло сливочное"}, Quantity: "20", Unit: "г"},
-			{Product: &Product{Name: "петрушка"}, Quantity: "по вкусу", Unit: ""},
-			{Product: &Product{Name: "приправа"}, Quantity: "по вкусу", Unit: ""},
+			{Product: &Product{Name: "петрушка"}, Quantity: "по вкусу", Unit: "", Optional: true},
+			{Product: &Product{Name: "приправа"}, Quantity: "по вкусу", Unit: "", Optional: true},
 			{Product: &Product{Name: "сливки 35-38%"}, Quantity: "по вкусу", Unit: ""},
 			{Product: &Product{Name: "хлеб белый"}, Quantity: "по вкусу", Unit: ""},
 		},

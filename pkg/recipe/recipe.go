@@ -1,10 +1,13 @@
 package recipe
 
 import (
+	"fmt"
+	"net/url"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
+	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
 )
 
 const (
@@ -32,6 +35,7 @@ type Recipe struct {
 	Time         time.Duration `json:"time"`
 	Servings     int           `json:"servings"`
 	Sources      []*Source     `json:"sources"`
+	Rating       float32       `json:"rating"`
 	Nutrition    *Nutrition    `json:"nutrition"`
 }
 
@@ -40,6 +44,7 @@ type Ingredient struct {
 	Product  *Product  `json:"product"`
 	Quantity string    `json:"quantity"`
 	Unit     string    `json:"unit"`
+	Optional bool      `json:"optional"`
 }
 
 type Product struct {
@@ -101,4 +106,30 @@ type Filter struct {
 	Offset        int
 
 	UseMocks bool
+}
+
+func (r *Recipe) Link(domain string) string {
+	var params string
+	if r.Lang != locale.Default() {
+		params = fmt.Sprintf("?locale=%s", r.Lang)
+	}
+	path := fmt.Sprintf("/recipe/%s%s", r.Slug, params)
+	if domain == "" {
+		return path
+	}
+	recipeURL := fmt.Sprintf("https://%s%s", domain, path)
+	return url.QueryEscape(recipeURL)
+}
+
+func (r *Recipe) ShareText() string {
+	trans := locale.NewUITranslation(r.Lang)
+	res := fmt.Sprintf("%s - %s\n\n", r.Name, trans.Share.HeaderMessage)
+	if len(r.Description) > 215 {
+		res += r.Description[:215]
+	} else {
+		res += r.Description
+	}
+
+	res += "\n\n" + trans.Share.ExploreMessage
+	return res
 }
