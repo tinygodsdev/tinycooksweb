@@ -105,7 +105,7 @@ func newTranslationEn() *UITranslation {
 		Share: &UITransShare{
 			HeaderMessage:  "recipe 😋",
 			ExploreMessage: "Explore",
-			ShareMessage:   "Share recipe",
+			ShareMessage:   "Share on",
 		},
 	}
 }
@@ -142,7 +142,7 @@ func newTranslationRu() *UITranslation {
 		Share: &UITransShare{
 			HeaderMessage:  "рецепт 😋",
 			ExploreMessage: "Посмотреть",
-			ShareMessage:   "Поделиться рецептом",
+			ShareMessage:   "Поделиться в",
 		},
 	}
 }

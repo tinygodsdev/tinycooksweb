@@ -2,7 +2,6 @@ package recipe
 
 import (
 	"fmt"
-	"net/url"
 	"time"
 
 	"github.com/google/uuid"
@@ -118,7 +117,7 @@ func (r *Recipe) Link(domain string) string {
 		return path
 	}
 	recipeURL := fmt.Sprintf("https://%s%s", domain, path)
-	return url.QueryEscape(recipeURL)
+	return recipeURL
 }
 
 func (r *Recipe) ShareText() string {

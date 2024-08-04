@@ -8,10 +8,10 @@
     <h1 class="title is-1 is-size-3-mobile">{{ .Recipe.Name }}</h1>
     <div class="level">
       <div class="level-item">
-        {{ template "share-result-facebook" . }}
+        {{ template "share-result-twitter" . }}
       </div>
       <div class="level-item">
-        {{ template "share-result-twitter" . }}
+        {{ template "share-result-facebook" . }}
       </div>
     </div>
     <h3 class="title is-3 is-size-5-mobile">{{ .Recipe.Description }}</h3>
@@ -81,7 +81,7 @@
   <span class="icon">
     <i class="bi bi-twitter"></i>
   </span>
-  <span>Share on Twitter</span>
+  <span>{{ .UI.Share.ShareMessage }} Twitter</span>
 </a>
 {{ end }}
 
@@ -92,6 +92,6 @@
   <span class="icon">
     <i class="bi bi-facebook"></i>
   </span>
-  <span>Share on Facebook</span>
+  <span>{{ .UI.Share.ShareMessage }} Facebook</span>
 </a>
 {{ end }}

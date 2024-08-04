@@ -7,14 +7,16 @@
   <title>{{ template "title" .Assigns }} | TinyCooks</title>
   <meta name="description" content='{{ template "description" .Assigns }}'>
 
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bulma@1.0.1/css/bulma.min.css"
-  >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+  
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/versions/bulma-no-dark-mode.min.css"
+  >
   <link rel="stylesheet" href="/static/css/styles.css" />
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
@@ -25,9 +27,8 @@
   {{ end }}
 </head>
 
-<body  class="has-background-white-bis">
+<body class="has-background-white-bis">
   {{ template "navigation" .Assigns }}
-  {{ template "navigation-mobile" .Assigns }}
   <div class="mb-5">
     <div id="main-view-content" class="container is-max-desktop mt-5">
       {{ template "view" .Assigns }}
@@ -115,36 +116,6 @@
 {{ end }}
 
 
-{{ define "navigation-mobile" }}
-<nav class="navbar is-mobile is-centered is-size-3-mobile is-hidden-tablet is-fixed-bottom" role="navigation"
-  aria-label="main navigation">
-  <div class="navbar-menu">
-    <div class="navbar-start">
-    </div>
-
-    <div class='navbar-item main-item p-0 mr-1 my-1 {{ if eq .CurrentView "home"}}is-active{{ end }}'>
-      <a href="/" class='px-4 py-3' title="{{ .UI.Menu.Home }}">
-        <p class="title is-4"><i class="bi bi-house-fill"></i></p>
-      </a>
-    </div>
-
-    <div class='navbar-item main-item p-0 mr-1 my-1 {{ if eq .CurrentView "about"}}is-active{{ end }}'>
-      <a href="/about" class='px-4 py-3' title="{{ .UI.Menu.About }}">
-        <p class="title is-4"><i class="bi bi-question"></i></p>
-      </a>
-    </div>
-
-    <div class="navbar-end">
-      <div class="navbar-item">
-        {{ if ne .CurrentView "test" }}
-        {{/*  {{ template "locale-selector-ui" . }}  */}}
-        {{ end }}
-      </div>
-    </div>
-  </div>
-</nav>
-{{ end }}
-
 {{ define "navigation-text" }}
 <nav class="level is-centered">
   <div class="level-item">
@@ -171,16 +142,6 @@
 <h3 class="title is-3 mb-6 is-hidden-mobile">
   <a id="go-back-link" href="/"><i class="bi-arrow-left"></i> {{ .UI.Menu.Back }}</a>
 </h3>
-{{ end }}
-
-
-{{ define "locale-selector-ui" }}
-{{ range UILocales }}
-<a live-patch href="{{ LocaleParam . }}"
-  class="m-1 p-2 button is-white {{ if eq . $.Locale }}is-primary{{else}}{{ end }}" title="{{.}}">
-  <p class="title is-4 is-size-5-mobile">{{ LocaleParam . }}</p>
-</a>
-{{end}}
 {{ end }}
 
 {{ define "google-analytics" }}

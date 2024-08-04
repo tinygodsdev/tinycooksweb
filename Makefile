@@ -4,7 +4,7 @@ ifneq ("$(wildcard env/.env.local)","")
 endif
 
 .PHONY: run
-run: entgen
+run: entgen css
 	go run cmd/main.go
 
 .PHONY: build
@@ -36,3 +36,12 @@ deps:
 .PHONY: entgen
 entgen:
 	cd ./pkg/storage/entstorage && go generate ./ent
+
+.PHONY: css
+css:
+	cd web && npm run build
+
+.PHONY: lint
+lint:
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
+	./bin/golangci-lint run -v

@@ -22,8 +22,8 @@
 {{ define "recipe-card" }}
 <section class="card has-equal-height">
   <div class="card-content">
-    <p class="title is-4 is-size-5-mobile"><a href="/recipe/{{ .Slug }}">{{ .Name }}</a></p>
-    <p class="subtitle is-6 is-size-6-mobile">{{ .Description }}</p>
+    <p class="title is-5 is-size-5-mobile mb-2"><a href="/recipe/{{ .Slug }}">{{ .Name }}</a></p>
+    <p class="subtitle is-6 is-size-6-mobile m-0">{{ .Description }}</p>
     {{ template "tags" . }}
   </div>
   <div class="card-footer">
@@ -39,7 +39,7 @@
         <span><b>{{ FormatDuration .Time }}</b></span>
       </span>
     </p>
-    <p class="card-footer-item" title="Questions">
+    <p class="card-footer-item" title="Servings">
       <span class="icon-text">
         <span class="icon"><i class="bi bi-ui-checks"></i></span>
         <span><b>{{ .Servings }}</b></span>

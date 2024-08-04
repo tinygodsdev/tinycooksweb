@@ -1,0 +1,118 @@
+// brand colors
+$red: #ee4266;
+$yellow: #ffbf00;
+$orange: #ff7f11;
+$green: #5bba35;
+$purple: #914df7;
+
+$base: $green;
+$radius-large: 25px;
+
+:root {
+  --bulma-primary-h: 129deg;
+  --bulma-primary-s: 72%;
+  --bulma-primary-l: 63%;
+  --bulma-link-h: 129deg;
+  --bulma-link-s: 72%;
+  --bulma-link-l: 63%;
+}
+
+
+body {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.2rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Wix Madefor Text", sans-serif;
+}
+
+.has-equal-height {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.has-equal-height .card-footer {
+  margin-top: auto;
+}
+
+// share buttons
+
+.share-twitter-button {
+  background-color: #1d9bf1;
+  color: #fff;
+  border: 0;
+  margin: 0 1px;
+}
+
+.share-facebook-button {
+  background-color: #1b74e8;
+  color: #fff;
+  border: 0;
+  margin: 0 1px;
+}
+
+/* Loading */
+
+@mixin animate($animation, $duration, $method, $times) {
+  animation: $animation $duration $method $times;
+}
+
+@mixin keyframes($name) {
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+.live-click-loading,
+.live-change-loading,
+.live-submit-loading,
+.live-focus-loading,
+.live-blur-loading,
+.live-keydown-loading,
+.live-keyup-loading {
+  @include keyframes(movi) {
+    0%,
+    20% {
+      transform: translateY(0px);
+    }
+    40% {
+      transform: translateY(-18px);
+    }
+    80%,
+    100% {
+      transform: translateY(0px);
+    }
+  }
+  @include animate(movi, 1s, linear, infinite);
+}
+
+#main-view-content {
+  @include keyframes(fadein) {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @include animate(fadein, 0.12s, linear, 1);
+}
+
+.modal {
+  @include keyframes(fadein) {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+  @include animate(fadein, 0.1s, linear, 1);
+}
