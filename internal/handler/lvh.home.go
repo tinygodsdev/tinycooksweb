@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"html/template"
 
 	"github.com/jfyne/live"
@@ -13,6 +14,9 @@ const (
 	// events
 	eventHomeToggleTag        = "toggle-tag"
 	eventHomeToggleFilterMode = "toggle-filter-mode"
+	eventHomeTagSelect        = "tag-select"
+	eventHomeFilterChange     = "filter-form-change"
+	eventHomeTagsFilterChange = "tags-filter-form-change"
 	// params
 	paramHomeTag = "tag"
 )
@@ -98,6 +102,14 @@ func (h *Handler) Home() live.Handler {
 
 		instance.updateForLocale(ctx, s, h)
 		return instance.withError(err), nil
+	})
+
+	lvh.HandleEvent(eventHomeTagsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+
+		fmt.Printf("eventHomeTagSelect: %+v\n", p)
+
+		return instance, nil
 	})
 
 	return lvh

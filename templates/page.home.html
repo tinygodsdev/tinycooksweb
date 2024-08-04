@@ -6,6 +6,43 @@
     <h1 class="title is-1 is-size-3-mobile">{{ .UI.Base.Title }}</h1>
     <h3 class="title is-3 is-size-5-mobile">{{ .UI.Base.Description }}</h3>
     <h3 class="title is-3 is-size-5-mobile">{{ .RecipesCount }}</h3>
+    <div class="block">
+      <form id="tags-filter-form" live-change="tags-filter-form-change" live-submit="tags-filter-form-submit">
+
+        <div class="field has-addons">
+          <p class="control">
+            <span class="select" >
+              <select name="searchType">
+                <option value="tag">Теги</option>
+                <option value="ingredient">Ингредиенты</option>
+                <option value="equipment">Оборудование</option>
+              </select>
+            </span>
+          </p>
+          <p class="control is-expanded">
+            <input class="input" type="search" name="langs" list="languages" placeholder="Pick a programming language..">
+            <datalist id="languages">
+              <option value="PHP" />
+              <option value="C++" />
+              <option value="Java" />
+              <option value="Ruby" />
+              <option value="Python" />
+              <option value="Go" />
+              <option value="Perl" />
+              <option value="Erlang" />
+            </datalist>
+          </p>
+          <p class="control">
+            <button class="button">
+              Transfer
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
+    <div class="block">
+      {{ .Filter }}
+    </div>
   </div>
   <div class="section">
     <div class="columns is-multiline">
