@@ -40,7 +40,11 @@ func main() {
 		logger.Fatal("failed to init app", "err", err)
 	}
 
-	h := handler.NewHandler(a, logger, "templates/")
+	h, err := handler.NewHandler(a, logger, "templates/")
+	if err != nil {
+		logger.Fatal("failed to init handler", "err", err)
+	}
+
 	r := prepare.Mux(cfg, prepare.Store(cfg), h)
 
 	httpServer := prepare.Server(cfg, r)

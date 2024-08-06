@@ -1,5 +1,11 @@
 package locale
 
+import (
+	"errors"
+	"fmt"
+	"reflect"
+)
+
 const (
 	siteTitle    = "TinyCooks"
 	developer    = "TinyGods"
@@ -47,18 +53,28 @@ type (
 	}
 
 	UITransRecipe struct {
+		Tags         string
 		Ingredients  string
 		Instructions string
 		Equipment    string
 		Ideas        string
 		Optional     string
 		Required     string
+		Filter       *UIFilter
 	}
 
 	UITransShare struct {
 		HeaderMessage  string
 		ExploreMessage string
 		ShareMessage   string
+	}
+
+	UIFilter struct {
+		Include string
+		Exclude string
+		Add     string
+		Clear   string
+		Apply   string
 	}
 )
 
@@ -95,12 +111,20 @@ func newTranslationEn() *UITranslation {
 			DeveloperURL: developerURL,
 		},
 		Recipe: &UITransRecipe{
+			Tags:         "Tags",
 			Ingredients:  "Ingredients",
 			Instructions: "Instructions",
 			Equipment:    "Equipment",
 			Ideas:        "Ideas",
 			Optional:     "Optional",
 			Required:     "Required",
+			Filter: &UIFilter{
+				Include: "Include",
+				Exclude: "Exclude",
+				Add:     "Add",
+				Clear:   "Clear",
+				Apply:   "Search!",
+			},
 		},
 		Share: &UITransShare{
 			HeaderMessage:  "recipe 😋",
@@ -132,12 +156,20 @@ func newTranslationRu() *UITranslation {
 			DeveloperURL: developerURL,
 		},
 		Recipe: &UITransRecipe{
+			Tags:         "Теги",
 			Ingredients:  "Ингредиенты",
 			Instructions: "Инструкции",
 			Equipment:    "Оборудование",
 			Ideas:        "Идеи",
 			Optional:     "Опционально",
 			Required:     "Обязательно",
+			Filter: &UIFilter{
+				Include: "Включить",
+				Exclude: "Исключить",
+				Add:     "Добавить",
+				Clear:   "Очистить",
+				Apply:   "Искать!",
+			},
 		},
 		Share: &UITransShare{
 			HeaderMessage:  "рецепт 😋",
@@ -145,4 +177,46 @@ func newTranslationRu() *UITranslation {
 			ShareMessage:   "Поделиться в",
 		},
 	}
+}
+
+// Validate checks if all fields are set
+func (t *UITranslation) Validate() error {
+	return validateStruct(t)
+}
+
+func validateStruct(s interface{}) error {
+	v := reflect.ValueOf(s)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
+	if v.Kind() != reflect.Struct {
+		return errors.New("expected a struct")
+	}
+
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		fieldType := v.Type().Field(i)
+
+		switch field.Kind() {
+		case reflect.String:
+			if field.String() == "" {
+				return fmt.Errorf("field %s is empty", fieldType.Name)
+			}
+		case reflect.Ptr:
+			if field.IsNil() {
+				return fmt.Errorf("field %s is nil", fieldType.Name)
+			}
+			// Recursively validate nested structs
+			if err := validateStruct(field.Interface()); err != nil {
+				return err
+			}
+		case reflect.Struct:
+			// Recursively validate nested structs
+			if err := validateStruct(field.Interface()); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
 }

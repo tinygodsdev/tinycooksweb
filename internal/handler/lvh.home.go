@@ -11,20 +11,28 @@ import (
 )
 
 const (
-	// events
-	eventHomeToggleTag        = "toggle-tag"
-	eventHomeToggleFilterMode = "toggle-filter-mode"
-	eventHomeTagSelect        = "tag-select"
-	eventHomeFilterChange     = "filter-form-change"
-	eventHomeTagsFilterChange = "tags-filter-form-change"
+	// filter events
+	eventHomeTagsFilterChange        = "tags-filter-form-change"
+	eventHomeIngredientsFilterChange = "ingredients-filter-form-change"
+	eventHomeEquipmentFilterChange   = "equipment-filter-form-change"
+	eventHomeTagsFilterAdd           = "tags-filter-form-submit"
+	eventHomeIngredientsFilterAdd    = "ingredients-filter-form-submit"
+	eventHomeEquipmentFilterAdd      = "equipment-filter-form-submit"
+	eventHomeFilterClear             = "filter-clear"
+	eventHomeFilterApply             = "filter-apply"
+
 	// params
-	paramHomeTag = "tag"
+	paramHomeSearchType  = "searchType"
+	paramHomeFilterValue = "value"
 )
 
 type HomeInstance struct {
 	*CommonInstance
 	Recipes      []*recipe.Recipe
 	RecipesCount int
+	Tags         []*recipe.Tag
+	Ingredients  []*recipe.Ingredient
+	Equipment    []*recipe.Equipment
 	Filter       recipe.Filter
 }
 
@@ -100,14 +108,79 @@ func (h *Handler) Home() live.Handler {
 			return instance.withError(err), nil
 		}
 
+		instance.Tags, err = h.app.GetTags(ctx, instance.Locale())
+		if err != nil {
+			return instance.withError(err), nil
+		}
+
+		instance.Ingredients, err = h.app.GetIngredients(ctx, instance.Locale())
+		if err != nil {
+			return instance.withError(err), nil
+		}
+
+		instance.Equipment, err = h.app.GetEquipment(ctx, instance.Locale())
+		if err != nil {
+			return instance.withError(err), nil
+		}
+
 		instance.updateForLocale(ctx, s, h)
 		return instance.withError(err), nil
 	})
 
 	lvh.HandleEvent(eventHomeTagsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
-
 		fmt.Printf("eventHomeTagSelect: %+v\n", p)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeIngredientsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		fmt.Printf("eventHomeIngredientsFilterChange: %+v\n", p)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeEquipmentFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		fmt.Printf("eventHomeEquipmentFilterChange: %+v\n", p)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeTagsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		searchType := p.String(paramHomeSearchType)
+		value := p.String(paramHomeFilterValue)
+		instance.Filter = instance.Filter.WithAddTag(value, searchType)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeIngredientsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		searchType := p.String(paramHomeSearchType)
+		value := p.String(paramHomeFilterValue)
+		instance.Filter = instance.Filter.WithAddIngredient(value, searchType)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeEquipmentFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		searchType := p.String(paramHomeSearchType)
+		value := p.String(paramHomeFilterValue)
+		instance.Filter = instance.Filter.WithAddEquipment(value, searchType)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeFilterClear, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Filter = instance.Filter.Clear()
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventHomeFilterApply, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Recipes, err = h.app.GetRecipes(ctx, instance.Filter)
+		if err != nil {
+			return instance.withError(err), nil
+		}
 
 		return instance, nil
 	})

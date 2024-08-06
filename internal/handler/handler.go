@@ -140,22 +140,32 @@ func NewHandler(
 	app *app.App,
 	logger logger.Logger,
 	t string,
-) *Handler {
+) (*Handler, error) {
+	tm, err := initTranslationMap()
+	if err != nil {
+		return nil, err
+	}
+
 	return &Handler{
 		app: app,
 		log: logger,
 		t:   t,
-		ui:  initTranslationMap(),
-	}
+		ui:  tm,
+	}, nil
 }
 
-func initTranslationMap() map[string]*locale.UITranslation {
+func initTranslationMap() (map[string]*locale.UITranslation, error) {
 	m := make(map[string]*locale.UITranslation)
 	for _, l := range locale.List() {
-		m[l] = locale.NewUITranslation(l)
+		trans := locale.NewUITranslation(l)
+		if err := trans.Validate(); err != nil {
+			return nil, err
+		}
+
+		m[l] = trans
 	}
 
-	return m
+	return m, nil
 }
 
 func (h *Handler) NewConstants() *Constants {

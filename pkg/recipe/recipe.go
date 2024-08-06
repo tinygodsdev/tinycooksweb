@@ -92,21 +92,6 @@ func Slugify(name string) string {
 	return slug.Make(name)
 }
 
-type Filter struct {
-	NameContains  string
-	Locale        string
-	Equipment     string
-	EquipmentNot  string
-	Tag           string
-	TagNot        string
-	Ingredient    string
-	IngredientNot string
-	Limit         int
-	Offset        int
-
-	UseMocks bool
-}
-
 func (r *Recipe) Link(domain string) string {
 	var params string
 	if r.Lang != locale.Default() {

@@ -10,6 +10,7 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent"
 	entEquipment "github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/equipment"
+	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/ingredient"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/product"
 	entRecipe "github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/tag"
@@ -54,6 +55,33 @@ func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*r
 	}
 
 	// TODO implement filtering by equipment, tags, ingredients
+	if len(filter.Equipment) > 0 {
+		q.Where(entRecipe.HasEquipmentWith(entEquipment.NameIn(filter.Equipment...)))
+	}
+
+	if len(filter.EquipmentNot) > 0 {
+		q.Where(entRecipe.Not(entRecipe.HasEquipmentWith(entEquipment.NameIn(filter.EquipmentNot...))))
+	}
+
+	if len(filter.Tag) > 0 {
+		q.Where(entRecipe.HasTagsWith(tag.NameIn(filter.Tag...)))
+	}
+
+	if len(filter.TagNot) > 0 {
+		q.Where(entRecipe.Not(entRecipe.HasTagsWith(tag.NameIn(filter.TagNot...))))
+	}
+
+	if len(filter.Ingredient) > 0 {
+		q.Where(entRecipe.HasIngredientsWith(
+			ingredient.HasProductWith(product.NameIn(filter.Ingredient...))),
+		)
+	}
+
+	if len(filter.IngredientNot) > 0 {
+		q.Where(entRecipe.Not(entRecipe.HasIngredientsWith(
+			ingredient.HasProductWith(product.NameIn(filter.IngredientNot...)))),
+		)
+	}
 
 	recipes, err := q.
 		All(ctx)
@@ -329,4 +357,53 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 		return nil, fmt.Errorf("creating equipment: %w", err)
 	}
 	return e, nil
+}
+
+func (s *EntStorage) GetTags(ctx context.Context, loc string) ([]*recipe.Tag, error) {
+	tags, err := s.client.Tag.Query().
+		Where(tag.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting tags: %w", err)
+	}
+
+	var res []*recipe.Tag
+	for _, t := range tags {
+		res = append(res, entTagToTag(t))
+	}
+
+	return res, nil
+}
+
+func (s *EntStorage) GetIngredients(ctx context.Context, loc string) ([]*recipe.Ingredient, error) {
+	ings, err := s.client.Ingredient.Query().
+		Where(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		WithProduct().
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting ingredients: %w", err)
+	}
+
+	var res []*recipe.Ingredient
+	for _, i := range ings {
+		res = append(res, entIngredientToIngredient(i))
+	}
+
+	return res, nil
+}
+
+func (s *EntStorage) GetEquipment(ctx context.Context, loc string) ([]*recipe.Equipment, error) {
+	equipment, err := s.client.Equipment.Query().
+		Where(entEquipment.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		All(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting equipment: %w", err)
+	}
+
+	var res []*recipe.Equipment
+	for _, e := range equipment {
+		res = append(res, entEquipmentToEquipment(e))
+	}
+
+	return res, nil
 }

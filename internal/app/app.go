@@ -112,3 +112,33 @@ func (a *App) CountRecipes(ctx context.Context, filter recipe.Filter) (int, erro
 
 	return a.store.CountRecipes(ctx, filter)
 }
+
+func (a *App) GetTags(ctx context.Context, locale string) ([]*recipe.Tag, error) {
+	defer a.Timer("GetTags")()
+
+	if locale == "" || !slices.Contains(a.locales, locale) {
+		return nil, fmt.Errorf("invalid locale: %s", locale)
+	}
+
+	return a.store.GetTags(ctx, locale)
+}
+
+func (a *App) GetIngredients(ctx context.Context, locale string) ([]*recipe.Ingredient, error) {
+	defer a.Timer("GetIngredients")()
+
+	if locale == "" || !slices.Contains(a.locales, locale) {
+		return nil, fmt.Errorf("invalid locale: %s", locale)
+	}
+
+	return a.store.GetIngredients(ctx, locale)
+}
+
+func (a *App) GetEquipment(ctx context.Context, locale string) ([]*recipe.Equipment, error) {
+	defer a.Timer("GetEquipment")()
+
+	if locale == "" || !slices.Contains(a.locales, locale) {
+		return nil, fmt.Errorf("invalid locale: %s", locale)
+	}
+
+	return a.store.GetEquipment(ctx, locale)
+}
