@@ -21,7 +21,8 @@ type Filter struct {
 	Limit         int
 	Offset        int
 
-	UseMocks bool
+	WithEdges bool
+	UseMocks  bool
 }
 
 func (f Filter) Clear() Filter {

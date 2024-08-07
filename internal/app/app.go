@@ -10,6 +10,7 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
+	"golang.org/x/sync/errgroup"
 )
 
 type App struct {
@@ -32,7 +33,7 @@ func New(
 		locales: locale.List(),
 	}
 
-	if cfg.UseMocks {
+	if cfg.SaveMocks {
 		if err := app.SaveMocks(); err != nil {
 			return nil, err
 		}
@@ -52,17 +53,32 @@ func (a *App) AddError(err error) {
 func (a *App) SaveMocks() error {
 	defer a.Timer("SaveMocks")()
 
-	mocks, _ := recipe.MockRecipes(999, false)
+	mocks, _ := recipe.MockRecipes(1999, false)
+
+	g, ctx := errgroup.WithContext(context.Background())
+	if a.Cfg.StorageDriver == "sqlite3" {
+		g.SetLimit(1) // sqlite3 does not support concurrent writes
+	} else {
+		g.SetLimit(25) // for postgres it's fine
+	}
 
 	for _, mock := range mocks {
-		if err := a.SaveRecipe(context.Background(), mock); err != nil {
-			if err == storage.ErrAlreadyExists {
-				a.log.Info("Mock recipe already exists", "slug", mock.Slug)
-				continue
-			}
+		mock := mock
 
-			return err
-		}
+		g.Go(func() error {
+			if err := a.SaveRecipe(ctx, mock); err != nil {
+				if err == storage.ErrAlreadyExists {
+					a.log.Info("Mock recipe already exists", "slug", mock.Slug)
+					return nil
+				}
+				return err
+			}
+			return nil
+		})
+	}
+
+	if err := g.Wait(); err != nil {
+		return err
 	}
 
 	return nil

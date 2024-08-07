@@ -2,6 +2,7 @@ package recipe
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -15,12 +16,29 @@ func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
 		PumpkinSoup(),
 	}
 
-	if recipeCount < len(recipes) {
+	originalCount := len(recipes)
+
+	if recipeCount > originalCount {
+		for i := originalCount; i < recipeCount; i++ {
+			originalRecipe := recipes[i%originalCount]
+			newRecipe := *originalRecipe
+			newRecipe.Name = fmt.Sprintf("%s %d", originalRecipe.Name, (i/originalCount)+1)
+			newRecipe.Slug = Slugify(newRecipe.Name)
+			recipes = append(recipes, &newRecipe)
+		}
+	} else {
 		// take only the first N recipes
 		recipes = recipes[:recipeCount]
 	}
 
 	return recipes, nil
+}
+
+func SeedData() []*Recipe {
+	return []*Recipe{
+		PumpkinBuns(),
+		PumpkinSoup(),
+	}
 }
 
 func MockRecipe(slug string, withError bool) (*Recipe, error) {

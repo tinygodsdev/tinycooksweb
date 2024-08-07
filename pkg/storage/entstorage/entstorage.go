@@ -9,6 +9,7 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/migrate"
 
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type EntStorage struct {
@@ -26,7 +27,7 @@ type Config struct {
 func NewEntStorage(
 	cfg Config,
 	logger logger.Logger,
-) (*EntStorage, func() error, error) {
+) (*EntStorage, error) {
 	var dbOptions []ent.Option
 
 	if cfg.LogQueries {
@@ -35,7 +36,7 @@ func NewEntStorage(
 
 	client, err := ent.Open(cfg.StorageDriver, cfg.StorageDSN, dbOptions...)
 	if err != nil {
-		return nil, nil, fmt.Errorf("EntStorage: failed connecting to database: %w", err)
+		return nil, fmt.Errorf("EntStorage: failed connecting to database: %w", err)
 	}
 
 	logger.Info("EntStorage: connected")
@@ -44,7 +45,7 @@ func NewEntStorage(
 		err = Migrate(context.Background(), client) // run db migration
 		if err != nil {
 			client.Close()
-			return nil, nil, fmt.Errorf("EntStorage: failed creating schema resources: %w", err)
+			return nil, fmt.Errorf("EntStorage: failed creating schema resources: %w", err)
 		}
 		logger.Info("EntStorage: migrations done")
 	}
@@ -52,7 +53,7 @@ func NewEntStorage(
 	return &EntStorage{
 		client: client,
 		logger: logger,
-	}, client.Close, nil
+	}, nil
 }
 
 func Migrate(ctx context.Context, client *ent.Client) error {
@@ -65,4 +66,12 @@ func Migrate(ctx context.Context, client *ent.Client) error {
 		return err
 	}
 	return nil
+}
+
+func (s *EntStorage) UpdateCache(ctx context.Context) error {
+	return nil
+}
+
+func (s *EntStorage) Close() error {
+	return s.client.Close()
 }

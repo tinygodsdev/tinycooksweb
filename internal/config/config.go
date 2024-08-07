@@ -21,8 +21,10 @@ type Config struct {
 	StorageType   string `envconfig:"STORAGE_TYPE" default:"ent"`
 	StorageDriver string `envconfig:"STORAGE_DRIVER" default:"postgres"`
 	StorageDSN    string `envconfig:"STORAGE_DSN" required:"true"`
+	UseCache      bool   `envconfig:"USE_CACHE" default:"true"`
 	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
-	UseMocks      bool   `envconfig:"USE_MOCKS" default:"false"`
+	SaveMocks     bool   `envconfig:"SAVE_MOCKS" default:"false"`
+	SaveSeedData  bool   `envconfig:"SAVE_SEED_DATA" default:"false"`
 	MockQueries   bool   `envconfig:"MOCK_QUERIES" default:"false"`
 
 	PageSize int `envconfig:"PAGE_SIZE" default:"20"`

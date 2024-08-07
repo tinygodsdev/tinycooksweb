@@ -83,8 +83,19 @@ func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*r
 		)
 	}
 
-	recipes, err := q.
-		All(ctx)
+	if filter.WithEdges {
+		q.WithIngredients(func(q *ent.IngredientQuery) {
+			q.WithProduct()
+		})
+		q.WithInstructions()
+		q.WithTags()
+		q.WithIdeas()
+		q.WithSources()
+		q.WithNutrition()
+		q.WithEquipment()
+	}
+
+	recipes, err := q.All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting recipes: %w", err)
 	}

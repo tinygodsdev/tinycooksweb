@@ -22,4 +22,7 @@ type Storage interface {
 	GetTags(ctx context.Context, locale string) ([]*recipe.Tag, error)
 	GetIngredients(ctx context.Context, locale string) ([]*recipe.Ingredient, error)
 	GetEquipment(ctx context.Context, locale string) ([]*recipe.Equipment, error)
+
+	UpdateCache(ctx context.Context) error
+	Close() error
 }
