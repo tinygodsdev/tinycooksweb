@@ -3,15 +3,11 @@ package handler
 import (
 	"context"
 	"fmt"
-	"html/template"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/bradfitz/iter"
 	"github.com/jfyne/live"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 
 	"github.com/tinygodsdev/datasdk/pkg/logger"
 	"github.com/tinygodsdev/tinycooksweb/internal/app"
@@ -71,79 +67,6 @@ type (
 )
 
 var localeCtxKey = &contextKey{localeCtxKeyValue}
-var funcMap = template.FuncMap{
-	"N":     iter.N,
-	"Plus1": func(i int) int { return i + 1 },
-	"Sum": func(data ...float64) float64 {
-		var res float64
-		for _, n := range data {
-			res += n
-		}
-		return res
-	},
-	"Sub": func(f1, f2 float64) float64 {
-		return f1 - f2
-	},
-	"Add": func(f1, f2 float64) float64 {
-		return f1 + f2
-	},
-	"SubInt": func(i1, i2 int) int {
-		return i1 - i2
-	},
-	"AddInt": func(i1, i2 int) int {
-		return i1 + i2
-	},
-	"Mean": func(data ...float64) float64 {
-		if len(data) == 0 {
-			return 0
-		}
-		var sum float64
-		for _, n := range data {
-			sum += n
-		}
-		return sum / float64(len(data))
-	},
-	"Perc": func(min, max, v float64) float64 {
-		if max == min {
-			return 0
-		}
-		return (v - min) / (max - min)
-	},
-	"DerefInt": func(i *int) int {
-		if i == nil {
-			return 0
-		}
-		return *i
-	},
-	"DisplayTime": func(t time.Time) string {
-		return t.Format(DefaultDisplayTime)
-	},
-	"DisplayTechTime": func(t time.Time) string {
-		return t.Format("2006-01-02 15:04:05.000 MST")
-	},
-	"Since": func(t time.Time) time.Duration {
-		return time.Since(t)
-	},
-	"UILocales": func() []string {
-		return locale.List()
-	},
-	"LocaleParam": func(loc string) string {
-		if loc == locale.Default() {
-			return "/"
-		}
-		return fmt.Sprintf("?locale=%s", loc)
-	},
-	"FormatDuration": func(d time.Duration) string {
-		z := time.Unix(0, 0).UTC()
-		return z.Add(d).Format("15:04")
-	},
-	"Title": func(t string) string {
-		return cases.Title(language.Make(locale.Default())).String(t)
-	},
-	"RandomEmoji": func() string {
-		return "🍏"
-	},
-}
 
 func NewHandler(
 	app *app.App,

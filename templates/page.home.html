@@ -30,26 +30,52 @@
 {{ define "pagination" }}
 <nav class="pagination is-centered" role="navigation" aria-label="pagination">
   {{ if gt .Pagination.CurrentPage 1 }}
-  <a href="#" class="pagination-previous" live-click="paginate"
-    live-value-page="{{ SubInt .Pagination.CurrentPage 1 }}">Previous</a>
+  <a live-patch href="?page={{ sub .Pagination.CurrentPage 1 }}" class="pagination-previous">
+    {{ .UI.Home.Previous }}
+  </a>
   {{ else }}
-  <a href="#" class="pagination-previous" disabled>Previous</a>
+  <a class="pagination-previous" disabled>{{ .UI.Home.Previous }}</a>
   {{ end }}
 
   {{ if lt .Pagination.CurrentPage .Pagination.TotalPages }}
-  <a href="#" class="pagination-next" live-click="paginate"
-    live-value-page="{{ AddInt .Pagination.CurrentPage 1 }}">Next page</a>
+  <a live-patch href="?page={{ add .Pagination.CurrentPage 1 }}" class="pagination-next">
+    {{ .UI.Home.Next }}
+  </a>
   {{ else }}
-  <a href="#" class="pagination-next" disabled>Next page</a>
+  <a class="pagination-next" disabled>{{ .UI.Home.Next }}</a>
   {{ end }}
 
   <ul class="pagination-list">
-    {{ range $page := .Pagination.Pages }}
+    {{ $currentPage := .Pagination.CurrentPage }}
+    {{ $totalPages := .Pagination.TotalPages }}
+
+    <!-- Always show the first page -->
     <li>
-      <a href="#" class="pagination-link {{ if eq $page $.Pagination.CurrentPage }}is-current{{ end }}"
-        live-click="paginate" live-value-page="{{ $page }}">{{ $page }}</a>
+      <a live-patch href="?page=1" class="pagination-link {{ if eq 1 $currentPage }}is-current{{ end }}">1</a>
+    </li>
+
+    <!-- Show ellipsis if necessary -->
+    {{ if gt $currentPage 4 }}
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    {{ end }}
+
+    <!-- Show pages around the current page -->
+    {{ range $i := seq (max 2 (sub $currentPage 2)) (min (add $currentPage 2) (sub $totalPages 1)) }}
+    <li>
+      <a live-patch href="?page={{ $i }}" class="pagination-link {{ if eq $i $currentPage }}is-current{{ end }}">{{ $i }}</a>
     </li>
     {{ end }}
+
+    <!-- Show ellipsis if necessary -->
+    {{ if lt $currentPage (sub $totalPages 3) }}
+    <li><span class="pagination-ellipsis">&hellip;</span></li>
+    {{ end }}
+
+    <!-- Always show the last page -->
+    <li>
+      <a live-patch href="?page={{ $totalPages }}"
+        class="pagination-link {{ if eq $totalPages $currentPage }}is-current{{ end }}">{{ $totalPages }}</a>
+    </li>
   </ul>
 </nav>
 {{ end }}

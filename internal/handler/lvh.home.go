@@ -29,8 +29,6 @@ const (
 	eventHomeIngredientsFilterDelete = "ingredients-filter-delete"
 	eventHomeEquipmentFilterDelete   = "equipment-filter-delete"
 
-	eventHomePaginate = "paginate"
-
 	// params
 	paramHomeSearchType   = "searchtype"
 	paramHomeFilterValue  = "value"
@@ -256,7 +254,7 @@ func (h *Handler) Home() live.Handler {
 		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
-	lvh.HandleEvent(eventHomePaginate, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+	lvh.HandleParams(func(ctx context.Context, s live.Socket, p live.Params) (interface{}, error) {
 		instance := h.NewHomeInstance(s)
 		page := p.Int(paramHomePage)
 		instance.Filter.Offset = onPageClick(page, instance.Filter.Limit)

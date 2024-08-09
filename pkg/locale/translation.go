@@ -40,6 +40,8 @@ type (
 		Description  string
 		RecipesTotal string
 		RecipesFound string
+		Next         string
+		Previous     string
 	}
 
 	UITransMenu struct {
@@ -104,6 +106,8 @@ func newTranslationEn() *UITranslation {
 			Description:  "When in doubt - eat",
 			RecipesTotal: "Total recipes",
 			RecipesFound: "Recipes found",
+			Next:         "Next",
+			Previous:     "Previous",
 		},
 		Menu: &UITransMenu{
 			Home:  "Home",
@@ -152,6 +156,8 @@ func newTranslationRu() *UITranslation {
 			Description:  "Когда вы в сомнениях - ешьте",
 			RecipesTotal: "Всего рецептов",
 			RecipesFound: "Найдено рецептов",
+			Next:         "Дальше",
+			Previous:     "Назад",
 		},
 		Menu: &UITransMenu{
 			Home:  "Главная",
