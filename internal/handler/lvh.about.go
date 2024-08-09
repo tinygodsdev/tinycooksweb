@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"html/template"
 
 	"github.com/jfyne/live"
 )
@@ -30,10 +29,7 @@ func (h *Handler) NewAboutInstance(s live.Socket) *AboutInstance {
 }
 
 func (h *Handler) About() live.Handler {
-	t := template.Must(template.New("base.layout.html").Funcs(funcMap).ParseFiles(
-		h.t+"base.layout.html",
-		h.t+"page.about.html",
-	))
+	t := h.template("base.layout.html", "page.about.html")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

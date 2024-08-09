@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
-	"html/template"
+	"net/url"
 	"slices"
 
 	"github.com/jfyne/live"
@@ -75,10 +75,14 @@ func (ins *HomeInstance) updateForLocale(ctx context.Context, s live.Socket, h *
 func (ins *HomeInstance) WithUpdateRecipes(
 	ctx context.Context,
 	h *Handler,
+	s live.Socket,
 	resetOffset bool,
 ) (*HomeInstance, error) {
-	if resetOffset {
+	if resetOffset && ins.Filter.Offset != 0 {
 		ins.Filter.Offset = 0
+		v := url.Values{}
+		v.Set(paramHomePage, "1")
+		s.PatchURL(v)
 	}
 
 	ins.Recipes, ins.Error = h.app.GetRecipes(ctx, ins.Filter)
@@ -96,10 +100,7 @@ func (ins *HomeInstance) WithUpdateRecipes(
 }
 
 func (h *Handler) Home() live.Handler {
-	t := template.Must(template.New("base.layout.html").Funcs(funcMap).ParseFiles(
-		h.t+"base.layout.html",
-		h.t+"page.home.html",
-	))
+	t := h.template("base.layout.html", "page.home.html")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START
@@ -147,7 +148,7 @@ func (h *Handler) Home() live.Handler {
 		}
 
 		instance.updateForLocale(ctx, s, h)
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeTagsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -171,7 +172,7 @@ func (h *Handler) Home() live.Handler {
 	lvh.HandleEvent(eventHomeNameFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		instance.Filter = instance.Filter.WithName(p.String(paramHomeFilterValue))
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeTagsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -185,7 +186,7 @@ func (h *Handler) Home() live.Handler {
 			instance.Filter = instance.Filter.WithAddTag(value, searchType)
 		}
 
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeIngredientsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -199,7 +200,7 @@ func (h *Handler) Home() live.Handler {
 			instance.Filter = instance.Filter.WithAddIngredient(value, searchType)
 		}
 
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeEquipmentFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -213,18 +214,18 @@ func (h *Handler) Home() live.Handler {
 			instance.Filter = instance.Filter.WithAddEquipment(value, searchType)
 		}
 
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeFilterClear, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		instance.Filter = instance.Filter.Clear()
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeFilterApply, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeTagsFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -233,7 +234,7 @@ func (h *Handler) Home() live.Handler {
 			p.String(paramHomeFilterDelete),
 			p.String(paramHomeSearchType),
 		)
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeIngredientsFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -242,7 +243,7 @@ func (h *Handler) Home() live.Handler {
 			p.String(paramHomeFilterDelete),
 			p.String(paramHomeSearchType),
 		)
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleEvent(eventHomeEquipmentFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -251,14 +252,14 @@ func (h *Handler) Home() live.Handler {
 			p.String(paramHomeFilterDelete),
 			p.String(paramHomeSearchType),
 		)
-		return instance.WithUpdateRecipes(ctx, h, true)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	lvh.HandleParams(func(ctx context.Context, s live.Socket, p live.Params) (interface{}, error) {
 		instance := h.NewHomeInstance(s)
 		page := p.Int(paramHomePage)
 		instance.Filter.Offset = onPageClick(page, instance.Filter.Limit)
-		return instance.WithUpdateRecipes(ctx, h, false)
+		return instance.WithUpdateRecipes(ctx, h, s, false)
 	})
 
 	return lvh

@@ -3,7 +3,6 @@ package handler
 import (
 	"context"
 	"errors"
-	"html/template"
 
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 
@@ -50,10 +49,7 @@ func (h *Handler) NewRecipeInstance(s live.Socket) *RecipeInstance {
 }
 
 func (h *Handler) Recipe() live.Handler {
-	t := template.Must(template.New("base.layout.html").Funcs(funcMap).ParseFiles(
-		h.t+"base.layout.html",
-		h.t+"page.recipe.html",
-	))
+	t := h.template("base.layout.html", "page.recipe.html")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START
