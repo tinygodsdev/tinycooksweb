@@ -4,26 +4,38 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	"slices"
 
 	"github.com/jfyne/live"
+	"github.com/samber/lo"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 )
 
 const (
 	// filter events
+	eventHomeNameFilterChange        = "name-filter-form-change"
+	eventHomeNameFilterAdd           = "name-filter-form-submit"
 	eventHomeTagsFilterChange        = "tags-filter-form-change"
-	eventHomeIngredientsFilterChange = "ingredients-filter-form-change"
-	eventHomeEquipmentFilterChange   = "equipment-filter-form-change"
 	eventHomeTagsFilterAdd           = "tags-filter-form-submit"
+	eventHomeIngredientsFilterChange = "ingredients-filter-form-change"
 	eventHomeIngredientsFilterAdd    = "ingredients-filter-form-submit"
+	eventHomeEquipmentFilterChange   = "equipment-filter-form-change"
 	eventHomeEquipmentFilterAdd      = "equipment-filter-form-submit"
 	eventHomeFilterClear             = "filter-clear"
 	eventHomeFilterApply             = "filter-apply"
 
+	eventHomeTagsFilterDelete        = "tags-filter-delete"
+	eventHomeIngredientsFilterDelete = "ingredients-filter-delete"
+	eventHomeEquipmentFilterDelete   = "equipment-filter-delete"
+
+	eventHomePaginate = "paginate"
+
 	// params
-	paramHomeSearchType  = "searchType"
-	paramHomeFilterValue = "value"
+	paramHomeSearchType   = "searchtype"
+	paramHomeFilterValue  = "value"
+	paramHomeFilterDelete = "delete"
+	paramHomePage         = "page"
 )
 
 type HomeInstance struct {
@@ -34,6 +46,7 @@ type HomeInstance struct {
 	Ingredients  []*recipe.Ingredient
 	Equipment    []*recipe.Equipment
 	Filter       recipe.Filter
+	Pagination   Pagination
 }
 
 func (h *Handler) NewHomeInstance(s live.Socket) *HomeInstance {
@@ -42,9 +55,8 @@ func (h *Handler) NewHomeInstance(s live.Socket) *HomeInstance {
 		return &HomeInstance{
 			CommonInstance: h.NewCommon(s, viewHome),
 			Filter: recipe.Filter{
-				Limit:    h.app.Cfg.PageSize,
-				Locale:   locale.Default(),
-				UseMocks: h.app.Cfg.MockQueries,
+				Limit:  h.app.Cfg.PageSize,
+				Locale: locale.Default(),
 			},
 		}
 	}
@@ -60,6 +72,29 @@ func (ins *HomeInstance) withError(err error) *HomeInstance {
 // must be present in all instances
 func (ins *HomeInstance) updateForLocale(ctx context.Context, s live.Socket, h *Handler) error {
 	return nil
+}
+
+func (ins *HomeInstance) WithUpdateRecipes(
+	ctx context.Context,
+	h *Handler,
+	resetOffset bool,
+) (*HomeInstance, error) {
+	if resetOffset {
+		ins.Filter.Offset = 0
+	}
+
+	ins.Recipes, ins.Error = h.app.GetRecipes(ctx, ins.Filter)
+	if ins.Error != nil {
+		return ins, nil
+	}
+
+	ins.RecipesCount, ins.Error = h.app.CountRecipes(ctx, ins.Filter)
+	if ins.Error != nil {
+		return ins, nil
+	}
+
+	ins.Pagination = calculatePagination(ins.RecipesCount, ins.Filter.Limit, ins.Filter.Offset)
+	return ins, nil
 }
 
 func (h *Handler) Home() live.Handler {
@@ -98,16 +133,6 @@ func (h *Handler) Home() live.Handler {
 		instance := h.NewHomeInstance(s)
 		instance.fromContext(ctx)
 
-		instance.Recipes, err = h.app.GetRecipes(ctx, instance.Filter)
-		if err != nil {
-			return instance.withError(err), nil
-		}
-
-		instance.RecipesCount, err = h.app.CountRecipes(ctx, instance.Filter)
-		if err != nil {
-			return instance.withError(err), nil
-		}
-
 		instance.Tags, err = h.app.GetTags(ctx, instance.Locale())
 		if err != nil {
 			return instance.withError(err), nil
@@ -124,7 +149,7 @@ func (h *Handler) Home() live.Handler {
 		}
 
 		instance.updateForLocale(ctx, s, h)
-		return instance.withError(err), nil
+		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
 	lvh.HandleEvent(eventHomeTagsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
@@ -145,44 +170,97 @@ func (h *Handler) Home() live.Handler {
 		return instance, nil
 	})
 
+	lvh.HandleEvent(eventHomeNameFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Filter = instance.Filter.WithName(p.String(paramHomeFilterValue))
+		return instance.WithUpdateRecipes(ctx, h, true)
+	})
+
 	lvh.HandleEvent(eventHomeTagsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		searchType := p.String(paramHomeSearchType)
 		value := p.String(paramHomeFilterValue)
-		instance.Filter = instance.Filter.WithAddTag(value, searchType)
-		return instance, nil
+		if slices.Contains[[]string](
+			lo.Map(instance.Tags, func(t *recipe.Tag, _ int) string { return t.Name }),
+			value,
+		) {
+			instance.Filter = instance.Filter.WithAddTag(value, searchType)
+		}
+
+		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
 	lvh.HandleEvent(eventHomeIngredientsFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		searchType := p.String(paramHomeSearchType)
 		value := p.String(paramHomeFilterValue)
-		instance.Filter = instance.Filter.WithAddIngredient(value, searchType)
-		return instance, nil
+		if slices.Contains[[]string](
+			lo.Map(instance.Ingredients, func(i *recipe.Ingredient, _ int) string { return i.Product.Name }),
+			value,
+		) {
+			instance.Filter = instance.Filter.WithAddIngredient(value, searchType)
+		}
+
+		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
 	lvh.HandleEvent(eventHomeEquipmentFilterAdd, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		searchType := p.String(paramHomeSearchType)
 		value := p.String(paramHomeFilterValue)
-		instance.Filter = instance.Filter.WithAddEquipment(value, searchType)
-		return instance, nil
+		if slices.Contains[[]string](
+			lo.Map(instance.Equipment, func(e *recipe.Equipment, _ int) string { return e.Name }),
+			value,
+		) {
+			instance.Filter = instance.Filter.WithAddEquipment(value, searchType)
+		}
+
+		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
 	lvh.HandleEvent(eventHomeFilterClear, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		instance.Filter = instance.Filter.Clear()
-		return instance, nil
+		return instance.WithUpdateRecipes(ctx, h, true)
 	})
 
 	lvh.HandleEvent(eventHomeFilterApply, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
-		instance.Recipes, err = h.app.GetRecipes(ctx, instance.Filter)
-		if err != nil {
-			return instance.withError(err), nil
-		}
+		return instance.WithUpdateRecipes(ctx, h, true)
+	})
 
-		return instance, nil
+	lvh.HandleEvent(eventHomeTagsFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Filter = instance.Filter.WithRemoveTag(
+			p.String(paramHomeFilterDelete),
+			p.String(paramHomeSearchType),
+		)
+		return instance.WithUpdateRecipes(ctx, h, true)
+	})
+
+	lvh.HandleEvent(eventHomeIngredientsFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Filter = instance.Filter.WithRemoveIngredient(
+			p.String(paramHomeFilterDelete),
+			p.String(paramHomeSearchType),
+		)
+		return instance.WithUpdateRecipes(ctx, h, true)
+	})
+
+	lvh.HandleEvent(eventHomeEquipmentFilterDelete, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		instance.Filter = instance.Filter.WithRemoveEquipment(
+			p.String(paramHomeFilterDelete),
+			p.String(paramHomeSearchType),
+		)
+		return instance.WithUpdateRecipes(ctx, h, true)
+	})
+
+	lvh.HandleEvent(eventHomePaginate, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
+		instance := h.NewHomeInstance(s)
+		page := p.Int(paramHomePage)
+		instance.Filter.Offset = onPageClick(page, instance.Filter.Limit)
+		return instance.WithUpdateRecipes(ctx, h, false)
 	})
 
 	return lvh

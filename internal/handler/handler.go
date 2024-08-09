@@ -84,6 +84,15 @@ var funcMap = template.FuncMap{
 	"Sub": func(f1, f2 float64) float64 {
 		return f1 - f2
 	},
+	"Add": func(f1, f2 float64) float64 {
+		return f1 + f2
+	},
+	"SubInt": func(i1, i2 int) int {
+		return i1 - i2
+	},
+	"AddInt": func(i1, i2 int) int {
+		return i1 + i2
+	},
 	"Mean": func(data ...float64) float64 {
 		if len(data) == 0 {
 			return 0

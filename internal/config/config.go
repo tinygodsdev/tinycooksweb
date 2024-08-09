@@ -25,7 +25,6 @@ type Config struct {
 	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
 	SaveMocks     bool   `envconfig:"SAVE_MOCKS" default:"false"`
 	SaveSeedData  bool   `envconfig:"SAVE_SEED_DATA" default:"false"`
-	MockQueries   bool   `envconfig:"MOCK_QUERIES" default:"false"`
 
 	PageSize int `envconfig:"PAGE_SIZE" default:"20"`
 }

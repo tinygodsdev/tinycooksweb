@@ -91,10 +91,6 @@ func (a *App) GetRecipe(ctx context.Context, slug string) (*recipe.Recipe, error
 		return nil, fmt.Errorf("empty slug")
 	}
 
-	if a.Cfg.MockQueries {
-		return recipe.MockRecipe(slug, false)
-	}
-
 	return a.store.GetRecipeBySlug(ctx, slug)
 }
 
@@ -104,10 +100,6 @@ func (a *App) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.R
 	if filter.Locale == "" || !slices.Contains(a.locales, filter.Locale) {
 		// filter.Locale = locale.Default()
 		return nil, fmt.Errorf("invalid locale: %s", filter.Locale)
-	}
-
-	if filter.UseMocks {
-		return recipe.MockRecipes(filter.Limit, false)
 	}
 
 	return a.store.GetRecipes(ctx, filter)

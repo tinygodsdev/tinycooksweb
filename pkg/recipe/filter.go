@@ -22,7 +22,6 @@ type Filter struct {
 	Offset        int
 
 	WithEdges bool
-	UseMocks  bool
 }
 
 func (f Filter) Clear() Filter {
@@ -107,4 +106,31 @@ func (f Filter) WithRemoveEquipment(equipment string, searchType string) Filter 
 	}
 
 	return f
+}
+
+func (f Filter) WithName(name string) Filter {
+	f.NameContains = name
+	return f
+}
+
+func (f Filter) IsEmpty() bool {
+	return f.NameContains == "" &&
+		len(f.Equipment) == 0 &&
+		len(f.EquipmentNot) == 0 &&
+		len(f.Tag) == 0 &&
+		len(f.TagNot) == 0 &&
+		len(f.Ingredient) == 0 &&
+		len(f.IngredientNot) == 0
+}
+
+func (f Filter) HasTagRules() bool {
+	return len(f.Tag) > 0 || len(f.TagNot) > 0
+}
+
+func (f Filter) HasIngredientRules() bool {
+	return len(f.Ingredient) > 0 || len(f.IngredientNot) > 0
+}
+
+func (f Filter) HasEquipmentRules() bool {
+	return len(f.Equipment) > 0 || len(f.EquipmentNot) > 0
 }

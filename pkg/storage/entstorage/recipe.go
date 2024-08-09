@@ -16,7 +16,7 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage/ent/tag"
 )
 
-func (s *EntStorage) CountRecipes(ctx context.Context, filter recipe.Filter) (int, error) {
+func (s *EntStorage) buildFilterQuery(filter recipe.Filter) *ent.RecipeQuery {
 	q := s.client.Recipe.Query()
 
 	if filter.NameContains != "" {
@@ -27,34 +27,6 @@ func (s *EntStorage) CountRecipes(ctx context.Context, filter recipe.Filter) (in
 		q.Where(entRecipe.LocaleEQ(entRecipe.Locale(filter.Locale)))
 	}
 
-	count, err := q.Count(ctx)
-	if err != nil {
-		return 0, fmt.Errorf("counting recipes: %w", err)
-	}
-
-	return count, nil
-}
-
-func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error) {
-	q := s.client.Recipe.Query()
-
-	if filter.NameContains != "" {
-		q.Where(entRecipe.NameContains(filter.NameContains))
-	}
-
-	if filter.Limit > 0 {
-		q.Limit(filter.Limit)
-	}
-
-	if filter.Offset > 0 {
-		q.Offset(filter.Offset)
-	}
-
-	if filter.Locale != "" {
-		q.Where(entRecipe.LocaleEQ(entRecipe.Locale(filter.Locale)))
-	}
-
-	// TODO implement filtering by equipment, tags, ingredients
 	if len(filter.Equipment) > 0 {
 		q.Where(entRecipe.HasEquipmentWith(entEquipment.NameIn(filter.Equipment...)))
 	}
@@ -93,6 +65,30 @@ func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*r
 		q.WithSources()
 		q.WithNutrition()
 		q.WithEquipment()
+	}
+
+	return q
+}
+
+func (s *EntStorage) CountRecipes(ctx context.Context, filter recipe.Filter) (int, error) {
+	q := s.buildFilterQuery(filter)
+	count, err := q.Count(ctx)
+	if err != nil {
+		return 0, fmt.Errorf("counting recipes: %w", err)
+	}
+
+	return count, nil
+}
+
+func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*recipe.Recipe, error) {
+	q := s.buildFilterQuery(filter)
+
+	if filter.Limit > 0 {
+		q.Limit(filter.Limit)
+	}
+
+	if filter.Offset > 0 {
+		q.Offset(filter.Offset)
 	}
 
 	recipes, err := q.All(ctx)

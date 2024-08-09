@@ -36,8 +36,10 @@ type (
 	}
 
 	UITransHome struct {
-		Title       string
-		Description string
+		Title        string
+		Description  string
+		RecipesTotal string
+		RecipesFound string
 	}
 
 	UITransMenu struct {
@@ -70,11 +72,12 @@ type (
 	}
 
 	UIFilter struct {
-		Include string
-		Exclude string
-		Add     string
-		Clear   string
-		Apply   string
+		Include      string
+		Exclude      string
+		NameContains string
+		Add          string
+		Clear        string
+		Apply        string
 	}
 )
 
@@ -97,8 +100,10 @@ func newTranslationEn() *UITranslation {
 			TwitterHandle: "danipolani",
 		},
 		Home: &UITransHome{
-			Title:       siteTitle,
-			Description: "When in doubt - eat",
+			Title:        siteTitle,
+			Description:  "When in doubt - eat",
+			RecipesTotal: "Total recipes",
+			RecipesFound: "Recipes found",
 		},
 		Menu: &UITransMenu{
 			Home:  "Home",
@@ -119,11 +124,12 @@ func newTranslationEn() *UITranslation {
 			Optional:     "Optional",
 			Required:     "Required",
 			Filter: &UIFilter{
-				Include: "Include",
-				Exclude: "Exclude",
-				Add:     "Add",
-				Clear:   "Clear",
-				Apply:   "Search!",
+				Include:      "Include",
+				Exclude:      "Exclude",
+				Add:          "Add",
+				Clear:        "Clear",
+				Apply:        "Search!",
+				NameContains: "Name contains...",
 			},
 		},
 		Share: &UITransShare{
@@ -142,8 +148,10 @@ func newTranslationRu() *UITranslation {
 			TwitterHandle: "danipolani",
 		},
 		Home: &UITransHome{
-			Title:       siteTitle,
-			Description: "Когда вы в сомнениях - ешьте",
+			Title:        siteTitle,
+			Description:  "Когда вы в сомнениях - ешьте",
+			RecipesTotal: "Всего рецептов",
+			RecipesFound: "Найдено рецептов",
 		},
 		Menu: &UITransMenu{
 			Home:  "Главная",
@@ -164,11 +172,12 @@ func newTranslationRu() *UITranslation {
 			Optional:     "Опционально",
 			Required:     "Обязательно",
 			Filter: &UIFilter{
-				Include: "Включить",
-				Exclude: "Исключить",
-				Add:     "Добавить",
-				Clear:   "Очистить",
-				Apply:   "Искать!",
+				Include:      "Включить",
+				Exclude:      "Исключить",
+				Add:          "Добавить",
+				Clear:        "Очистить",
+				Apply:        "Искать!",
+				NameContains: "Название содержит...",
 			},
 		},
 		Share: &UITransShare{
