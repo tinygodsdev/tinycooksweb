@@ -97,7 +97,7 @@
   aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-        <h1 class="title is-4 has-text-primary">🍲 {{ .UI.Base.Title }}</h1>
+        <h1 class="title is-3 has-text-primary gradient-text">{{ .UI.Base.Title }}</h1>
     </a>
   </div>
 
@@ -105,6 +105,10 @@
     <div class="navbar-end">
       <a href="/" class='navbar-item {{ if eq .CurrentView "home"}}is-active{{ end }}' title="Home">
         {{ .UI.Menu.Home }}
+      </a>
+
+      <a href="/catalog" class='navbar-item {{ if eq .CurrentView "catalog"}}is-active{{ end }}' title="Catalog">
+        {{ .UI.Menu.Catalog }}
       </a>
 
       <a href="/about" class='navbar-item {{ if eq .CurrentView "about"}}is-active{{ end }}' title="About">
@@ -120,7 +124,7 @@
 <nav class="level is-centered">
   <div class="level-item">
     <div class="mx-3">
-      <a href="/" class='{{ if eq .CurrentView "home"}}has-text-white-ter{{else}}has-text-grey-light{{ end }}'
+      <a href="/" class='{{ if eq .CurrentView "home"}}has-text-grey{{else}}has-text-grey-light{{ end }}'
         title="{{ .UI.Menu.Home }}">
         {{ .UI.Menu.Home }}
       </a>
@@ -128,8 +132,16 @@
   </div>
 
   <div class="level-item">
+    <div class="mx-3" title="{{ .UI.Menu.Catalog }}">
+      <a class='{{ if eq .CurrentView "catalog"}}has-text-grey{{else}}has-text-grey-light{{ end }}' href="/catalog">
+        {{ .UI.Menu.Catalog }}
+      </a>
+    </div>
+  </div>
+
+  <div class="level-item">
     <div class="mx-3" title="{{ .UI.Menu.About }}">
-      <a class='{{ if eq .CurrentView "about"}}has-text-white-ter{{else}}has-text-grey-light{{ end }}' href="/about">
+      <a class='{{ if eq .CurrentView "about"}}has-text-grey{{else}}has-text-grey-light{{ end }}' href="/about">
         {{ .UI.Menu.About }}
       </a>
     </div>

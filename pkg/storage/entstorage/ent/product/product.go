@@ -24,6 +24,8 @@ const (
 	FieldLocale = "locale"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
+	// FieldSlug holds the string denoting the slug field in the database.
+	FieldSlug = "slug"
 	// EdgeRequiredInRecipes holds the string denoting the required_in_recipes edge name in mutations.
 	EdgeRequiredInRecipes = "required_in_recipes"
 	// EdgeIngredients holds the string denoting the ingredients edge name in mutations.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldLocale,
 	FieldName,
+	FieldSlug,
 }
 
 var (
@@ -78,6 +81,8 @@ var (
 	UpdateDefaultUpdateTime func() time.Time
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
+	// SlugValidator is a validator for the "slug" field. It is called by the builders before save.
+	SlugValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -134,6 +139,11 @@ func ByLocale(opts ...sql.OrderTermOption) OrderOption {
 // ByName orders the results by the name field.
 func ByName(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldName, opts...).ToFunc()
+}
+
+// BySlug orders the results by the slug field.
+func BySlug(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSlug, opts...).ToFunc()
 }
 
 // ByRequiredInRecipesCount orders the results by required_in_recipes count.

@@ -134,9 +134,6 @@ is-info
 
 {{ define "filter" }}
 <div class="block">
-  <div class="buttons is-right">
-    <button live-click="filter-clear" class="button is-primary is-outlined">{{ .UI.Recipe.Filter.Clear }}</button>
-  </div>
   <!-- Name Filter Form -->
   <form class="my-4" id="name-filter-form" live-change="name-filter-form-change" live-debounce=1000>
     <div class="field">

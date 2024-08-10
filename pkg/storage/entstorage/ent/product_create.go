@@ -71,6 +71,12 @@ func (pc *ProductCreate) SetName(s string) *ProductCreate {
 	return pc
 }
 
+// SetSlug sets the "slug" field.
+func (pc *ProductCreate) SetSlug(s string) *ProductCreate {
+	pc.mutation.SetSlug(s)
+	return pc
+}
+
 // SetID sets the "id" field.
 func (pc *ProductCreate) SetID(u uuid.UUID) *ProductCreate {
 	pc.mutation.SetID(u)
@@ -192,6 +198,14 @@ func (pc *ProductCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Product.name": %w`, err)}
 		}
 	}
+	if _, ok := pc.mutation.Slug(); !ok {
+		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Product.slug"`)}
+	}
+	if v, ok := pc.mutation.Slug(); ok {
+		if err := product.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Product.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -242,6 +256,10 @@ func (pc *ProductCreate) createSpec() (*Product, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := pc.mutation.Slug(); ok {
+		_spec.SetField(product.FieldSlug, field.TypeString, value)
+		_node.Slug = value
 	}
 	if nodes := pc.mutation.RequiredInRecipesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

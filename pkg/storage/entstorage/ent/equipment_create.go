@@ -27,6 +27,12 @@ func (ec *EquipmentCreate) SetName(s string) *EquipmentCreate {
 	return ec
 }
 
+// SetSlug sets the "slug" field.
+func (ec *EquipmentCreate) SetSlug(s string) *EquipmentCreate {
+	ec.mutation.SetSlug(s)
+	return ec
+}
+
 // SetID sets the "id" field.
 func (ec *EquipmentCreate) SetID(u uuid.UUID) *EquipmentCreate {
 	ec.mutation.SetID(u)
@@ -107,6 +113,14 @@ func (ec *EquipmentCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Equipment.name": %w`, err)}
 		}
 	}
+	if _, ok := ec.mutation.Slug(); !ok {
+		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Equipment.slug"`)}
+	}
+	if v, ok := ec.mutation.Slug(); ok {
+		if err := equipment.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Equipment.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -145,6 +159,10 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 	if value, ok := ec.mutation.Name(); ok {
 		_spec.SetField(equipment.FieldName, field.TypeString, value)
 		_node.Name = value
+	}
+	if value, ok := ec.mutation.Slug(); ok {
+		_spec.SetField(equipment.FieldSlug, field.TypeString, value)
+		_node.Slug = value
 	}
 	if nodes := ec.mutation.RecipesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

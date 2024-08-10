@@ -1,22 +1,52 @@
 // brand colors
-$red: #ee4266;
-$yellow: #ffbf00;
-$orange: #ff7f11;
-$green: #5bba35;
-$purple: #914df7;
+$red: #ff595e;
+// $orange: #ff7f11;
+$yellow: #ffca3a;
+$green: #8ac926;
+$green2: #88e337;
+$purple: #CC68EA;
+$blue: #2090D6;
 
-$base: $green;
+$twitter: #1d9bf1;
+$facebook: #1b74e8;
+
+$brand: $green;
+$link: $green2;
+$accent: $purple;
+
 $radius-large: 25px;
 
-:root {
-  --bulma-primary-h: 129deg;
-  --bulma-primary-s: 72%;
-  --bulma-primary-l: 63%;
-  --bulma-link-h: 129deg;
-  --bulma-link-s: 72%;
-  --bulma-link-l: 63%;
-}
+$gradientColor1: $green;
+$gradientColor2: $green2;
+$gradientColor3: $yellow;
+$gradientColor4: $red;
+$gradientColor5: $purple;
 
+:root {
+  --bulma-primary-h: #{hue($brand)};
+  --bulma-primary-s: #{saturation($brand)};
+  --bulma-primary-l: #{lightness($brand)};
+  
+  --bulma-link-h: #{hue($link)};
+  --bulma-link-s: #{saturation($link)};
+  --bulma-link-l: #{lightness($link)};
+
+  --bulma-info-h: #{hue($accent)};
+  --bulma-info-s: #{saturation($accent)};
+  --bulma-info-l: #{lightness($accent)};
+
+  --bulma-success-h: #{hue($green)};
+  --bulma-success-s: #{saturation($green)};
+  --bulma-success-l: #{lightness($green)};
+
+  --bulma-warning-h: #{hue($yellow)};
+  --bulma-warning-s: #{saturation($yellow)};
+  --bulma-warning-l: #{lightness($yellow)};
+
+  --bulma-danger-h: #{hue($red)};
+  --bulma-danger-s: #{saturation($red)};
+  --bulma-danger-l: #{lightness($red)};
+}
 
 body {
   font-family: "Noto Sans", sans-serif;
@@ -45,14 +75,14 @@ h6 {
 // share buttons
 
 .share-twitter-button {
-  background-color: #1d9bf1;
+  background-color: $twitter;
   color: #fff;
   border: 0;
   margin: 0 1px;
 }
 
 .share-facebook-button {
-  background-color: #1b74e8;
+  background-color: $facebook;
   color: #fff;
   border: 0;
   margin: 0 1px;
@@ -115,4 +145,19 @@ h6 {
     }
   }
   @include animate(fadein, 0.1s, linear, 1);
+}
+
+.gradient-text {
+  background: $brand;
+  background-image: linear-gradient(
+    90deg,
+    $gradientColor1,
+    $gradientColor2 25%,
+    $gradientColor3 60%,
+    $gradientColor4 90%,
+    $gradientColor5
+  );
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
 }

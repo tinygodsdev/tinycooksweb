@@ -12,6 +12,7 @@ var (
 	EquipmentColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
 	EquipmentTable = &schema.Table{
@@ -137,6 +138,7 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "locale", Type: field.TypeEnum, Enums: []string{"en", "ru"}, Default: "ru"},
 		{Name: "name", Type: field.TypeString, Unique: true, Size: 2147483647},
+		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// ProductsTable holds the schema information for the "products" table.
 	ProductsTable = &schema.Table{
@@ -190,6 +192,7 @@ var (
 		{Name: "id", Type: field.TypeUUID},
 		{Name: "name", Type: field.TypeString},
 		{Name: "group", Type: field.TypeString},
+		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// TagsTable holds the schema information for the "tags" table.
 	TagsTable = &schema.Table{

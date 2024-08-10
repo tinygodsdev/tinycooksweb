@@ -10,12 +10,6 @@ import (
 	"github.com/jfyne/live"
 )
 
-const (
-	// events
-	// params
-	ParamRecipeSlug = "recipeSlug"
-)
-
 type (
 	RecipeInstance struct {
 		*CommonInstance

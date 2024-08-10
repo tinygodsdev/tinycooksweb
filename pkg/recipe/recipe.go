@@ -26,11 +26,11 @@ type Recipe struct {
 	Slug         string        `json:"slug"`
 	Description  string        `json:"description"` // Short description for catalog
 	Text         string        `json:"text"`        // Long description for recipe page
+	Tags         []*Tag        `json:"tags"`
 	Ingredients  []*Ingredient `json:"ingredients"`
 	Equipment    []*Equipment  `json:"equipment"`
 	Instructions []Instruction `json:"instructions"` // Steps to prepare the recipe
-	Tags         []*Tag        `json:"tags"`
-	Ideas        []*Idea       `json:"ideas"` // Ideas for variations
+	Ideas        []*Idea       `json:"ideas"`        // Ideas for variations
 	Time         time.Duration `json:"time"`
 	Servings     int           `json:"servings"`
 	Sources      []*Source     `json:"sources"`
@@ -49,6 +49,7 @@ type Ingredient struct {
 type Product struct {
 	ID   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
+	Slug string    `json:"slug"`
 }
 
 type Instruction struct {
@@ -59,12 +60,14 @@ type Instruction struct {
 type Equipment struct {
 	ID   uuid.UUID `json:"id"`
 	Name string    `json:"name"`
+	Slug string    `json:"slug"`
 }
 
 type Tag struct {
 	ID    uuid.UUID `json:"id"`
 	Name  string    `json:"name"`
 	Group string    `json:"group"`
+	Slug  string    `json:"slug"`
 }
 
 type Idea struct {
@@ -92,6 +95,21 @@ func Slugify(name string) string {
 	return slug.Make(name)
 }
 
+func (r *Recipe) SlugifyAll() {
+	r.Slug = Slugify(r.Name)
+	for _, i := range r.Ingredients {
+		i.Product.Slug = Slugify(i.Product.Name)
+	}
+
+	for _, e := range r.Equipment {
+		e.Slug = Slugify(e.Name)
+	}
+
+	for _, t := range r.Tags {
+		t.Slug = Slugify(t.Group + " " + t.Name)
+	}
+}
+
 func (r *Recipe) Link(domain string) string {
 	var params string
 	if r.Lang != locale.Default() {
@@ -116,4 +134,8 @@ func (r *Recipe) ShareText() string {
 
 	res += "\n\n" + trans.Share.ExploreMessage
 	return res
+}
+
+func (t *Tag) Title() string {
+	return fmt.Sprintf("%s:%s", t.Group, t.Name)
 }

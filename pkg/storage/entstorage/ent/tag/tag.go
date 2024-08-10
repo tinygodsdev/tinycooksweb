@@ -17,6 +17,8 @@ const (
 	FieldName = "name"
 	// FieldGroup holds the string denoting the group field in the database.
 	FieldGroup = "group"
+	// FieldSlug holds the string denoting the slug field in the database.
+	FieldSlug = "slug"
 	// EdgeRecipes holds the string denoting the recipes edge name in mutations.
 	EdgeRecipes = "recipes"
 	// Table holds the table name of the tag in the database.
@@ -33,6 +35,7 @@ var Columns = []string{
 	FieldID,
 	FieldName,
 	FieldGroup,
+	FieldSlug,
 }
 
 var (
@@ -52,6 +55,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// NameValidator is a validator for the "name" field. It is called by the builders before save.
+	NameValidator func(string) error
+	// GroupValidator is a validator for the "group" field. It is called by the builders before save.
+	GroupValidator func(string) error
+	// SlugValidator is a validator for the "slug" field. It is called by the builders before save.
+	SlugValidator func(string) error
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -72,6 +81,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByGroup orders the results by the group field.
 func ByGroup(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldGroup, opts...).ToFunc()
+}
+
+// BySlug orders the results by the slug field.
+func BySlug(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldSlug, opts...).ToFunc()
 }
 
 // ByRecipesCount orders the results by recipes count.

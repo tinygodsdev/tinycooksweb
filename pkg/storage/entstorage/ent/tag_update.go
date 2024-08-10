@@ -57,6 +57,20 @@ func (tu *TagUpdate) SetNillableGroup(s *string) *TagUpdate {
 	return tu
 }
 
+// SetSlug sets the "slug" field.
+func (tu *TagUpdate) SetSlug(s string) *TagUpdate {
+	tu.mutation.SetSlug(s)
+	return tu
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (tu *TagUpdate) SetNillableSlug(s *string) *TagUpdate {
+	if s != nil {
+		tu.SetSlug(*s)
+	}
+	return tu
+}
+
 // AddRecipeIDs adds the "recipes" edge to the Recipe entity by IDs.
 func (tu *TagUpdate) AddRecipeIDs(ids ...uuid.UUID) *TagUpdate {
 	tu.mutation.AddRecipeIDs(ids...)
@@ -125,7 +139,30 @@ func (tu *TagUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (tu *TagUpdate) check() error {
+	if v, ok := tu.mutation.Name(); ok {
+		if err := tag.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Tag.name": %w`, err)}
+		}
+	}
+	if v, ok := tu.mutation.Group(); ok {
+		if err := tag.GroupValidator(v); err != nil {
+			return &ValidationError{Name: "group", err: fmt.Errorf(`ent: validator failed for field "Tag.group": %w`, err)}
+		}
+	}
+	if v, ok := tu.mutation.Slug(); ok {
+		if err := tag.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Tag.slug": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := tu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(tag.Table, tag.Columns, sqlgraph.NewFieldSpec(tag.FieldID, field.TypeUUID))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -139,6 +176,9 @@ func (tu *TagUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tu.mutation.Group(); ok {
 		_spec.SetField(tag.FieldGroup, field.TypeString, value)
+	}
+	if value, ok := tu.mutation.Slug(); ok {
+		_spec.SetField(tag.FieldSlug, field.TypeString, value)
 	}
 	if tu.mutation.RecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -233,6 +273,20 @@ func (tuo *TagUpdateOne) SetNillableGroup(s *string) *TagUpdateOne {
 	return tuo
 }
 
+// SetSlug sets the "slug" field.
+func (tuo *TagUpdateOne) SetSlug(s string) *TagUpdateOne {
+	tuo.mutation.SetSlug(s)
+	return tuo
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (tuo *TagUpdateOne) SetNillableSlug(s *string) *TagUpdateOne {
+	if s != nil {
+		tuo.SetSlug(*s)
+	}
+	return tuo
+}
+
 // AddRecipeIDs adds the "recipes" edge to the Recipe entity by IDs.
 func (tuo *TagUpdateOne) AddRecipeIDs(ids ...uuid.UUID) *TagUpdateOne {
 	tuo.mutation.AddRecipeIDs(ids...)
@@ -314,7 +368,30 @@ func (tuo *TagUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (tuo *TagUpdateOne) check() error {
+	if v, ok := tuo.mutation.Name(); ok {
+		if err := tag.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Tag.name": %w`, err)}
+		}
+	}
+	if v, ok := tuo.mutation.Group(); ok {
+		if err := tag.GroupValidator(v); err != nil {
+			return &ValidationError{Name: "group", err: fmt.Errorf(`ent: validator failed for field "Tag.group": %w`, err)}
+		}
+	}
+	if v, ok := tuo.mutation.Slug(); ok {
+		if err := tag.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Tag.slug": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
+	if err := tuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(tag.Table, tag.Columns, sqlgraph.NewFieldSpec(tag.FieldID, field.TypeUUID))
 	id, ok := tuo.mutation.ID()
 	if !ok {
@@ -345,6 +422,9 @@ func (tuo *TagUpdateOne) sqlSave(ctx context.Context) (_node *Tag, err error) {
 	}
 	if value, ok := tuo.mutation.Group(); ok {
 		_spec.SetField(tag.FieldGroup, field.TypeString, value)
+	}
+	if value, ok := tuo.mutation.Slug(); ok {
+		_spec.SetField(tag.FieldSlug, field.TypeString, value)
 	}
 	if tuo.mutation.RecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{

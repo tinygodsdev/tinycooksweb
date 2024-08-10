@@ -21,6 +21,8 @@ type Tag struct {
 	Name string `json:"name,omitempty"`
 	// Group holds the value of the "group" field.
 	Group string `json:"group,omitempty"`
+	// Slug holds the value of the "slug" field.
+	Slug string `json:"slug,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the TagQuery when eager-loading is set.
 	Edges        TagEdges `json:"edges"`
@@ -50,7 +52,7 @@ func (*Tag) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case tag.FieldName, tag.FieldGroup:
+		case tag.FieldName, tag.FieldGroup, tag.FieldSlug:
 			values[i] = new(sql.NullString)
 		case tag.FieldID:
 			values[i] = new(uuid.UUID)
@@ -86,6 +88,12 @@ func (t *Tag) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field group", values[i])
 			} else if value.Valid {
 				t.Group = value.String
+			}
+		case tag.FieldSlug:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field slug", values[i])
+			} else if value.Valid {
+				t.Slug = value.String
 			}
 		default:
 			t.selectValues.Set(columns[i], values[i])
@@ -133,6 +141,9 @@ func (t *Tag) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("group=")
 	builder.WriteString(t.Group)
+	builder.WriteString(", ")
+	builder.WriteString("slug=")
+	builder.WriteString(t.Slug)
 	builder.WriteByte(')')
 	return builder.String()
 }

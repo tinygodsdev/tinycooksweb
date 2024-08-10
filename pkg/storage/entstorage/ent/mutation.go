@@ -51,6 +51,7 @@ type EquipmentMutation struct {
 	typ            string
 	id             *uuid.UUID
 	name           *string
+	slug           *string
 	clearedFields  map[string]struct{}
 	recipes        map[uuid.UUID]struct{}
 	removedrecipes map[uuid.UUID]struct{}
@@ -200,6 +201,42 @@ func (m *EquipmentMutation) ResetName() {
 	m.name = nil
 }
 
+// SetSlug sets the "slug" field.
+func (m *EquipmentMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *EquipmentMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the Equipment entity.
+// If the Equipment object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *EquipmentMutation) OldSlug(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *EquipmentMutation) ResetSlug() {
+	m.slug = nil
+}
+
 // AddRecipeIDs adds the "recipes" edge to the Recipe entity by ids.
 func (m *EquipmentMutation) AddRecipeIDs(ids ...uuid.UUID) {
 	if m.recipes == nil {
@@ -288,9 +325,12 @@ func (m *EquipmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EquipmentMutation) Fields() []string {
-	fields := make([]string, 0, 1)
+	fields := make([]string, 0, 2)
 	if m.name != nil {
 		fields = append(fields, equipment.FieldName)
+	}
+	if m.slug != nil {
+		fields = append(fields, equipment.FieldSlug)
 	}
 	return fields
 }
@@ -302,6 +342,8 @@ func (m *EquipmentMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case equipment.FieldName:
 		return m.Name()
+	case equipment.FieldSlug:
+		return m.Slug()
 	}
 	return nil, false
 }
@@ -313,6 +355,8 @@ func (m *EquipmentMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case equipment.FieldName:
 		return m.OldName(ctx)
+	case equipment.FieldSlug:
+		return m.OldSlug(ctx)
 	}
 	return nil, fmt.Errorf("unknown Equipment field %s", name)
 }
@@ -328,6 +372,13 @@ func (m *EquipmentMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case equipment.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)
@@ -380,6 +431,9 @@ func (m *EquipmentMutation) ResetField(name string) error {
 	switch name {
 	case equipment.FieldName:
 		m.ResetName()
+		return nil
+	case equipment.FieldSlug:
+		m.ResetSlug()
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)
@@ -3100,6 +3154,7 @@ type ProductMutation struct {
 	update_time                *time.Time
 	locale                     *product.Locale
 	name                       *string
+	slug                       *string
 	clearedFields              map[string]struct{}
 	required_in_recipes        map[uuid.UUID]struct{}
 	removedrequired_in_recipes map[uuid.UUID]struct{}
@@ -3360,6 +3415,42 @@ func (m *ProductMutation) ResetName() {
 	m.name = nil
 }
 
+// SetSlug sets the "slug" field.
+func (m *ProductMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *ProductMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the Product entity.
+// If the Product object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *ProductMutation) OldSlug(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *ProductMutation) ResetSlug() {
+	m.slug = nil
+}
+
 // AddRequiredInRecipeIDs adds the "required_in_recipes" edge to the Recipe entity by ids.
 func (m *ProductMutation) AddRequiredInRecipeIDs(ids ...uuid.UUID) {
 	if m.required_in_recipes == nil {
@@ -3502,7 +3593,7 @@ func (m *ProductMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *ProductMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.create_time != nil {
 		fields = append(fields, product.FieldCreateTime)
 	}
@@ -3514,6 +3605,9 @@ func (m *ProductMutation) Fields() []string {
 	}
 	if m.name != nil {
 		fields = append(fields, product.FieldName)
+	}
+	if m.slug != nil {
+		fields = append(fields, product.FieldSlug)
 	}
 	return fields
 }
@@ -3531,6 +3625,8 @@ func (m *ProductMutation) Field(name string) (ent.Value, bool) {
 		return m.Locale()
 	case product.FieldName:
 		return m.Name()
+	case product.FieldSlug:
+		return m.Slug()
 	}
 	return nil, false
 }
@@ -3548,6 +3644,8 @@ func (m *ProductMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldLocale(ctx)
 	case product.FieldName:
 		return m.OldName(ctx)
+	case product.FieldSlug:
+		return m.OldSlug(ctx)
 	}
 	return nil, fmt.Errorf("unknown Product field %s", name)
 }
@@ -3584,6 +3682,13 @@ func (m *ProductMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetName(v)
+		return nil
+	case product.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Product field %s", name)
@@ -3645,6 +3750,9 @@ func (m *ProductMutation) ResetField(name string) error {
 		return nil
 	case product.FieldName:
 		m.ResetName()
+		return nil
+	case product.FieldSlug:
+		m.ResetSlug()
 		return nil
 	}
 	return fmt.Errorf("unknown Product field %s", name)
@@ -5861,6 +5969,7 @@ type TagMutation struct {
 	id             *uuid.UUID
 	name           *string
 	group          *string
+	slug           *string
 	clearedFields  map[string]struct{}
 	recipes        map[uuid.UUID]struct{}
 	removedrecipes map[uuid.UUID]struct{}
@@ -6046,6 +6155,42 @@ func (m *TagMutation) ResetGroup() {
 	m.group = nil
 }
 
+// SetSlug sets the "slug" field.
+func (m *TagMutation) SetSlug(s string) {
+	m.slug = &s
+}
+
+// Slug returns the value of the "slug" field in the mutation.
+func (m *TagMutation) Slug() (r string, exists bool) {
+	v := m.slug
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldSlug returns the old "slug" field's value of the Tag entity.
+// If the Tag object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TagMutation) OldSlug(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldSlug is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldSlug requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldSlug: %w", err)
+	}
+	return oldValue.Slug, nil
+}
+
+// ResetSlug resets all changes to the "slug" field.
+func (m *TagMutation) ResetSlug() {
+	m.slug = nil
+}
+
 // AddRecipeIDs adds the "recipes" edge to the Recipe entity by ids.
 func (m *TagMutation) AddRecipeIDs(ids ...uuid.UUID) {
 	if m.recipes == nil {
@@ -6134,12 +6279,15 @@ func (m *TagMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TagMutation) Fields() []string {
-	fields := make([]string, 0, 2)
+	fields := make([]string, 0, 3)
 	if m.name != nil {
 		fields = append(fields, tag.FieldName)
 	}
 	if m.group != nil {
 		fields = append(fields, tag.FieldGroup)
+	}
+	if m.slug != nil {
+		fields = append(fields, tag.FieldSlug)
 	}
 	return fields
 }
@@ -6153,6 +6301,8 @@ func (m *TagMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case tag.FieldGroup:
 		return m.Group()
+	case tag.FieldSlug:
+		return m.Slug()
 	}
 	return nil, false
 }
@@ -6166,6 +6316,8 @@ func (m *TagMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldName(ctx)
 	case tag.FieldGroup:
 		return m.OldGroup(ctx)
+	case tag.FieldSlug:
+		return m.OldSlug(ctx)
 	}
 	return nil, fmt.Errorf("unknown Tag field %s", name)
 }
@@ -6188,6 +6340,13 @@ func (m *TagMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetGroup(v)
+		return nil
+	case tag.FieldSlug:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetSlug(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Tag field %s", name)
@@ -6243,6 +6402,9 @@ func (m *TagMutation) ResetField(name string) error {
 		return nil
 	case tag.FieldGroup:
 		m.ResetGroup()
+		return nil
+	case tag.FieldSlug:
+		m.ResetSlug()
 		return nil
 	}
 	return fmt.Errorf("unknown Tag field %s", name)

@@ -1,11 +1,14 @@
-{{ define "title" }} About {{ end }}
-{{ define "description" }} {{ .UI.Base.Description }} {{ end }}
+{{ define "title" }} {{ .UI.About.Title }} {{ end }}
+{{ define "description" }} {{ .UI.About.Description }} {{ end }}
 {{ define "view" }}
 
 <main>
   <div class="section">
-    <h1 class="title is-1 is-size-3-mobile">{{ .UI.Base.Title }}</h1>
-    <h3 class="title is-3 is-size-5-mobile">{{ .UI.Base.Description }}</h3>   
+    <h3 class="title is-1 is-size-3-mobile has-text-centered">
+      <span class="gradient-text">
+        {{ .UI.Base.Description }}
+      </span>
+    </h3>
   </div>
 </main>
 

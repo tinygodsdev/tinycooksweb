@@ -314,6 +314,7 @@ func getOrCreateProduct(ctx context.Context, tx *ent.Tx, prod *recipe.Product) (
 	p, err = tx.Product.
 		Create().
 		SetName(prod.Name).
+		SetSlug(prod.Slug).
 		Save(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("creating product: %w", err)
@@ -337,6 +338,7 @@ func getOrCreateTag(ctx context.Context, tx *ent.Tx, tg *recipe.Tag) (*ent.Tag, 
 		Create().
 		SetName(tg.Name).
 		SetGroup(tg.Group).
+		SetSlug(tg.Slug).
 		Save(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("creating tag: %w", err)
@@ -359,6 +361,7 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 	e, err = tx.Equipment.
 		Create().
 		SetName(equip.Name).
+		SetSlug(equip.Slug).
 		Save(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("creating equipment: %w", err)
@@ -382,21 +385,39 @@ func (s *EntStorage) GetTags(ctx context.Context, loc string) ([]*recipe.Tag, er
 	return res, nil
 }
 
+func (s *EntStorage) GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag, error) {
+	t, err := s.client.Tag.
+		Query().
+		Where(tag.SlugEQ(slug)).
+		Only(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting tag by slug: %w", err)
+	}
+
+	return entTagToTag(t), nil
+}
+
 func (s *EntStorage) GetIngredients(ctx context.Context, loc string) ([]*recipe.Ingredient, error) {
-	ings, err := s.client.Ingredient.Query().
-		Where(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
-		WithProduct().
+	prods, err := s.client.Product.Query().
+		Where(product.HasIngredientsWith(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc))))).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting ingredients: %w", err)
 	}
 
-	var res []*recipe.Ingredient
-	for _, i := range ings {
-		res = append(res, entIngredientToIngredient(i))
+	return mapEntProductsToIngredients(prods), nil
+}
+
+func (s *EntStorage) GetIngredientBySlug(ctx context.Context, slug string) (*recipe.Ingredient, error) {
+	prod, err := s.client.Product.
+		Query().
+		Where(product.SlugEQ(slug)).
+		Only(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting ingredient by slug: %w", err)
 	}
 
-	return res, nil
+	return entProductToIngredient(prod), nil
 }
 
 func (s *EntStorage) GetEquipment(ctx context.Context, loc string) ([]*recipe.Equipment, error) {
@@ -413,4 +434,16 @@ func (s *EntStorage) GetEquipment(ctx context.Context, loc string) ([]*recipe.Eq
 	}
 
 	return res, nil
+}
+
+func (s *EntStorage) GetEquipmentBySlug(ctx context.Context, slug string) (*recipe.Equipment, error) {
+	e, err := s.client.Equipment.
+		Query().
+		Where(entEquipment.SlugEQ(slug)).
+		Only(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("getting equipment by slug: %w", err)
+	}
+
+	return entEquipmentToEquipment(e), nil
 }

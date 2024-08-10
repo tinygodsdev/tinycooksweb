@@ -59,12 +59,24 @@ func (s *CachedStorage) GetTags(ctx context.Context, locale string) ([]*recipe.T
 	return s.cache.GetTags(ctx, locale)
 }
 
+func (s *CachedStorage) GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag, error) {
+	return s.cache.GetTagBySlug(ctx, slug)
+}
+
 func (s *CachedStorage) GetIngredients(ctx context.Context, locale string) ([]*recipe.Ingredient, error) {
 	return s.cache.GetIngredients(ctx, locale)
 }
 
+func (s *CachedStorage) GetIngredientBySlug(ctx context.Context, slug string) (*recipe.Ingredient, error) {
+	return s.cache.GetIngredientBySlug(ctx, slug)
+}
+
 func (s *CachedStorage) GetEquipment(ctx context.Context, locale string) ([]*recipe.Equipment, error) {
 	return s.cache.GetEquipment(ctx, locale)
+}
+
+func (s *CachedStorage) GetEquipmentBySlug(ctx context.Context, slug string) (*recipe.Equipment, error) {
+	return s.cache.GetEquipmentBySlug(ctx, slug)
 }
 
 func NewCachedStorage(

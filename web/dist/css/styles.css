@@ -1,10 +1,22 @@
 :root {
-  --bulma-primary-h: 129deg;
-  --bulma-primary-s: 72%;
-  --bulma-primary-l: 63%;
-  --bulma-link-h: 129deg;
-  --bulma-link-s: 72%;
-  --bulma-link-l: 63%;
+  --bulma-primary-h: 83.1901840491deg;
+  --bulma-primary-s: 68.2008368201%;
+  --bulma-primary-l: 46.862745098%;
+  --bulma-link-h: 91.7441860465deg;
+  --bulma-link-s: 75.4385964912%;
+  --bulma-link-l: 55.2941176471%;
+  --bulma-info-h: 286.1538461538deg;
+  --bulma-info-s: 75.5813953488%;
+  --bulma-info-l: 66.2745098039%;
+  --bulma-success-h: 83.1901840491deg;
+  --bulma-success-s: 68.2008368201%;
+  --bulma-success-l: 46.862745098%;
+  --bulma-warning-h: 43.8578680203deg;
+  --bulma-warning-s: 100%;
+  --bulma-warning-l: 61.3725490196%;
+  --bulma-danger-h: 358.1927710843deg;
+  --bulma-danger-s: 100%;
+  --bulma-danger-l: 67.4509803922%;
 }
 
 body {
@@ -89,6 +101,14 @@ h6 {
   100% {
     opacity: 1;
   }
+}
+
+.gradient-text {
+  background: #8ac926;
+  background-image: linear-gradient(90deg, #8ac926, #88e337 25%, #ffca3a 60%, #ff595e 90%, #CC68EA);
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 /*# sourceMappingURL=styles.css.map */

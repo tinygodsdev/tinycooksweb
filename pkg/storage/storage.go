@@ -20,8 +20,13 @@ type Storage interface {
 	CountRecipes(ctx context.Context, filter recipe.Filter) (int, error)
 
 	GetTags(ctx context.Context, locale string) ([]*recipe.Tag, error)
+	GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag, error)
+
 	GetIngredients(ctx context.Context, locale string) ([]*recipe.Ingredient, error)
+	GetIngredientBySlug(ctx context.Context, slug string) (*recipe.Ingredient, error)
+
 	GetEquipment(ctx context.Context, locale string) ([]*recipe.Equipment, error)
+	GetEquipmentBySlug(ctx context.Context, slug string) (*recipe.Equipment, error)
 
 	UpdateCache(ctx context.Context) error
 	Close() error

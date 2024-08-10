@@ -14,17 +14,15 @@ const (
 
 type (
 	UITranslation struct {
-		Base   *UITransBase
-		Home   *UITransHome
-		Menu   *UITransMenu
-		Footer *UITransFooter
-		Recipe *UITransRecipe
-		Share  *UITransShare
+		Base    *UITransBase
+		Home    *UITransHome
+		About   *UITransAbout
+		Catalog *UITransCatalog
+		Menu    *UITransMenu
+		Footer  *UITransFooter
+		Recipe  *UITransRecipe
+		Share   *UITransShare
 		// 404
-		// about
-		// profile
-		// result
-		// admin
 		// privacy
 		// terms
 	}
@@ -33,6 +31,26 @@ type (
 		Title         string
 		Description   string
 		TwitterHandle string
+	}
+
+	UITransAbout struct {
+		Title       string
+		Description string
+	}
+
+	UITransCatalog struct {
+		Title            string
+		Description      string
+		RecipesTotal     string
+		TagsTotal        string
+		IngredientsTotal string
+		EquipmentTotal   string
+		ByTags           string
+		ByIngredients    string
+		ByEquipment      string
+		Tag              string
+		Ingredient       string
+		Equipment        string
 	}
 
 	UITransHome struct {
@@ -45,9 +63,10 @@ type (
 	}
 
 	UITransMenu struct {
-		Home  string
-		About string
-		Back  string
+		Home    string
+		About   string
+		Back    string
+		Catalog string
 	}
 
 	UITransFooter struct {
@@ -109,10 +128,29 @@ func newTranslationEn() *UITranslation {
 			Next:         "Next",
 			Previous:     "Previous",
 		},
+		About: &UITransAbout{
+			Title:       "About",
+			Description: "TinyCooks is a collection of recipes from around the world",
+		},
+		Catalog: &UITransCatalog{
+			Title:            "Catalog",
+			Description:      "Browse all recipes",
+			RecipesTotal:     "Total recipes",
+			TagsTotal:        "Total tags",
+			IngredientsTotal: "Total ingredients",
+			EquipmentTotal:   "Total equipment",
+			ByTags:           "By Tags",
+			ByIngredients:    "By Ingredients",
+			ByEquipment:      "By Equipment",
+			Tag:              "Tag",
+			Ingredient:       "Ingredient",
+			Equipment:        "Equipment",
+		},
 		Menu: &UITransMenu{
-			Home:  "Home",
-			About: "About",
-			Back:  "Back",
+			Home:    "Home",
+			About:   "About",
+			Back:    "Back",
+			Catalog: "Catalog",
 		},
 		Footer: &UITransFooter{
 			DevelopedBy:  "Developed by",
@@ -151,6 +189,24 @@ func newTranslationRu() *UITranslation {
 			Description:   "Когда вы в сомнениях - ешьте",
 			TwitterHandle: "danipolani",
 		},
+		About: &UITransAbout{
+			Title:       "О сайте",
+			Description: "TinyCooks - это коллекция рецептов со всего мира",
+		},
+		Catalog: &UITransCatalog{
+			Title:            "Каталог",
+			Description:      "Просмотреть все рецепты",
+			RecipesTotal:     "Всего рецептов",
+			TagsTotal:        "Всего тегов",
+			IngredientsTotal: "Всего ингредиентов",
+			EquipmentTotal:   "Всего оборудования",
+			ByTags:           "По тегам",
+			ByIngredients:    "По ингредиентам",
+			ByEquipment:      "По оборудованию",
+			Tag:              "Тег",
+			Ingredient:       "Ингредиент",
+			Equipment:        "Оборудование",
+		},
 		Home: &UITransHome{
 			Title:        siteTitle,
 			Description:  "Когда вы в сомнениях - ешьте",
@@ -160,9 +216,10 @@ func newTranslationRu() *UITranslation {
 			Previous:     "Назад",
 		},
 		Menu: &UITransMenu{
-			Home:  "Главная",
-			About: "О сайте",
-			Back:  "Назад",
+			Home:    "Главная",
+			About:   "О сайте",
+			Back:    "Назад",
+			Catalog: "Каталог",
 		},
 		Footer: &UITransFooter{
 			DevelopedBy:  "Разработано",

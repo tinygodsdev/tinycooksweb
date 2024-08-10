@@ -150,3 +150,33 @@ func (a *App) GetEquipment(ctx context.Context, locale string) ([]*recipe.Equipm
 
 	return a.store.GetEquipment(ctx, locale)
 }
+
+func (a *App) GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag, error) {
+	defer a.Timer("GetTagBySlug", "slug", slug)()
+
+	if slug == "" {
+		return nil, fmt.Errorf("empty slug")
+	}
+
+	return a.store.GetTagBySlug(ctx, slug)
+}
+
+func (a *App) GetIngredientBySlug(ctx context.Context, slug string) (*recipe.Ingredient, error) {
+	defer a.Timer("GetIngredientBySlug", "slug", slug)()
+
+	if slug == "" {
+		return nil, fmt.Errorf("empty slug")
+	}
+
+	return a.store.GetIngredientBySlug(ctx, slug)
+}
+
+func (a *App) GetEquipmentBySlug(ctx context.Context, slug string) (*recipe.Equipment, error) {
+	defer a.Timer("GetEquipmentBySlug", "slug", slug)()
+
+	if slug == "" {
+		return nil, fmt.Errorf("empty slug")
+	}
+
+	return a.store.GetEquipmentBySlug(ctx, slug)
+}

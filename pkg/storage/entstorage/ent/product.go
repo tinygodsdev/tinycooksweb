@@ -26,6 +26,8 @@ type Product struct {
 	Locale product.Locale `json:"locale,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Slug holds the value of the "slug" field.
+	Slug string `json:"slug,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the ProductQuery when eager-loading is set.
 	Edges        ProductEdges `json:"edges"`
@@ -66,7 +68,7 @@ func (*Product) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case product.FieldLocale, product.FieldName:
+		case product.FieldLocale, product.FieldName, product.FieldSlug:
 			values[i] = new(sql.NullString)
 		case product.FieldCreateTime, product.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
@@ -116,6 +118,12 @@ func (pr *Product) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				pr.Name = value.String
+			}
+		case product.FieldSlug:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field slug", values[i])
+			} else if value.Valid {
+				pr.Slug = value.String
 			}
 		default:
 			pr.selectValues.Set(columns[i], values[i])
@@ -174,6 +182,9 @@ func (pr *Product) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(pr.Name)
+	builder.WriteString(", ")
+	builder.WriteString("slug=")
+	builder.WriteString(pr.Slug)
 	builder.WriteByte(')')
 	return builder.String()
 }

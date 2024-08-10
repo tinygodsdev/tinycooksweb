@@ -57,7 +57,7 @@ func MockRecipe(slug string, withError bool) (*Recipe, error) {
 }
 
 func PumpkinBuns() *Recipe {
-	recipe := Recipe{
+	recipe := &Recipe{
 		Name:        "Тыквенные булочки",
 		Lang:        LangRu,
 		Description: "Шикарные мягкие тыквенные булочки, которые можно подавать вместо хлеба, использовать для бургеров и сэндвичей.",
@@ -116,13 +116,12 @@ func PumpkinBuns() *Recipe {
 		},
 	}
 
-	recipe.Slug = Slugify(recipe.Name)
-
-	return &recipe
+	recipe.SlugifyAll()
+	return recipe
 }
 
 func PumpkinSoup() *Recipe {
-	recipe := Recipe{
+	recipe := &Recipe{
 		Name:        "Тыквенный суп-пюре",
 		Lang:        LangRu,
 		Description: "Для супа лучше выбирать тыкву не сладких сортов. При приготовлении тыквы, старайтесь не переварить, иначе она потеряет вкус.",
@@ -177,7 +176,6 @@ func PumpkinSoup() *Recipe {
 		},
 	}
 
-	recipe.Slug = Slugify(recipe.Name)
-
-	return &recipe
+	recipe.SlugifyAll()
+	return recipe
 }

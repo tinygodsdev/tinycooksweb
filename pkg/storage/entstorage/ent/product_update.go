@@ -51,6 +51,20 @@ func (pu *ProductUpdate) SetNillableName(s *string) *ProductUpdate {
 	return pu
 }
 
+// SetSlug sets the "slug" field.
+func (pu *ProductUpdate) SetSlug(s string) *ProductUpdate {
+	pu.mutation.SetSlug(s)
+	return pu
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (pu *ProductUpdate) SetNillableSlug(s *string) *ProductUpdate {
+	if s != nil {
+		pu.SetSlug(*s)
+	}
+	return pu
+}
+
 // AddRequiredInRecipeIDs adds the "required_in_recipes" edge to the Recipe entity by IDs.
 func (pu *ProductUpdate) AddRequiredInRecipeIDs(ids ...uuid.UUID) *ProductUpdate {
 	pu.mutation.AddRequiredInRecipeIDs(ids...)
@@ -171,6 +185,11 @@ func (pu *ProductUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Product.name": %w`, err)}
 		}
 	}
+	if v, ok := pu.mutation.Slug(); ok {
+		if err := product.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Product.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -191,6 +210,9 @@ func (pu *ProductUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := pu.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
+	}
+	if value, ok := pu.mutation.Slug(); ok {
+		_spec.SetField(product.FieldSlug, field.TypeString, value)
 	}
 	if pu.mutation.RequiredInRecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -343,6 +365,20 @@ func (puo *ProductUpdateOne) SetNillableName(s *string) *ProductUpdateOne {
 	return puo
 }
 
+// SetSlug sets the "slug" field.
+func (puo *ProductUpdateOne) SetSlug(s string) *ProductUpdateOne {
+	puo.mutation.SetSlug(s)
+	return puo
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (puo *ProductUpdateOne) SetNillableSlug(s *string) *ProductUpdateOne {
+	if s != nil {
+		puo.SetSlug(*s)
+	}
+	return puo
+}
+
 // AddRequiredInRecipeIDs adds the "required_in_recipes" edge to the Recipe entity by IDs.
 func (puo *ProductUpdateOne) AddRequiredInRecipeIDs(ids ...uuid.UUID) *ProductUpdateOne {
 	puo.mutation.AddRequiredInRecipeIDs(ids...)
@@ -476,6 +512,11 @@ func (puo *ProductUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Product.name": %w`, err)}
 		}
 	}
+	if v, ok := puo.mutation.Slug(); ok {
+		if err := product.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Product.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -513,6 +554,9 @@ func (puo *ProductUpdateOne) sqlSave(ctx context.Context) (_node *Product, err e
 	}
 	if value, ok := puo.mutation.Name(); ok {
 		_spec.SetField(product.FieldName, field.TypeString, value)
+	}
+	if value, ok := puo.mutation.Slug(); ok {
+		_spec.SetField(product.FieldSlug, field.TypeString, value)
 	}
 	if puo.mutation.RequiredInRecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{

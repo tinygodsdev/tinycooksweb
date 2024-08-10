@@ -33,6 +33,12 @@ func (tc *TagCreate) SetGroup(s string) *TagCreate {
 	return tc
 }
 
+// SetSlug sets the "slug" field.
+func (tc *TagCreate) SetSlug(s string) *TagCreate {
+	tc.mutation.SetSlug(s)
+	return tc
+}
+
 // SetID sets the "id" field.
 func (tc *TagCreate) SetID(u uuid.UUID) *TagCreate {
 	tc.mutation.SetID(u)
@@ -108,8 +114,26 @@ func (tc *TagCreate) check() error {
 	if _, ok := tc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Tag.name"`)}
 	}
+	if v, ok := tc.mutation.Name(); ok {
+		if err := tag.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Tag.name": %w`, err)}
+		}
+	}
 	if _, ok := tc.mutation.Group(); !ok {
 		return &ValidationError{Name: "group", err: errors.New(`ent: missing required field "Tag.group"`)}
+	}
+	if v, ok := tc.mutation.Group(); ok {
+		if err := tag.GroupValidator(v); err != nil {
+			return &ValidationError{Name: "group", err: fmt.Errorf(`ent: validator failed for field "Tag.group": %w`, err)}
+		}
+	}
+	if _, ok := tc.mutation.Slug(); !ok {
+		return &ValidationError{Name: "slug", err: errors.New(`ent: missing required field "Tag.slug"`)}
+	}
+	if v, ok := tc.mutation.Slug(); ok {
+		if err := tag.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Tag.slug": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -153,6 +177,10 @@ func (tc *TagCreate) createSpec() (*Tag, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.Group(); ok {
 		_spec.SetField(tag.FieldGroup, field.TypeString, value)
 		_node.Group = value
+	}
+	if value, ok := tc.mutation.Slug(); ok {
+		_spec.SetField(tag.FieldSlug, field.TypeString, value)
+		_node.Slug = value
 	}
 	if nodes := tc.mutation.RecipesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

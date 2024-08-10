@@ -1,0 +1,41 @@
+{{ define "title" }} {{ .UI.Catalog.Title }} {{ end }}
+{{ define "description" }} {{ .UI.Catalog.Description }} {{ end }}
+{{ define "view" }}
+<main>
+  <div class="section">
+    <!-- by tags -->
+    <h3 class="title is-3 is-size-5-mobile">
+      {{ .UI.Catalog.ByTags }}
+    </h3>
+    <div class="tags">
+      {{ range $i, $tag := .Tags }}
+      <span class="tag is-link is-hoverable is-medium">
+        <a class="has-text-grey-dark" href="/tag/{{ $tag.Slug }}">{{ $tag.Group }}:{{ $tag.Name }}</a>
+      </span>
+      {{ end }}
+    </div>
+    <!-- by ingredients -->
+    <h3 class="title is-3 is-size-5-mobile">
+      {{ .UI.Catalog.ByIngredients }}
+    </h3>
+    <div class="tags">
+      {{ range $i, $ingredient := .Ingredients }}
+      <span class="tag is-success is-hoverable is-medium">
+        <a class="has-text-grey-dark" href="/ingredient/{{ $ingredient.Product.Slug }}">{{ $ingredient.Product.Name }}</a>
+      </span>
+      {{ end }}
+    </div>
+    <!-- by equipment -->
+    <h3 class="title is-3 is-size-5-mobile">
+      {{ .UI.Catalog.ByEquipment }}
+    </h3>
+    <div class="tags">
+      {{ range $i, $equipment := .Equipment }}
+      <span class="tag is-info is-hoverable is-medium">
+        <a class="has-text-grey-dark" href="/equipment/{{ $equipment.Slug }}">{{ $equipment.Name }}</a>
+      </span>
+      {{ end }}
+    </div>
+  </div>
+</main>
+{{ end }}

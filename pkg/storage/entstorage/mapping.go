@@ -56,6 +56,7 @@ func entProductToProduct(p *ent.Product) *recipe.Product {
 	return &recipe.Product{
 		ID:   p.ID,
 		Name: p.Name,
+		Slug: p.Slug,
 	}
 }
 
@@ -71,6 +72,7 @@ func entTagToTag(t *ent.Tag) *recipe.Tag {
 		ID:    t.ID,
 		Name:  t.Name,
 		Group: t.Group,
+		Slug:  t.Slug,
 	}
 }
 
@@ -104,6 +106,13 @@ func entEquipmentToEquipment(e *ent.Equipment) *recipe.Equipment {
 	return &recipe.Equipment{
 		ID:   e.ID,
 		Name: e.Name,
+		Slug: e.Slug,
+	}
+}
+
+func entProductToIngredient(p *ent.Product) *recipe.Ingredient {
+	return &recipe.Ingredient{
+		Product: entProductToProduct(p),
 	}
 }
 
@@ -151,6 +160,14 @@ func mapEntEquipmentToEquipment(equipment []*ent.Equipment) []*recipe.Equipment 
 	var res []*recipe.Equipment
 	for _, e := range equipment {
 		res = append(res, entEquipmentToEquipment(e))
+	}
+	return res
+}
+
+func mapEntProductsToIngredients(products []*ent.Product) []*recipe.Ingredient {
+	var res []*recipe.Ingredient
+	for _, p := range products {
+		res = append(res, entProductToIngredient(p))
 	}
 	return res
 }

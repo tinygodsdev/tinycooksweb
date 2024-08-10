@@ -15,14 +15,17 @@ import (
 
 const (
 	// views
-	view404     = "404"
-	viewAbout   = "about"
-	viewRecipe  = "recipe"
-	viewHome    = "home"
-	viewProfile = "profile"
-	viewPrivacy = "privacy"
-	viewTerms   = "terms"
-	viewStatus  = "status"
+	view404        = "404"
+	viewAbout      = "about"
+	viewRecipe     = "recipe"
+	viewHome       = "home"
+	viewCatalog    = "catalog"
+	viewTag        = "tag"
+	viewIngredient = "ingredient"
+	viewEquipment  = "equipment"
+	viewPrivacy    = "privacy"
+	viewTerms      = "terms"
+	viewStatus     = "status"
 	// events (common)
 	eventCloseError   = "close-error-notification"
 	eventCloseMessage = "close-message-notification"
@@ -32,6 +35,12 @@ const (
 	localeCtxKeyValue = "locale"
 
 	DefaultDisplayTime = time.RFC822
+
+	// exported params
+	ParamRecipeSlug     = "recipeSlug"
+	ParamTagSlug        = "tagSlug"
+	ParamIngredientSlug = "ingredientSlug"
+	ParamEquipmentSlug  = "equipmentSlug"
 )
 
 type (

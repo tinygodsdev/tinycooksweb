@@ -43,6 +43,20 @@ func (eu *EquipmentUpdate) SetNillableName(s *string) *EquipmentUpdate {
 	return eu
 }
 
+// SetSlug sets the "slug" field.
+func (eu *EquipmentUpdate) SetSlug(s string) *EquipmentUpdate {
+	eu.mutation.SetSlug(s)
+	return eu
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableSlug(s *string) *EquipmentUpdate {
+	if s != nil {
+		eu.SetSlug(*s)
+	}
+	return eu
+}
+
 // AddRecipeIDs adds the "recipes" edge to the Recipe entity by IDs.
 func (eu *EquipmentUpdate) AddRecipeIDs(ids ...uuid.UUID) *EquipmentUpdate {
 	eu.mutation.AddRecipeIDs(ids...)
@@ -118,6 +132,11 @@ func (eu *EquipmentUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Equipment.name": %w`, err)}
 		}
 	}
+	if v, ok := eu.mutation.Slug(); ok {
+		if err := equipment.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Equipment.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -135,6 +154,9 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := eu.mutation.Name(); ok {
 		_spec.SetField(equipment.FieldName, field.TypeString, value)
+	}
+	if value, ok := eu.mutation.Slug(); ok {
+		_spec.SetField(equipment.FieldSlug, field.TypeString, value)
 	}
 	if eu.mutation.RecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -211,6 +233,20 @@ func (euo *EquipmentUpdateOne) SetName(s string) *EquipmentUpdateOne {
 func (euo *EquipmentUpdateOne) SetNillableName(s *string) *EquipmentUpdateOne {
 	if s != nil {
 		euo.SetName(*s)
+	}
+	return euo
+}
+
+// SetSlug sets the "slug" field.
+func (euo *EquipmentUpdateOne) SetSlug(s string) *EquipmentUpdateOne {
+	euo.mutation.SetSlug(s)
+	return euo
+}
+
+// SetNillableSlug sets the "slug" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableSlug(s *string) *EquipmentUpdateOne {
+	if s != nil {
+		euo.SetSlug(*s)
 	}
 	return euo
 }
@@ -303,6 +339,11 @@ func (euo *EquipmentUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "Equipment.name": %w`, err)}
 		}
 	}
+	if v, ok := euo.mutation.Slug(); ok {
+		if err := equipment.SlugValidator(v); err != nil {
+			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Equipment.slug": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -337,6 +378,9 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 	}
 	if value, ok := euo.mutation.Name(); ok {
 		_spec.SetField(equipment.FieldName, field.TypeString, value)
+	}
+	if value, ok := euo.mutation.Slug(); ok {
+		_spec.SetField(equipment.FieldSlug, field.TypeString, value)
 	}
 	if euo.mutation.RecipesCleared() {
 		edge := &sqlgraph.EdgeSpec{
