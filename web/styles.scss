@@ -4,8 +4,8 @@ $red: #ff595e;
 $yellow: #ffca3a;
 $green: #8ac926;
 $green2: #88e337;
-$purple: #CC68EA;
-$blue: #2090D6;
+$purple: #cc68ea;
+$blue: #2090d6;
 
 $twitter: #1d9bf1;
 $facebook: #1b74e8;
@@ -22,11 +22,13 @@ $gradientColor3: $yellow;
 $gradientColor4: $red;
 $gradientColor5: $purple;
 
+$text-color: #4e5157;
+
 :root {
   --bulma-primary-h: #{hue($brand)};
   --bulma-primary-s: #{saturation($brand)};
   --bulma-primary-l: #{lightness($brand)};
-  
+
   --bulma-link-h: #{hue($link)};
   --bulma-link-s: #{saturation($link)};
   --bulma-link-l: #{lightness($link)};
@@ -46,6 +48,8 @@ $gradientColor5: $purple;
   --bulma-danger-h: #{hue($red)};
   --bulma-danger-s: #{saturation($red)};
   --bulma-danger-l: #{lightness($red)};
+
+  --bulma-shadow: 0;
 }
 
 body {
@@ -147,17 +151,47 @@ h6 {
   @include animate(fadein, 0.1s, linear, 1);
 }
 
-.gradient-text {
+$gradient: linear-gradient(
+  90deg,
+  $gradientColor1,
+  $gradientColor2 25%,
+  $gradientColor3 60%,
+  $gradientColor4 90%,
+  $gradientColor5
+);
+
+$gradient2: linear-gradient(
+  105deg,
+  $gradientColor1,
+  $gradientColor2 25%,
+  $gradientColor3 60%,
+  $gradientColor4 90%,
+  $gradientColor5
+);
+
+.has-text-gradient {
   background: $brand;
-  background-image: linear-gradient(
-    90deg,
-    $gradientColor1,
-    $gradientColor2 25%,
-    $gradientColor3 60%,
-    $gradientColor4 90%,
-    $gradientColor5
-  );
+  background-image: $gradient;
   -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+.has-bg-gradient {
+  background-image: $gradient;
+}
+
+.has-bg-gradient2 {
+  background-image: $gradient2;
+}
+
+@mixin shadow {
+  box-shadow:
+    rgba($text-color, 0.1) 0px 8px 24px,
+    rgba($text-color, 0.1) 0px 16px 56px,
+    rgba($text-color, 0.1) 0px 24px 80px;
+}
+
+.has-shadow {
+  @include shadow;
 }

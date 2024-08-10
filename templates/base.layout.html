@@ -17,7 +17,7 @@
   >
   <link rel="stylesheet" href="/static/css/styles.css" />
 
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
   {{ if .Assigns.Env }}
@@ -64,7 +64,7 @@
 
 {{ define "footer" }}
 <footer class="footer has-background-white-bis">
-  <div class="is-size-5 is-hidden-mobile">
+  <div class="is-size-5">
     {{ template "navigation-text" . }}
     <hr>
     <div class="has-text-centered is-size-6">
@@ -77,7 +77,7 @@
         </a>
         <a class="has-text-grey-light is-underlined mx-3" href="/terms" target="_blank">Terms and conditions</a>
         <a class="has-text-grey-light is-underlined mx-3" href="/privacy" target="_blank">Privacy policy</a>
-        <span class="has-text-grey mx-3">{{ .Version }}</span>
+        <span class="has-text-grey mx-3 is-hidden-mobile">{{ .Version }}</span>
       </p>
     </div>
     <div class="has-text-centered is-size-6 mt-3">
@@ -93,16 +93,16 @@
 {{ end }}
 
 {{ define "navigation" }}
-<nav class="navbar is-mobile is-hidden-mobile has-background-white-bis py-3 px-4" role="navigation"
+<nav class="navbar is-mobile has-background-white-bis py-3 px-4" role="navigation"
   aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-        <h1 class="title is-3 has-text-primary gradient-text">{{ .UI.Base.Title }}</h1>
+        <h1 class="title is-4 is-size-3-tablet has-text-primary has-text-gradient">{{ .UI.Base.Title }}</h1>
     </a>
   </div>
 
-  <div class="navbar-menu">
-    <div class="navbar-end">
+  <div class="navbar-menu is-mobile">
+    <div class="navbar-end is-mobile">
       <a href="/" class='navbar-item {{ if eq .CurrentView "home"}}is-active{{ end }}' title="Home">
         {{ .UI.Menu.Home }}
       </a>
@@ -118,7 +118,6 @@
   </div>
 </nav>
 {{ end }}
-
 
 {{ define "navigation-text" }}
 <nav class="level is-centered">

@@ -83,6 +83,7 @@ type (
 		Ideas        string
 		Optional     string
 		Required     string
+		Nutrition    *UITransNutrition
 		Filter       *UIFilter
 	}
 
@@ -92,7 +93,20 @@ type (
 		ShareMessage   string
 	}
 
+	UITransNutrition struct {
+		Calories              string
+		Protein               string
+		Fat                   string
+		Carbs                 string
+		PrecisionAuto         string
+		PrecisionProfessional string
+		PrecisionExact        string
+		PrecisionApprox       string
+	}
+
 	UIFilter struct {
+		Title        string
+		Description  string
 		Include      string
 		Exclude      string
 		NameContains string
@@ -101,6 +115,22 @@ type (
 		Apply        string
 	}
 )
+
+func (nt *UITransNutrition) Precision(prec string) string {
+	// TODO: decide something with those magic strings
+	switch prec {
+	case "auto":
+		return nt.PrecisionAuto
+	case "professional":
+		return nt.PrecisionProfessional
+	case "exact":
+		return nt.PrecisionExact
+	case "approx":
+		return nt.PrecisionApprox
+	default:
+		return nt.PrecisionAuto
+	}
+}
 
 func NewUITranslation(loc string) *UITranslation {
 	switch loc {
@@ -166,12 +196,24 @@ func newTranslationEn() *UITranslation {
 			Optional:     "Optional",
 			Required:     "Required",
 			Filter: &UIFilter{
+				Title:        "Search recipes",
+				Description:  "Find recipes by name, tags, ingredients, required equipment",
 				Include:      "Include",
 				Exclude:      "Exclude",
 				Add:          "Add",
 				Clear:        "Clear",
 				Apply:        "Search!",
 				NameContains: "Name contains...",
+			},
+			Nutrition: &UITransNutrition{
+				Calories:              "Calories",
+				Protein:               "Protein",
+				Fat:                   "Fat",
+				Carbs:                 "Carbs",
+				PrecisionAuto:         "Auto",
+				PrecisionProfessional: "Professional",
+				PrecisionExact:        "Exact",
+				PrecisionApprox:       "Approx",
 			},
 		},
 		Share: &UITransShare{
@@ -235,12 +277,24 @@ func newTranslationRu() *UITranslation {
 			Optional:     "Опционально",
 			Required:     "Обязательно",
 			Filter: &UIFilter{
+				Title:        "Поиск рецептов",
+				Description:  "Находите рецепты по названию, тегам, ингредиентам, необходимому оборудованию",
 				Include:      "Включить",
 				Exclude:      "Исключить",
 				Add:          "Добавить",
 				Clear:        "Очистить",
 				Apply:        "Искать!",
 				NameContains: "Название содержит...",
+			},
+			Nutrition: &UITransNutrition{
+				Calories:              "Калории",
+				Protein:               "Белки",
+				Fat:                   "Жиры",
+				Carbs:                 "Углеводы",
+				PrecisionAuto:         "Авто",
+				PrecisionProfessional: "Профессионально",
+				PrecisionExact:        "Точно",
+				PrecisionApprox:       "Приблизительно",
 			},
 		},
 		Share: &UITransShare{
