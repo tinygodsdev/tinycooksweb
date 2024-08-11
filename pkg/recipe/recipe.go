@@ -63,13 +63,6 @@ type Equipment struct {
 	Slug string    `json:"slug"`
 }
 
-type Tag struct {
-	ID    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Group string    `json:"group"`
-	Slug  string    `json:"slug"`
-}
-
 type Idea struct {
 	ID   uuid.UUID `json:"id"`
 	Text string    `json:"text"`
@@ -134,8 +127,4 @@ func (r *Recipe) ShareText() string {
 
 	res += "\n\n" + trans.Share.ExploreMessage
 	return res
-}
-
-func (t *Tag) Title() string {
-	return fmt.Sprintf("%s:%s", t.Group, t.Name)
 }

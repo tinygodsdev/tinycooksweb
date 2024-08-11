@@ -7,6 +7,10 @@ type Pagination struct {
 }
 
 func calculatePagination(totalItems, limit, offset int) Pagination {
+	if totalItems == 0 {
+		return Pagination{}
+	}
+
 	totalPages := (totalItems + limit - 1) / limit
 	currentPage := (offset / limit) + 1
 

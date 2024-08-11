@@ -190,7 +190,7 @@ var (
 	// TagsColumns holds the columns for the "tags" table.
 	TagsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString, Unique: true},
 		{Name: "group", Type: field.TypeString},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
