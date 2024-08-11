@@ -3,10 +3,10 @@ package handler
 import (
 	"fmt"
 	"html/template"
+	"path/filepath"
 	"time"
 
 	"github.com/bradfitz/iter"
-	"github.com/samber/lo"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -14,16 +14,33 @@ import (
 
 // this function might panic if no names are provided
 // it is intended to be used only on server startup
-func (h *Handler) template(names ...string) *template.Template {
-	if len(names) == 0 {
-		panic("template: no names provided")
+// func (h *Handler) template(names ...string) *template.Template {
+// 	if len(names) == 0 {
+// 		panic("template: no names provided")
+// 	}
+
+// 	base := names[0]
+
+// 	return template.Must(template.New(base).Funcs(funcMap()).ParseFiles(
+// 		lo.Map(names, func(n string, _ int) string { return h.t + n })...,
+// 	))
+// }
+
+// this function might panic if no names are provided
+// it is intended to be used only on server startup
+func (h *Handler) template(base string, dir string) *template.Template {
+	tmpl := template.Must(template.New(base).Funcs(funcMap()).ParseFiles(h.t + base))
+	pattern := filepath.Join(h.t, dir, "*.html")
+	files, err := filepath.Glob(pattern)
+	if err != nil {
+		panic("template: error while finding files in directory " + dir)
 	}
 
-	base := names[0]
+	if len(files) == 0 {
+		panic("template: no files found in directory " + dir)
+	}
 
-	return template.Must(template.New(base).Funcs(funcMap()).ParseFiles(
-		lo.Map(names, func(n string, _ int) string { return h.t + n })...,
-	))
+	return template.Must(tmpl.ParseFiles(files...))
 }
 
 func funcMap() template.FuncMap {

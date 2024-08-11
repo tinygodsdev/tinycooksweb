@@ -1,0 +1,31 @@
+{{ define "share-result-twitter" }}
+<a target="_blank" class="button is-fullwidth share-twitter-button"
+  href="https://twitter.com/intent/tweet?original_referer={{ .Recipe.Link .Domain }}&amp;text={{ .Recipe.ShareText }}&amp;tw_p=tweet&amp;url={{ .Recipe.Link .Domain }}&amp;via={{ .UI.Base.Title }}">
+  <span class="icon m-0 mr-1-tablet">
+    <i class="bi bi-twitter"></i>
+  </span>
+  <span class="is-hidden-mobile">{{ .UI.Share.ShareMessage }} Twitter</span>
+</a>
+{{ end }}
+
+{{ define "share-result-facebook" }}
+<a target="_blank" class="button is-fullwidth share-facebook-button"
+  onclick="return !window.open(this.href, 'Facebook', 'width=640,height=480')"
+  href="https://www.facebook.com/sharer.php?u={{ .Recipe.Link .Domain }}" data-url="{{ .Recipe.Link .Domain }}">
+  <span class="icon m-0 mr-1-tablet">
+    <i class="bi bi-facebook"></i>
+  </span>
+  <span class="is-hidden-mobile">{{ .UI.Share.ShareMessage }} Facebook</span>
+</a>
+{{ end }}
+
+{{ define "share-buttons"}}
+<div class="level is-mobile">
+  <div class="level-item">
+    {{ template "share-result-twitter" . }}
+  </div>
+  <div class="level-item">
+    {{ template "share-result-facebook" . }}
+  </div>
+</div>
+{{ end }}

@@ -29,7 +29,7 @@ func (h *Handler) NewAboutInstance(s live.Socket) *AboutInstance {
 }
 
 func (h *Handler) About() live.Handler {
-	t := h.template("base.layout.html", "page.about.html")
+	t := h.template("base.layout.html", "about")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

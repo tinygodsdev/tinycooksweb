@@ -1,0 +1,28 @@
+{{ define "title" }} {{ .UI.Base.Title }} {{ end }}
+{{ define "description" }} {{ .UI.Base.Description }} {{ end }}
+{{ define "view" }}
+<main>
+  <div class="section">
+    {{ template "filter" . }}
+  </div>
+  <div class="section">
+    <h3 class="title is-3 is-size-5-mobile">
+      {{ if .Filter.IsEmpty }}
+      {{ .UI.Home.RecipesTotal }}:
+      {{ else }}
+      {{ .UI.Home.RecipesFound }}:
+      {{ end }}
+      {{ .RecipesCount }}
+    </h3>
+    {{ template "pagination" . }}
+    <div class="columns is-multiline">
+      {{ range $i, $recipe := .Recipes }}
+      <div class="column is-6">
+        {{ template "recipe-card" $recipe }}
+      </div>
+      {{ end }}
+    </div>
+    {{ template "pagination" . }}
+  </div>
+</main>
+{{ end }}

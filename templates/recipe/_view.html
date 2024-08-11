@@ -1,0 +1,75 @@
+{{ define "title" }} {{ .Recipe.Name }} {{ end }}
+{{ define "description" }} {{ .Recipe.Description }} {{ end }}
+{{ define "view" }}
+<main>
+  {{ template "back-to-home" }}
+  <!-- Hero -->
+  <div class="section">
+    <h1 class="title is-1 is-size-3-mobile">{{ .Recipe.Name }}</h1>
+    {{ template "share-buttons" . }}
+    <div class="columns">
+      <div class="column">{{ .Recipe.Description }}</div>
+      <div class="column is-one-third">
+        {{ template "nutrition-card" . }}
+      </div>
+    </div>
+    <p class="content">{{ .Recipe.Text }}</p>
+  </div>
+  <!-- Requirements -->
+  <div class="section">
+    <div class="columns">
+      <div class="column is-8">
+        <h4 class="title is-4">{{ .UI.Recipe.Ingredients }}</h4>
+        {{ range .Recipe.Ingredients }}
+        <div class="">
+          <span class="has-text-weight-bold">{{ Title .Product.Name }} </span>
+          <span class="">{{ .Quantity }} {{ .Unit }} </span>
+          {{ if .Optional}}
+          <span class="tag is-primary is-light">{{ $.UI.Recipe.Optional }}</span>
+          {{ else}}
+          {{ end }}
+        </div>
+        {{ end }}
+      </div>
+      <div class="column is-4">
+        <h4 class="title is-4">{{ .UI.Recipe.Equipment }}</h4>
+        <ul>
+          {{ range .Recipe.Equipment }}
+          <li>{{ .Name }}</li>
+          {{ end }}
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- Instructions -->
+  <div class="section">
+    <h4 class="title is-4">{{ .UI.Recipe.Instructions }}</h4>
+    {{ range $i, $inst := .Recipe.Instructions }}
+    <div class="columns">
+      <div class="column is-narrow">
+        <span class="title is-4 is-primary">{{ Plus1 $i }}</span>
+      </div>
+      <div class="column">
+        <span>{{ $inst.Text }}</span>
+      </div>
+    </div>
+    {{ end }}
+  </div>
+  <!-- Ideas -->
+  <div class="section">
+    <h4 class="title is-4">{{ .UI.Recipe.Ideas }}</h4>
+    {{ range .Recipe.Ideas }}
+    <div class="columns">
+      <div class="column is-narrow">
+        <p class="title is-3 is-primary">{{ RandomEmoji }}</p>
+      </div>
+      <div class="column">
+        {{ .Text }}
+      </div>
+    </div>
+    {{ end }}
+    {{ template "share-buttons" . }}
+  </div>
+  </div>
+</main>
+{{ end }}

@@ -29,7 +29,7 @@ func (h *Handler) NewPrivacyInstance(s live.Socket) *PrivacyInstance {
 }
 
 func (h *Handler) Privacy() live.Handler {
-	t := h.template("base.layout.html", "page.privacy.html")
+	t := h.template("base.layout.html", "privacy")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

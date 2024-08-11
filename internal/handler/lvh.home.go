@@ -100,7 +100,7 @@ func (ins *HomeInstance) WithUpdateRecipes(
 }
 
 func (h *Handler) Home() live.Handler {
-	t := h.template("base.layout.html", "page.home.html")
+	t := h.template("base.layout.html", "home")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

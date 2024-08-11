@@ -48,7 +48,7 @@ func (ins *EquipmentInstance) withError(err error) *EquipmentInstance {
 }
 
 func (h *Handler) Equipment() live.Handler {
-	t := h.template("base.layout.html", "page.catalog_page.html")
+	t := h.template("base.layout.html", "catalog-page")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

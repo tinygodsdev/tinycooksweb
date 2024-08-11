@@ -1,0 +1,73 @@
+{{ define "filter-display" }}
+<div class="block">
+  {{ if .Filter.HasTagRules }}
+  <p class="has-text-grey is-size-6 has-text-weight-semibold">{{ .UI.Recipe.Tags }}</p>
+  <div class="columns my-2 p-0">
+    <div class="column py-0">
+      {{ range $i, $tag := .Filter.Tag }}
+      <span class="tag is-primary is-medium mr-2">
+        {{ $tag }}
+        <button live-click="tags-filter-delete" live-value-delete="{{ $tag }}" live-value-searchtype="include"
+          class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+    <div class="column py-0 has-text-right">
+      {{ range $i, $tag := .Filter.TagNot }}
+      <span key="{{ $i }}" class="tag is-danger is-medium mr-2">
+        {{ $tag }}
+        <button live-click="tags-filter-delete" live-value-delete="{{ $tag }}" live-value-searchtype="exclude"
+          class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+  {{ if .Filter.HasIngredientRules }}
+  <p class="has-text-grey is-size-6 has-text-weight-semibold">{{ .UI.Recipe.Ingredients }}</p>
+  <div class="columns my-2 p-0">
+    <div class="column py-0">
+      {{ range $i, $ingredient := .Filter.Ingredient }}
+      <span key="{{ $i }}" class="tag is-success is-medium mr-2">
+        {{ $ingredient }}
+        <button live-click="ingredients-filter-delete" live-value-delete="{{ $ingredient }}"
+          live-value-searchtype="include" class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+    <div class="column py-0 has-text-right">
+      {{ range $i, $ingredient := .Filter.IngredientNot }}
+      <span key="{{ $i }}" class="tag is-danger is-medium mr-2">
+        {{ $ingredient }}
+        <button live-click="ingredients-filter-delete" live-value-delete="{{ $ingredient }}"
+          live-value-searchtype="exclude" class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+  {{ if .Filter.HasEquipmentRules }}
+  <p class="has-text-grey is-size-6 has-text-weight-semibold">{{ .UI.Recipe.Equipment }}</p>
+  <div class="columns my-2 p-0">
+    <div class="column py-0">
+      {{ range $i, $equipment := .Filter.Equipment }}
+      <span key="{{ $i }}" class="tag is-info is-medium mr-2">
+        {{ $equipment }}
+        <button live-click="equipment-filter-delete" live-value-delete="{{ $equipment }}"
+          live-value-searchtype="include" class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+    <div class="column py-0 has-text-right">
+      {{ range $i, $equipment := .Filter.EquipmentNot }}
+      <span key="{{ $i }}" class="tag is-danger is-medium mr-2">
+        {{ $equipment }}
+        <button live-click="equipment-filter-delete" live-value-delete="{{ $equipment }}"
+          live-value-searchtype="exclude" class="delete"></button>
+      </span>
+      {{ end }}
+    </div>
+  </div>
+  {{ end }}
+</div>
+{{ end }}

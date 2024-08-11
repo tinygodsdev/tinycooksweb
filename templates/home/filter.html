@@ -1,0 +1,97 @@
+{{ define "filter" }}
+<h1 class="title is-3 is-size-5-mobile">{{ .UI.Recipe.Filter.Title }}</h1>
+<h3 class="subtitle is-5 is-size-6-mobile">{{ .UI.Recipe.Filter.Description }}</h3>
+<div class="box has-shadow">
+  <!-- Name Filter Form -->
+  <form class="my-4" id="name-filter-form" live-change="name-filter-form-change" live-debounce=1000>
+    <div class="field">
+      <p class="control is-expanded">
+        <input class="input" type="text" name="value" placeholder="{{ .UI.Recipe.Filter.NameContains }}">
+      </p>
+    </div>
+  </form>
+  <!-- Tags Filter Form -->
+  <form class="my-4" id="tags-filter-form" live-change="tags-filter-form-change" live-submit="tags-filter-form-submit">
+    <div class="field has-addons">
+      <p class="control">
+        <span class="select">
+          <select name="searchtype">
+            <option value="include">{{ .UI.Recipe.Filter.Include }}</option>
+            <option value="exclude">{{ .UI.Recipe.Filter.Exclude }}</option>
+          </select>
+        </span>
+      </p>
+      <p class="control is-expanded">
+        <input class="input" type="search" name="value" list="tags" placeholder="{{ .UI.Recipe.Tags }}">
+        <datalist id="tags">
+          {{ range $tag := .Tags }}
+          <option value="{{ $tag.Name }}">{{ $tag.Title }}</option>
+          {{ end }}
+        </datalist>
+      </p>
+      <p class="control">
+        <button class="button">
+          {{ .UI.Recipe.Filter.Add }}
+        </button>
+      </p>
+    </div>
+  </form>
+  <!-- Ingredients Filter Form -->
+  <form class="my-4" id="ingredients-filter-form" live-change="ingredients-filter-form-change"
+    live-submit="ingredients-filter-form-submit">
+    <div class="field has-addons">
+      <p class="control">
+        <span class="select">
+          <select name="searchtype">
+            <option value="include">{{ .UI.Recipe.Filter.Include }}</option>
+            <option value="exclude">{{ .UI.Recipe.Filter.Exclude }}</option>
+          </select>
+        </span>
+      </p>
+      <p class="control is-expanded">
+        <input class="input" type="search" name="value" list="ingredients" placeholder="{{ .UI.Recipe.Ingredients }}">
+        <datalist id="ingredients">
+          {{ range $ingredient := .Ingredients }}
+          <option value="{{ $ingredient.Product.Name }}">{{ $ingredient.Product.Name }}</option>
+          {{ end }}
+        </datalist>
+      </p>
+      <p class="control">
+        <button class="button">
+          {{ .UI.Recipe.Filter.Add }}
+        </button>
+      </p>
+    </div>
+  </form>
+  <!-- Equipment Filter Form -->
+  <form class="my-4" id="equipment-filter-form" live-change="equipment-filter-form-change"
+    live-submit="equipment-filter-form-submit">
+    <div class="field has-addons">
+      <p class="control">
+        <span class="select">
+          <select name="searchtype">
+            <option value="include">{{ .UI.Recipe.Filter.Include }}</option>
+            <option value="exclude">{{ .UI.Recipe.Filter.Exclude }}</option>
+          </select>
+        </span>
+      </p>
+      <p class="control is-expanded">
+        <input class="input" type="search" name="value" list="equipment" placeholder="{{ .UI.Recipe.Equipment }}">
+        <datalist id="equipment">
+          {{ range $item := .Equipment }}
+          <option value="{{ $item.Name }}">{{ $item.Name }}</option>
+          {{ end }}
+        </datalist>
+      </p>
+      <p class="control">
+        <button class="button">
+          {{ .UI.Recipe.Filter.Add }}
+        </button>
+      </p>
+    </div>
+  </form>
+</div>
+{{ if not .Filter.IsEmpty }}
+{{ template "filter-display" . }}
+{{ end }}
+{{ end }}

@@ -48,7 +48,7 @@ func (ins *TagInstance) withError(err error) *TagInstance {
 }
 
 func (h *Handler) Tag() live.Handler {
-	t := h.template("base.layout.html", "page.catalog_page.html")
+	t := h.template("base.layout.html", "catalog-page")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

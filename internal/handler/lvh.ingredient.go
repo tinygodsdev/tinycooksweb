@@ -48,7 +48,7 @@ func (ins *IngredientInstance) withError(err error) *IngredientInstance {
 }
 
 func (h *Handler) Ingredient() live.Handler {
-	t := h.template("base.layout.html", "page.catalog_page.html")
+	t := h.template("base.layout.html", "catalog-page")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

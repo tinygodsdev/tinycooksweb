@@ -43,7 +43,7 @@ func (h *Handler) NewRecipeInstance(s live.Socket) *RecipeInstance {
 }
 
 func (h *Handler) Recipe() live.Handler {
-	t := h.template("base.layout.html", "page.recipe.html")
+	t := h.template("base.layout.html", "recipe")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

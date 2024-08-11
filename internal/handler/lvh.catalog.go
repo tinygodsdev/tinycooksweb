@@ -38,7 +38,7 @@ func (ins *CatalogInstance) withError(err error) *CatalogInstance {
 }
 
 func (h *Handler) Catalog() live.Handler {
-	t := h.template("base.layout.html", "page.catalog.html")
+	t := h.template("base.layout.html", "catalog")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

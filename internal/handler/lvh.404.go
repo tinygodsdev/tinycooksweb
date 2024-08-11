@@ -34,7 +34,7 @@ func (h *Handler) NewNotFoundInstance(s live.Socket) *NotFoundInstance {
 }
 
 func (h *Handler) NotFound() live.Handler {
-	t := h.template("base.layout.html", "page.404.html")
+	t := h.template("base.layout.html", "404")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

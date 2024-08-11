@@ -29,7 +29,7 @@ func (h *Handler) NewTermsInstance(s live.Socket) *TermsInstance {
 }
 
 func (h *Handler) Terms() live.Handler {
-	t := h.template("base.layout.html", "page.terms.html")
+	t := h.template("base.layout.html", "terms")
 
 	lvh := live.NewHandler(live.WithTemplateRenderer(t))
 	// COMMON BLOCK START

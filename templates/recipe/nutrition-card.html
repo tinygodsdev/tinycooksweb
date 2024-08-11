@@ -1,0 +1,48 @@
+{{ define "nutrition-card" }}
+<div class="box has-shadow has-bg-gradient2 has-text-white has-text-weight-bold is-size-6">
+  <!-- Calories -->
+  <div class="level mb-0 is-mobile">
+    <div class="level-left">
+      <div class="level-item">
+        <p class="">{{ .UI.Recipe.Nutrition.Calories }}</p>
+      </div>
+    </div>
+    <div class="level-right">
+      <p class="level-item">{{ .Recipe.Nutrition.Calories }}</p>
+    </div>
+  </div>
+  <!-- Protein -->
+  <div class="level mb-0 is-mobile">
+    <div class="level-left">
+      <div class="level-item">
+        <p class="">{{ .UI.Recipe.Nutrition.Protein }}</p>
+      </div>
+    </div>
+    <div class="level-right">
+      <p class="level-item">{{ .Recipe.Nutrition.Protein }}</p>
+    </div>
+  </div>
+  <!-- Carbs -->
+  <div class="level mb-0 is-mobile">
+    <div class="level-left">
+      <div class="level-item">
+        <p class="">{{ .UI.Recipe.Nutrition.Carbs }}</p>
+      </div>
+    </div>
+    <div class="level-right">
+      <p class="level-item">{{ .Recipe.Nutrition.Carbs }}</p>
+    </div>
+  </div>
+  <!-- Fat -->
+  <div class="level mb-0 is-mobile">
+    <div class="level-left">
+      <div class="level-item">
+        <p class="">{{ .UI.Recipe.Nutrition.Fat }}</p>
+      </div>
+    </div>
+    <div class="level-right">
+      <p class="level-item">{{ .Recipe.Nutrition.Fat }}</p>
+    </div>
+  </div>
+</div>
+{{ end }}
