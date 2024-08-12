@@ -27,6 +27,11 @@ type Config struct {
 	SaveSeedData  bool   `envconfig:"SAVE_SEED_DATA" default:"false"`
 
 	PageSize int `envconfig:"PAGE_SIZE" default:"20"`
+
+	AirtableAPIKey         string `envconfig:"AIRTABLE_API_KEY" required:"true"`
+	AirtableBaseID         string `envconfig:"AIRTABLE_BASE_ID" required:"true"`
+	AirtableTable          string `envconfig:"AIRTABLE_TABLE" required:"true"`
+	AirtableReportSchedule string `envconfig:"AIRTABLE_REPORT_SCHEDULE" default:"0 10 * * *"`
 }
 
 func LoadConfig() (*Config, error) {

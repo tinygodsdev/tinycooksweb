@@ -86,6 +86,11 @@ func Text(v string) predicate.Recipe {
 	return predicate.Recipe(sql.FieldEQ(FieldText, v))
 }
 
+// Rating applies equality check predicate on the "rating" field. It's identical to RatingEQ.
+func Rating(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldEQ(FieldRating, v))
+}
+
 // Servings applies equality check predicate on the "servings" field. It's identical to ServingsEQ.
 func Servings(v int) predicate.Recipe {
 	return predicate.Recipe(sql.FieldEQ(FieldServings, v))
@@ -455,6 +460,56 @@ func TextEqualFold(v string) predicate.Recipe {
 // TextContainsFold applies the ContainsFold predicate on the "text" field.
 func TextContainsFold(v string) predicate.Recipe {
 	return predicate.Recipe(sql.FieldContainsFold(FieldText, v))
+}
+
+// RatingEQ applies the EQ predicate on the "rating" field.
+func RatingEQ(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldEQ(FieldRating, v))
+}
+
+// RatingNEQ applies the NEQ predicate on the "rating" field.
+func RatingNEQ(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldNEQ(FieldRating, v))
+}
+
+// RatingIn applies the In predicate on the "rating" field.
+func RatingIn(vs ...float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldIn(FieldRating, vs...))
+}
+
+// RatingNotIn applies the NotIn predicate on the "rating" field.
+func RatingNotIn(vs ...float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldNotIn(FieldRating, vs...))
+}
+
+// RatingGT applies the GT predicate on the "rating" field.
+func RatingGT(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldGT(FieldRating, v))
+}
+
+// RatingGTE applies the GTE predicate on the "rating" field.
+func RatingGTE(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldGTE(FieldRating, v))
+}
+
+// RatingLT applies the LT predicate on the "rating" field.
+func RatingLT(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldLT(FieldRating, v))
+}
+
+// RatingLTE applies the LTE predicate on the "rating" field.
+func RatingLTE(v float32) predicate.Recipe {
+	return predicate.Recipe(sql.FieldLTE(FieldRating, v))
+}
+
+// RatingIsNil applies the IsNil predicate on the "rating" field.
+func RatingIsNil() predicate.Recipe {
+	return predicate.Recipe(sql.FieldIsNull(FieldRating))
+}
+
+// RatingNotNil applies the NotNil predicate on the "rating" field.
+func RatingNotNil() predicate.Recipe {
+	return predicate.Recipe(sql.FieldNotNull(FieldRating))
 }
 
 // ServingsEQ applies the EQ predicate on the "servings" field.

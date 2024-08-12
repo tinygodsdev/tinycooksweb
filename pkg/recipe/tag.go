@@ -12,17 +12,17 @@ const (
 )
 
 type Tag struct {
-	ID    uuid.UUID `json:"id"`
+	ID    uuid.UUID `json:"-"`
 	Name  string    `json:"name"`
 	Group string    `json:"group"`
-	Slug  string    `json:"slug"`
+	Slug  string    `json:"-"`
 }
 
 func (t *Tag) Title() string {
 	return strings.Join([]string{t.Group, t.Name}, TagSeparator)
 }
 
-func TagFromString(tag string) *Tag {
+func TagFromTitle(tag string) *Tag {
 	parts := strings.Split(tag, TagSeparator)
 	if len(parts) != 2 {
 		return nil
@@ -45,4 +45,8 @@ func FilterTagsByGroup(tags []*Tag, group string) []*Tag {
 	return lo.Filter(tags, func(t *Tag, _ int) bool {
 		return t.Group == group
 	})
+}
+
+func (t *Tag) Slugify() {
+	t.Slug = Slugify(t.Title())
 }

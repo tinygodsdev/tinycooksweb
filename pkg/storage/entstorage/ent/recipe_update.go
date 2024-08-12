@@ -99,6 +99,33 @@ func (ru *RecipeUpdate) SetNillableText(s *string) *RecipeUpdate {
 	return ru
 }
 
+// SetRating sets the "rating" field.
+func (ru *RecipeUpdate) SetRating(f float32) *RecipeUpdate {
+	ru.mutation.ResetRating()
+	ru.mutation.SetRating(f)
+	return ru
+}
+
+// SetNillableRating sets the "rating" field if the given value is not nil.
+func (ru *RecipeUpdate) SetNillableRating(f *float32) *RecipeUpdate {
+	if f != nil {
+		ru.SetRating(*f)
+	}
+	return ru
+}
+
+// AddRating adds f to the "rating" field.
+func (ru *RecipeUpdate) AddRating(f float32) *RecipeUpdate {
+	ru.mutation.AddRating(f)
+	return ru
+}
+
+// ClearRating clears the value of the "rating" field.
+func (ru *RecipeUpdate) ClearRating() *RecipeUpdate {
+	ru.mutation.ClearRating()
+	return ru
+}
+
 // SetServings sets the "servings" field.
 func (ru *RecipeUpdate) SetServings(i int) *RecipeUpdate {
 	ru.mutation.ResetServings()
@@ -483,6 +510,11 @@ func (ru *RecipeUpdate) check() error {
 			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Recipe.slug": %w`, err)}
 		}
 	}
+	if v, ok := ru.mutation.Rating(); ok {
+		if err := recipe.RatingValidator(v); err != nil {
+			return &ValidationError{Name: "rating", err: fmt.Errorf(`ent: validator failed for field "Recipe.rating": %w`, err)}
+		}
+	}
 	if v, ok := ru.mutation.Servings(); ok {
 		if err := recipe.ServingsValidator(v); err != nil {
 			return &ValidationError{Name: "servings", err: fmt.Errorf(`ent: validator failed for field "Recipe.servings": %w`, err)}
@@ -517,6 +549,15 @@ func (ru *RecipeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := ru.mutation.Text(); ok {
 		_spec.SetField(recipe.FieldText, field.TypeString, value)
+	}
+	if value, ok := ru.mutation.Rating(); ok {
+		_spec.SetField(recipe.FieldRating, field.TypeFloat32, value)
+	}
+	if value, ok := ru.mutation.AddedRating(); ok {
+		_spec.AddField(recipe.FieldRating, field.TypeFloat32, value)
+	}
+	if ru.mutation.RatingCleared() {
+		_spec.ClearField(recipe.FieldRating, field.TypeFloat32)
 	}
 	if value, ok := ru.mutation.Servings(); ok {
 		_spec.SetField(recipe.FieldServings, field.TypeInt, value)
@@ -983,6 +1024,33 @@ func (ruo *RecipeUpdateOne) SetNillableText(s *string) *RecipeUpdateOne {
 	return ruo
 }
 
+// SetRating sets the "rating" field.
+func (ruo *RecipeUpdateOne) SetRating(f float32) *RecipeUpdateOne {
+	ruo.mutation.ResetRating()
+	ruo.mutation.SetRating(f)
+	return ruo
+}
+
+// SetNillableRating sets the "rating" field if the given value is not nil.
+func (ruo *RecipeUpdateOne) SetNillableRating(f *float32) *RecipeUpdateOne {
+	if f != nil {
+		ruo.SetRating(*f)
+	}
+	return ruo
+}
+
+// AddRating adds f to the "rating" field.
+func (ruo *RecipeUpdateOne) AddRating(f float32) *RecipeUpdateOne {
+	ruo.mutation.AddRating(f)
+	return ruo
+}
+
+// ClearRating clears the value of the "rating" field.
+func (ruo *RecipeUpdateOne) ClearRating() *RecipeUpdateOne {
+	ruo.mutation.ClearRating()
+	return ruo
+}
+
 // SetServings sets the "servings" field.
 func (ruo *RecipeUpdateOne) SetServings(i int) *RecipeUpdateOne {
 	ruo.mutation.ResetServings()
@@ -1380,6 +1448,11 @@ func (ruo *RecipeUpdateOne) check() error {
 			return &ValidationError{Name: "slug", err: fmt.Errorf(`ent: validator failed for field "Recipe.slug": %w`, err)}
 		}
 	}
+	if v, ok := ruo.mutation.Rating(); ok {
+		if err := recipe.RatingValidator(v); err != nil {
+			return &ValidationError{Name: "rating", err: fmt.Errorf(`ent: validator failed for field "Recipe.rating": %w`, err)}
+		}
+	}
 	if v, ok := ruo.mutation.Servings(); ok {
 		if err := recipe.ServingsValidator(v); err != nil {
 			return &ValidationError{Name: "servings", err: fmt.Errorf(`ent: validator failed for field "Recipe.servings": %w`, err)}
@@ -1431,6 +1504,15 @@ func (ruo *RecipeUpdateOne) sqlSave(ctx context.Context) (_node *Recipe, err err
 	}
 	if value, ok := ruo.mutation.Text(); ok {
 		_spec.SetField(recipe.FieldText, field.TypeString, value)
+	}
+	if value, ok := ruo.mutation.Rating(); ok {
+		_spec.SetField(recipe.FieldRating, field.TypeFloat32, value)
+	}
+	if value, ok := ruo.mutation.AddedRating(); ok {
+		_spec.AddField(recipe.FieldRating, field.TypeFloat32, value)
+	}
+	if ruo.mutation.RatingCleared() {
+		_spec.ClearField(recipe.FieldRating, field.TypeFloat32)
 	}
 	if value, ok := ruo.mutation.Servings(); ok {
 		_spec.SetField(recipe.FieldServings, field.TypeInt, value)

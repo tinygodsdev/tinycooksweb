@@ -20,26 +20,28 @@ const (
 )
 
 type Recipe struct {
-	ID           uuid.UUID     `json:"id"`
-	Name         string        `json:"name"`
-	Lang         string        `json:"lang"`
-	Slug         string        `json:"slug"`
-	Description  string        `json:"description"` // Short description for catalog
-	Text         string        `json:"text"`        // Long description for recipe page
-	Tags         []*Tag        `json:"tags"`
-	Ingredients  []*Ingredient `json:"ingredients"`
-	Equipment    []*Equipment  `json:"equipment"`
-	Instructions []Instruction `json:"instructions"` // Steps to prepare the recipe
-	Ideas        []*Idea       `json:"ideas"`        // Ideas for variations
-	Time         time.Duration `json:"time"`
-	Servings     int           `json:"servings"`
-	Sources      []*Source     `json:"sources"`
-	Rating       float32       `json:"rating"`
-	Nutrition    *Nutrition    `json:"nutrition"`
+	ID               uuid.UUID         `json:"-"`
+	Slug             string            `json:"-"`
+	Name             string            `json:"name"`
+	Lang             string            `json:"lang"`
+	Description      string            `json:"description"` // Short description for catalog
+	Text             string            `json:"text"`        // Long description for recipe page
+	Tags             []*Tag            `json:"tags"`
+	Ingredients      []*Ingredient     `json:"ingredients"`
+	Equipment        []*Equipment      `json:"equipment"`
+	Instructions     []Instruction     `json:"instructions"` // Steps to prepare the recipe
+	Ideas            []*Idea           `json:"ideas"`        // Ideas for variations
+	Time             time.Duration     `json:"time"`
+	Servings         int               `json:"servings"`
+	Sources          []*Source         `json:"sources"`
+	Rating           float32           `json:"rating"`
+	Nutrition        *Nutrition        `json:"nutrition"`
+	Meta             map[string]string `json:"meta"`
+	ModerationStatus string            `json:"moderation_status"`
 }
 
 type Ingredient struct {
-	ID       uuid.UUID `json:"id"`
+	ID       uuid.UUID `json:"-"`
 	Product  *Product  `json:"product"`
 	Quantity string    `json:"quantity"`
 	Unit     string    `json:"unit"`
@@ -47,29 +49,29 @@ type Ingredient struct {
 }
 
 type Product struct {
-	ID   uuid.UUID `json:"id"`
+	ID   uuid.UUID `json:"-"`
 	Name string    `json:"name"`
-	Slug string    `json:"slug"`
+	Slug string    `json:"-"`
 }
 
 type Instruction struct {
-	ID   uuid.UUID `json:"id"`
+	ID   uuid.UUID `json:"-"`
 	Text string    `json:"text"`
 }
 
 type Equipment struct {
-	ID   uuid.UUID `json:"id"`
+	ID   uuid.UUID `json:"-"`
 	Name string    `json:"name"`
-	Slug string    `json:"slug"`
+	Slug string    `json:"-"`
 }
 
 type Idea struct {
-	ID   uuid.UUID `json:"id"`
+	ID   uuid.UUID `json:"-"`
 	Text string    `json:"text"`
 }
 
 type Source struct {
-	ID          uuid.UUID `json:"id"`
+	ID          uuid.UUID `json:"-"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	URL         string    `json:"url"`
@@ -127,4 +129,12 @@ func (r *Recipe) ShareText() string {
 
 	res += "\n\n" + trans.Share.ExploreMessage
 	return res
+}
+
+func (e *Equipment) Slugify() {
+	e.Slug = Slugify(e.Name)
+}
+
+func (i *Ingredient) Slugify() {
+	i.Product.Slug = Slugify(i.Product.Name)
 }

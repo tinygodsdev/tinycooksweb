@@ -10,6 +10,8 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/internal/app"
 	"github.com/tinygodsdev/tinycooksweb/internal/config"
 	"github.com/tinygodsdev/tinycooksweb/internal/handler"
+	"github.com/tinygodsdev/tinycooksweb/pkg/moderation"
+	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/cachedstorage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage"
@@ -23,8 +25,24 @@ func main() {
 
 	logger := logger.NewStdLogger()
 
+	moderationStore, err := moderation.NewAirtableModerationStore(moderation.Config{
+		APIKey: cfg.AirtableAPIKey,
+		BaseID: cfg.AirtableBaseID,
+		Table:  cfg.AirtableTable,
+	}, logger)
+	if err != nil {
+		logger.Fatal("failed to init moderation store", "err", err)
+	}
+
 	if cfg.Dev() {
 		fmt.Printf("Loaded config: %+v\n", cfg)
+
+		seedData := recipe.SeedData()
+
+		err = moderationStore.Save(context.Background(), seedData)
+		if err != nil {
+			logger.Fatal("failed to save seed data", "err", err)
+		}
 	}
 
 	recipeStore, err := entstorage.NewEntStorage(entstorage.Config{
@@ -54,9 +72,14 @@ func main() {
 		store = cachedStore
 	}
 
-	a, err := app.New(cfg, logger, store)
+	a, err := app.New(cfg, logger, store, moderationStore)
 	if err != nil {
 		logger.Fatal("failed to init app", "err", err)
+	}
+
+	err = a.LoadApprovedRecipes(context.Background())
+	if err != nil {
+		logger.Fatal("failed to load approved recipes", "err", err)
 	}
 
 	h, err := handler.NewHandler(a, logger, "templates/")

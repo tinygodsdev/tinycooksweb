@@ -33,6 +33,8 @@ type Recipe struct {
 	Description string `json:"description,omitempty"`
 	// Text holds the value of the "text" field.
 	Text string `json:"text,omitempty"`
+	// Rating holds the value of the "rating" field.
+	Rating float32 `json:"rating,omitempty"`
 	// Servings holds the value of the "servings" field.
 	Servings *int `json:"servings,omitempty"`
 	// Time holds the value of the "time" field.
@@ -145,6 +147,8 @@ func (*Recipe) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case recipe.FieldRating:
+			values[i] = new(sql.NullFloat64)
 		case recipe.FieldServings, recipe.FieldTime:
 			values[i] = new(sql.NullInt64)
 		case recipe.FieldLocale, recipe.FieldName, recipe.FieldSlug, recipe.FieldDescription, recipe.FieldText:
@@ -215,6 +219,12 @@ func (r *Recipe) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field text", values[i])
 			} else if value.Valid {
 				r.Text = value.String
+			}
+		case recipe.FieldRating:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field rating", values[i])
+			} else if value.Valid {
+				r.Rating = float32(value.Float64)
 			}
 		case recipe.FieldServings:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -326,6 +336,9 @@ func (r *Recipe) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("text=")
 	builder.WriteString(r.Text)
+	builder.WriteString(", ")
+	builder.WriteString("rating=")
+	builder.WriteString(fmt.Sprintf("%v", r.Rating))
 	builder.WriteString(", ")
 	if v := r.Servings; v != nil {
 		builder.WriteString("servings=")

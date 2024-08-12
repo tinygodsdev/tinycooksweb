@@ -32,6 +32,7 @@ func entRecipeToRecipe(r *ent.Recipe) *recipe.Recipe {
 		Text:         r.Text,
 		Servings:     servings,
 		Time:         time,
+		Rating:       r.Rating,
 		Ingredients:  mapEntIngredientsToIngredients(r.Edges.Ingredients),
 		Instructions: mapEntInstructionsToInstructions(r.Edges.Instructions),
 		Tags:         mapEntTagsToTags(r.Edges.Tags),

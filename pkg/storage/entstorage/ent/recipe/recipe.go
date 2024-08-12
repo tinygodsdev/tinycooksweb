@@ -30,6 +30,8 @@ const (
 	FieldDescription = "description"
 	// FieldText holds the string denoting the text field in the database.
 	FieldText = "text"
+	// FieldRating holds the string denoting the rating field in the database.
+	FieldRating = "rating"
 	// FieldServings holds the string denoting the servings field in the database.
 	FieldServings = "servings"
 	// FieldTime holds the string denoting the time field in the database.
@@ -114,6 +116,7 @@ var Columns = []string{
 	FieldSlug,
 	FieldDescription,
 	FieldText,
+	FieldRating,
 	FieldServings,
 	FieldTime,
 }
@@ -151,6 +154,8 @@ var (
 	NameValidator func(string) error
 	// SlugValidator is a validator for the "slug" field. It is called by the builders before save.
 	SlugValidator func(string) error
+	// RatingValidator is a validator for the "rating" field. It is called by the builders before save.
+	RatingValidator func(float32) error
 	// ServingsValidator is a validator for the "servings" field. It is called by the builders before save.
 	ServingsValidator func(int) error
 	// DefaultID holds the default value on creation for the "id" field.
@@ -224,6 +229,11 @@ func ByDescription(opts ...sql.OrderTermOption) OrderOption {
 // ByText orders the results by the text field.
 func ByText(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldText, opts...).ToFunc()
+}
+
+// ByRating orders the results by the rating field.
+func ByRating(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRating, opts...).ToFunc()
 }
 
 // ByServings orders the results by the servings field.

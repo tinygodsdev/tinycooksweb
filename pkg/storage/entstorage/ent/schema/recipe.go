@@ -23,6 +23,7 @@ func (Recipe) Fields() []ent.Field {
 		field.String("slug").NotEmpty().Unique(),
 		field.String("description"),
 		field.String("text"),
+		field.Float32("rating").Optional().Positive(),
 		field.Int("servings").Optional().Nillable().NonNegative(),
 		field.Int64("time").Optional().Nillable().GoType(time.Duration(0)),
 	}

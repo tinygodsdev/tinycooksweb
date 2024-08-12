@@ -128,8 +128,12 @@ func init() {
 	recipeDescSlug := recipeFields[2].Descriptor()
 	// recipe.SlugValidator is a validator for the "slug" field. It is called by the builders before save.
 	recipe.SlugValidator = recipeDescSlug.Validators[0].(func(string) error)
+	// recipeDescRating is the schema descriptor for rating field.
+	recipeDescRating := recipeFields[5].Descriptor()
+	// recipe.RatingValidator is a validator for the "rating" field. It is called by the builders before save.
+	recipe.RatingValidator = recipeDescRating.Validators[0].(func(float32) error)
 	// recipeDescServings is the schema descriptor for servings field.
-	recipeDescServings := recipeFields[5].Descriptor()
+	recipeDescServings := recipeFields[6].Descriptor()
 	// recipe.ServingsValidator is a validator for the "servings" field. It is called by the builders before save.
 	recipe.ServingsValidator = recipeDescServings.Validators[0].(func(int) error)
 	// recipeDescID is the schema descriptor for id field.

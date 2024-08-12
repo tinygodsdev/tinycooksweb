@@ -3881,6 +3881,8 @@ type RecipeMutation struct {
 	slug                     *string
 	description              *string
 	text                     *string
+	rating                   *float32
+	addrating                *float32
 	servings                 *int
 	addservings              *int
 	time                     *time.Duration
@@ -4268,6 +4270,76 @@ func (m *RecipeMutation) OldText(ctx context.Context) (v string, err error) {
 // ResetText resets all changes to the "text" field.
 func (m *RecipeMutation) ResetText() {
 	m.text = nil
+}
+
+// SetRating sets the "rating" field.
+func (m *RecipeMutation) SetRating(f float32) {
+	m.rating = &f
+	m.addrating = nil
+}
+
+// Rating returns the value of the "rating" field in the mutation.
+func (m *RecipeMutation) Rating() (r float32, exists bool) {
+	v := m.rating
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRating returns the old "rating" field's value of the Recipe entity.
+// If the Recipe object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecipeMutation) OldRating(ctx context.Context) (v float32, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRating is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRating requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRating: %w", err)
+	}
+	return oldValue.Rating, nil
+}
+
+// AddRating adds f to the "rating" field.
+func (m *RecipeMutation) AddRating(f float32) {
+	if m.addrating != nil {
+		*m.addrating += f
+	} else {
+		m.addrating = &f
+	}
+}
+
+// AddedRating returns the value that was added to the "rating" field in this mutation.
+func (m *RecipeMutation) AddedRating() (r float32, exists bool) {
+	v := m.addrating
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRating clears the value of the "rating" field.
+func (m *RecipeMutation) ClearRating() {
+	m.rating = nil
+	m.addrating = nil
+	m.clearedFields[recipe.FieldRating] = struct{}{}
+}
+
+// RatingCleared returns if the "rating" field was cleared in this mutation.
+func (m *RecipeMutation) RatingCleared() bool {
+	_, ok := m.clearedFields[recipe.FieldRating]
+	return ok
+}
+
+// ResetRating resets all changes to the "rating" field.
+func (m *RecipeMutation) ResetRating() {
+	m.rating = nil
+	m.addrating = nil
+	delete(m.clearedFields, recipe.FieldRating)
 }
 
 // SetServings sets the "servings" field.
@@ -4861,7 +4933,7 @@ func (m *RecipeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecipeMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.create_time != nil {
 		fields = append(fields, recipe.FieldCreateTime)
 	}
@@ -4882,6 +4954,9 @@ func (m *RecipeMutation) Fields() []string {
 	}
 	if m.text != nil {
 		fields = append(fields, recipe.FieldText)
+	}
+	if m.rating != nil {
+		fields = append(fields, recipe.FieldRating)
 	}
 	if m.servings != nil {
 		fields = append(fields, recipe.FieldServings)
@@ -4911,6 +4986,8 @@ func (m *RecipeMutation) Field(name string) (ent.Value, bool) {
 		return m.Description()
 	case recipe.FieldText:
 		return m.Text()
+	case recipe.FieldRating:
+		return m.Rating()
 	case recipe.FieldServings:
 		return m.Servings()
 	case recipe.FieldTime:
@@ -4938,6 +5015,8 @@ func (m *RecipeMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldDescription(ctx)
 	case recipe.FieldText:
 		return m.OldText(ctx)
+	case recipe.FieldRating:
+		return m.OldRating(ctx)
 	case recipe.FieldServings:
 		return m.OldServings(ctx)
 	case recipe.FieldTime:
@@ -5000,6 +5079,13 @@ func (m *RecipeMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetText(v)
 		return nil
+	case recipe.FieldRating:
+		v, ok := value.(float32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRating(v)
+		return nil
 	case recipe.FieldServings:
 		v, ok := value.(int)
 		if !ok {
@@ -5022,6 +5108,9 @@ func (m *RecipeMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *RecipeMutation) AddedFields() []string {
 	var fields []string
+	if m.addrating != nil {
+		fields = append(fields, recipe.FieldRating)
+	}
 	if m.addservings != nil {
 		fields = append(fields, recipe.FieldServings)
 	}
@@ -5036,6 +5125,8 @@ func (m *RecipeMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *RecipeMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case recipe.FieldRating:
+		return m.AddedRating()
 	case recipe.FieldServings:
 		return m.AddedServings()
 	case recipe.FieldTime:
@@ -5049,6 +5140,13 @@ func (m *RecipeMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *RecipeMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case recipe.FieldRating:
+		v, ok := value.(float32)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRating(v)
+		return nil
 	case recipe.FieldServings:
 		v, ok := value.(int)
 		if !ok {
@@ -5071,6 +5169,9 @@ func (m *RecipeMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *RecipeMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(recipe.FieldRating) {
+		fields = append(fields, recipe.FieldRating)
+	}
 	if m.FieldCleared(recipe.FieldServings) {
 		fields = append(fields, recipe.FieldServings)
 	}
@@ -5091,6 +5192,9 @@ func (m *RecipeMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *RecipeMutation) ClearField(name string) error {
 	switch name {
+	case recipe.FieldRating:
+		m.ClearRating()
+		return nil
 	case recipe.FieldServings:
 		m.ClearServings()
 		return nil
@@ -5125,6 +5229,9 @@ func (m *RecipeMutation) ResetField(name string) error {
 		return nil
 	case recipe.FieldText:
 		m.ResetText()
+		return nil
+	case recipe.FieldRating:
+		m.ResetRating()
 		return nil
 	case recipe.FieldServings:
 		m.ResetServings()

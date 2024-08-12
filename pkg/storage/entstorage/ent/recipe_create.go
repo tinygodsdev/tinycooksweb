@@ -95,6 +95,20 @@ func (rc *RecipeCreate) SetText(s string) *RecipeCreate {
 	return rc
 }
 
+// SetRating sets the "rating" field.
+func (rc *RecipeCreate) SetRating(f float32) *RecipeCreate {
+	rc.mutation.SetRating(f)
+	return rc
+}
+
+// SetNillableRating sets the "rating" field if the given value is not nil.
+func (rc *RecipeCreate) SetNillableRating(f *float32) *RecipeCreate {
+	if f != nil {
+		rc.SetRating(*f)
+	}
+	return rc
+}
+
 // SetServings sets the "servings" field.
 func (rc *RecipeCreate) SetServings(i int) *RecipeCreate {
 	rc.mutation.SetServings(i)
@@ -352,6 +366,11 @@ func (rc *RecipeCreate) check() error {
 	if _, ok := rc.mutation.Text(); !ok {
 		return &ValidationError{Name: "text", err: errors.New(`ent: missing required field "Recipe.text"`)}
 	}
+	if v, ok := rc.mutation.Rating(); ok {
+		if err := recipe.RatingValidator(v); err != nil {
+			return &ValidationError{Name: "rating", err: fmt.Errorf(`ent: validator failed for field "Recipe.rating": %w`, err)}
+		}
+	}
 	if v, ok := rc.mutation.Servings(); ok {
 		if err := recipe.ServingsValidator(v); err != nil {
 			return &ValidationError{Name: "servings", err: fmt.Errorf(`ent: validator failed for field "Recipe.servings": %w`, err)}
@@ -419,6 +438,10 @@ func (rc *RecipeCreate) createSpec() (*Recipe, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Text(); ok {
 		_spec.SetField(recipe.FieldText, field.TypeString, value)
 		_node.Text = value
+	}
+	if value, ok := rc.mutation.Rating(); ok {
+		_spec.SetField(recipe.FieldRating, field.TypeFloat32, value)
+		_node.Rating = value
 	}
 	if value, ok := rc.mutation.Servings(); ok {
 		_spec.SetField(recipe.FieldServings, field.TypeInt, value)

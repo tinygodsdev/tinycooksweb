@@ -8,29 +8,33 @@ import (
 	"github.com/tinygodsdev/datasdk/pkg/logger"
 	"github.com/tinygodsdev/tinycooksweb/internal/config"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
+	"github.com/tinygodsdev/tinycooksweb/pkg/moderation"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
 	"golang.org/x/sync/errgroup"
 )
 
 type App struct {
-	Cfg     *config.Config
-	log     logger.Logger
-	store   storage.Storage
-	locales []string // locale count is not very big so no need to have map
-	Errors  []error
+	Cfg             *config.Config
+	log             logger.Logger
+	store           storage.Storage
+	moderationStore moderation.ModerationStore
+	locales         []string // locale count is not very big so no need to have map
+	Errors          []error
 }
 
 func New(
 	cfg *config.Config,
 	logger logger.Logger,
 	store storage.Storage,
+	moderationStore moderation.ModerationStore,
 ) (*App, error) {
 	app := App{
-		Cfg:     cfg,
-		log:     logger,
-		store:   store,
-		locales: locale.List(),
+		Cfg:             cfg,
+		log:             logger,
+		store:           store,
+		moderationStore: moderationStore,
+		locales:         locale.List(),
 	}
 
 	if cfg.SaveMocks {
@@ -179,4 +183,32 @@ func (a *App) GetEquipmentBySlug(ctx context.Context, slug string) (*recipe.Equi
 	}
 
 	return a.store.GetEquipmentBySlug(ctx, slug)
+}
+
+func (a *App) LoadApprovedRecipes(ctx context.Context) error {
+	defer a.Timer("LoadApprovedRecipes")()
+
+	moderationRecords, err := a.moderationStore.GetApproved(ctx)
+	if err != nil {
+		return err
+	}
+
+	for _, mr := range moderationRecords {
+		rec := mr.Recipe()
+		if err := a.SaveRecipe(ctx, rec); err != nil {
+			a.log.Error("Failed to save recipe", "slug", rec.Slug, "error", err)
+			mrErr := mr.Errored(ctx, err)
+			if mrErr != nil {
+				a.log.Error("Failed to update moderation record", "slug", rec.Slug, "error", mrErr)
+				continue
+			}
+			continue
+		}
+
+		if err := mr.Finish(ctx); err != nil {
+			a.log.Error("Failed to finish moderation record", "slug", rec.Slug, "error", err)
+		}
+	}
+
+	return nil
 }

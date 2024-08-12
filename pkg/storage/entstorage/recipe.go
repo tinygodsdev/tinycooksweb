@@ -178,6 +178,7 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 		SetSlug(rec.Slug).
 		SetDescription(rec.Description).
 		SetText(rec.Text).
+		SetRating(rec.Rating).
 		SetNillableServings(servings).
 		SetNillableTime(recipeTime).
 		Save(ctx)

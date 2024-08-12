@@ -156,6 +156,7 @@ var (
 		{Name: "slug", Type: field.TypeString, Unique: true},
 		{Name: "description", Type: field.TypeString},
 		{Name: "text", Type: field.TypeString},
+		{Name: "rating", Type: field.TypeFloat32, Nullable: true},
 		{Name: "servings", Type: field.TypeInt, Nullable: true},
 		{Name: "time", Type: field.TypeInt64, Nullable: true},
 	}
