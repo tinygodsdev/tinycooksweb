@@ -198,12 +198,12 @@ func newTranslationEn() *UITranslation {
 			Filter: &UIFilter{
 				Title:        "Search recipes",
 				Description:  "Find recipes by name, tags, ingredients, required equipment",
-				Include:      "Include",
-				Exclude:      "Exclude",
+				Include:      "With",
+				Exclude:      "Without",
 				Add:          "Add",
 				Clear:        "Clear",
 				Apply:        "Search!",
-				NameContains: "Name contains...",
+				NameContains: "Name contains",
 			},
 			Nutrition: &UITransNutrition{
 				Calories:              "Calories",
@@ -279,12 +279,12 @@ func newTranslationRu() *UITranslation {
 			Filter: &UIFilter{
 				Title:        "Поиск рецептов",
 				Description:  "Находите рецепты по названию, тегам, ингредиентам, необходимому оборудованию",
-				Include:      "Включить",
-				Exclude:      "Исключить",
+				Include:      "C",
+				Exclude:      "Без",
 				Add:          "Добавить",
 				Clear:        "Очистить",
 				Apply:        "Искать!",
-				NameContains: "Название содержит...",
+				NameContains: "Название содержит",
 			},
 			Nutrition: &UITransNutrition{
 				Calories:              "Калории",

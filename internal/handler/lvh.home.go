@@ -31,6 +31,7 @@ const (
 
 	// params
 	paramHomeSearchType   = "searchtype"
+	paramHomeTagGroup     = "group"
 	paramHomeFilterValue  = "value"
 	paramHomeFilterDelete = "delete"
 	paramHomePage         = "page"
@@ -38,13 +39,16 @@ const (
 
 type HomeInstance struct {
 	*CommonInstance
-	Recipes      []*recipe.Recipe
-	RecipesCount int
-	Tags         []*recipe.Tag
-	Ingredients  []*recipe.Ingredient
-	Equipment    []*recipe.Equipment
-	Filter       recipe.Filter
-	Pagination   Pagination
+	Recipes       []*recipe.Recipe
+	RecipesCount  int
+	Tags          []*recipe.Tag
+	TagGroups     []string
+	SelectedGroup string
+	FilteredTags  []*recipe.Tag
+	Ingredients   []*recipe.Ingredient
+	Equipment     []*recipe.Equipment
+	Filter        recipe.Filter
+	Pagination    Pagination
 }
 
 func (h *Handler) NewHomeInstance(s live.Socket) *HomeInstance {
@@ -137,6 +141,8 @@ func (h *Handler) Home() live.Handler {
 			return instance.withError(err), nil
 		}
 
+		instance.TagGroups = recipe.GetTagGroups(instance.Tags)
+
 		instance.Ingredients, err = h.app.GetIngredients(ctx, instance.Locale())
 		if err != nil {
 			return instance.withError(err), nil
@@ -154,6 +160,8 @@ func (h *Handler) Home() live.Handler {
 	lvh.HandleEvent(eventHomeTagsFilterChange, func(ctx context.Context, s live.Socket, p live.Params) (i interface{}, err error) {
 		instance := h.NewHomeInstance(s)
 		fmt.Printf("eventHomeTagSelect: %+v\n", p)
+		instance.SelectedGroup = p.String(paramHomeTagGroup)
+		instance.FilteredTags = recipe.FilterTagsByGroup(instance.Tags, instance.SelectedGroup)
 		return instance, nil
 	})
 

@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
+	"github.com/samber/lo"
 )
 
 const (
@@ -32,4 +33,16 @@ func TagFromString(tag string) *Tag {
 		Name:  parts[1],
 		Slug:  Slugify(tag),
 	}
+}
+
+func GetTagGroups(tags []*Tag) []string {
+	return lo.Uniq(lo.Map(tags, func(t *Tag, _ int) string {
+		return t.Group
+	}))
+}
+
+func FilterTagsByGroup(tags []*Tag, group string) []*Tag {
+	return lo.Filter(tags, func(t *Tag, _ int) bool {
+		return t.Group == group
+	})
 }

@@ -1,0 +1,10 @@
+{{ define "filter-name" }}
+<form class="my-4" id="name-filter-form" live-change="name-filter-form-change" live-debounce=1000>
+  <p class="help">{{ .UI.Recipe.Filter.NameContains }}</p>
+  <div class="field">
+    <p class="control is-expanded">
+      <input class="input" type="text" name="value" placeholder="{{ .UI.Recipe.Filter.NameContains }}...">
+    </p>
+  </div>
+</form>
+{{ end }}
