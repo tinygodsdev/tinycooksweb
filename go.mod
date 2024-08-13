@@ -10,6 +10,7 @@ require (
 require (
 	entgo.io/ent v0.14.0
 	github.com/bradfitz/iter v0.0.0-20191230175014-e8f45d346db8
+	github.com/go-co-op/gocron v1.37.0
 	github.com/gorilla/mux v1.8.1
 	github.com/gosimple/slug v1.14.0
 	github.com/jfyne/live v0.15.7
@@ -34,8 +35,10 @@ require (
 	github.com/hashicorp/hcl/v2 v2.13.0 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/mitchellh/go-wordwrap v0.0.0-20150314170334-ad45545899c7 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.4.0 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
+	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/mod v0.19.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/time v0.5.0 // indirect

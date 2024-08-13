@@ -28,10 +28,11 @@ type Config struct {
 
 	PageSize int `envconfig:"PAGE_SIZE" default:"20"`
 
-	AirtableAPIKey         string `envconfig:"AIRTABLE_API_KEY" required:"true"`
-	AirtableBaseID         string `envconfig:"AIRTABLE_BASE_ID" required:"true"`
-	AirtableTable          string `envconfig:"AIRTABLE_TABLE" required:"true"`
-	AirtableReportSchedule string `envconfig:"AIRTABLE_REPORT_SCHEDULE" default:"0 10 * * *"`
+	AirtableAPIKey string `envconfig:"AIRTABLE_API_KEY" required:"true"`
+	AirtableBaseID string `envconfig:"AIRTABLE_BASE_ID" required:"true"`
+	AirtableTable  string `envconfig:"AIRTABLE_TABLE" required:"true"`
+
+	ModerationCheckSchedule string `envconfig:"MODERATION_CHECK_SCHEDULE" default:"12 * * * *"`
 }
 
 func LoadConfig() (*Config, error) {

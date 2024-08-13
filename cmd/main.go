@@ -33,6 +33,7 @@ func main() {
 	if err != nil {
 		logger.Fatal("failed to init moderation store", "err", err)
 	}
+	logger.Info("moderation store initialized")
 
 	if cfg.Dev() {
 		fmt.Printf("Loaded config: %+v\n", cfg)
@@ -71,16 +72,16 @@ func main() {
 		}
 		store = cachedStore
 	}
+	logger.Info("store initialized")
 
 	a, err := app.New(cfg, logger, store, moderationStore)
 	if err != nil {
 		logger.Fatal("failed to init app", "err", err)
 	}
+	logger.Info("app initialized")
 
-	err = a.LoadApprovedRecipes(context.Background())
-	if err != nil {
-		logger.Fatal("failed to load approved recipes", "err", err)
-	}
+	a.StartJobs()
+	defer a.StopJobs()
 
 	h, err := handler.NewHandler(a, logger, "templates/")
 	if err != nil {

@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"slices"
+	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/tinygodsdev/datasdk/pkg/logger"
 	"github.com/tinygodsdev/tinycooksweb/internal/config"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
@@ -19,6 +21,7 @@ type App struct {
 	log             logger.Logger
 	store           storage.Storage
 	moderationStore moderation.ModerationStore
+	scheduler       *gocron.Scheduler
 	locales         []string // locale count is not very big so no need to have map
 	Errors          []error
 }
@@ -29,12 +32,21 @@ func New(
 	store storage.Storage,
 	moderationStore moderation.ModerationStore,
 ) (*App, error) {
+	s := gocron.NewScheduler(time.UTC)
+	s.SetMaxConcurrentJobs(1, gocron.RescheduleMode)
+
 	app := App{
 		Cfg:             cfg,
 		log:             logger,
 		store:           store,
 		moderationStore: moderationStore,
 		locales:         locale.List(),
+		scheduler:       s,
+	}
+
+	err := app.addJob("load-approved-recipes", cfg.ModerationCheckSchedule, app.LoadApprovedRecipes)
+	if err != nil {
+		return nil, err
 	}
 
 	if cfg.SaveMocks {
@@ -193,6 +205,12 @@ func (a *App) LoadApprovedRecipes(ctx context.Context) error {
 		return err
 	}
 
+	if len(moderationRecords) == 0 {
+		a.log.Info("No approved recipes to load")
+		return nil
+	}
+
+	var success, fail int
 	for _, mr := range moderationRecords {
 		rec := mr.Recipe()
 		if err := a.SaveRecipe(ctx, rec); err != nil {
@@ -200,15 +218,22 @@ func (a *App) LoadApprovedRecipes(ctx context.Context) error {
 			mrErr := mr.Errored(ctx, err)
 			if mrErr != nil {
 				a.log.Error("Failed to update moderation record", "slug", rec.Slug, "error", mrErr)
+				fail++
 				continue
 			}
+			fail++
 			continue
 		}
 
 		if err := mr.Finish(ctx); err != nil {
 			a.log.Error("Failed to finish moderation record", "slug", rec.Slug, "error", err)
+			fail++
+			continue
 		}
+
+		success++
 	}
 
+	a.log.Info("Processed approved recipes", "count", len(moderationRecords), "successful", success, "failed", fail)
 	return nil
 }
