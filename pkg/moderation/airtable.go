@@ -30,6 +30,7 @@ const (
 	Nutrition    = "Nutrition"
 	Moderation   = "Moderation"
 	Error        = "Error"
+	Meta         = "Meta"
 )
 
 type Config struct {
@@ -126,6 +127,7 @@ func (s *AirtableModerationStore) Save(ctx context.Context, recipes []*recipe.Re
 					Time:         r.Time.Minutes(),
 					Nutrition:    r.Nutrition.JSONString(),
 					Moderation:   ModerationStatusPending,
+					Meta:         r.MetaJSONString(), // may be needed for moderation, not used in the app
 				},
 			}
 			records.Records = append(records.Records, record)

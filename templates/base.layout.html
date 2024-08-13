@@ -9,12 +9,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-  
   <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/versions/bulma-no-dark-mode.min.css"
-  >
+    href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Wix+Madefor+Text:ital,wght@0,400..800;1,400..800&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/versions/bulma-no-dark-mode.min.css">
   <link rel="stylesheet" href="/static/css/styles.css" />
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -81,25 +80,31 @@
       </p>
     </div>
     <div class="has-text-centered is-size-6 mt-3">
-        <span class="has-text-grey-light">{{ .UI.Footer.DevelopedBy }}&nbsp;</span>
-        <a 
-          class="has-text-grey-light is-underlined" 
-          href="{{ .UI.Footer.DeveloperURL }}" 
-          target="_blank"
-        >{{ .UI.Footer.Developer }}</a>
+      <span class="has-text-grey-light">{{ .UI.Footer.DevelopedBy }}&nbsp;</span>
+      <a class="has-text-grey-light is-underlined" href="{{ .UI.Footer.DeveloperURL }}" target="_blank">{{
+        .UI.Footer.Developer }}</a>
     </div>
   </div>
 </footer>
 {{ end }}
 
 {{ define "navigation" }}
-<nav class="navbar is-mobile has-background-white-bis py-3 px-4" role="navigation"
-  aria-label="main navigation">
+<nav class="navbar is-mobile has-background-white-bis py-3 px-4" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-        <h1 class="title is-4 is-size-3-tablet has-text-primary has-text-gradient">{{ .UI.Base.Title }}</h1>
+      <h1 class="title is-4 is-size-3-tablet has-text-primary has-text-gradient">{{ .UI.Base.Title }}</h1>
+    </a>
+
+    <a href="/catalog" class='navbar-item is-6 is-size-5-tablet is-hidden-desktop {{ if eq .CurrentView "catalog"}}is-active{{ end }}' title="Catalog">
+      {{ .UI.Menu.Catalog }}
+    </a>
+
+    <a href="/about" class='navbar-item is-6 is-size-5-tablet is-hidden-desktop {{ if eq .CurrentView "about"}}is-active{{ end }}' title="About">
+      {{ .UI.Menu.About }}
     </a>
   </div>
+
+
 
   <div class="navbar-menu is-mobile">
     <div class="navbar-end is-mobile">
@@ -156,13 +161,13 @@
 {{ end }}
 
 {{ define "google-analytics" }}
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleAnalyticsID }}"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-    gtag('js', new Date());
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id={{ .GoogleAnalyticsID }}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
 
-    gtag('config', '{{ .GoogleAnalyticsID }}');
-  </script>
+  gtag('config', '{{ .GoogleAnalyticsID }}');
+</script>
 {{ end }}

@@ -36,6 +36,7 @@ type (
 	UITransAbout struct {
 		Title       string
 		Description string
+		Content     string
 	}
 
 	UITransCatalog struct {
@@ -161,6 +162,7 @@ func newTranslationEn() *UITranslation {
 		About: &UITransAbout{
 			Title:       "About",
 			Description: "TinyCooks is a collection of recipes from around the world",
+			Content:     "TinyCooks is your simple and convenient kitchen companion. We've gathered recipes from around the world and made them easily accessible, free from distractions. On our site, you'll find a flexible search and clean pages without overwhelming ads or unnecessary information. Just pick a recipe and enjoy cooking. With TinyCooks, cooking becomes an easy and pleasant task.",
 		},
 		Catalog: &UITransCatalog{
 			Title:            "Catalog",
@@ -234,6 +236,7 @@ func newTranslationRu() *UITranslation {
 		About: &UITransAbout{
 			Title:       "О сайте",
 			Description: "TinyCooks - это коллекция рецептов со всего мира",
+			Content:     "TinyCooks — это ваш простой и удобный помощник на кухне. Мы собрали рецепты со всего мира и сделали их доступными для вас без лишних отвлекающих элементов. На нашем сайте вы найдете гибкий поиск и чистые страницы без обилия рекламы и ненужной информации. Просто выбирайте рецепт и готовьте с удовольствием. С TinyCooks готовка становится легкой и приятной задачей.",
 		},
 		Catalog: &UITransCatalog{
 			Title:            "Каталог",

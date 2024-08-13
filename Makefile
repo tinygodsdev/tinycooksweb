@@ -49,3 +49,18 @@ css:
 lint:
 	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.54.2
 	./bin/golangci-lint run -v
+
+.PHONY: docker
+docker:
+	env | grep GITHUB
+	docker build -t tinygodsdev/tinycooks:test .
+	docker run --rm --name tinycooks_test tinygodsdev/tinycooks:test
+	sleep 5
+	if docker ps | grep tinycooks_test; then \
+		echo "Container is running"; \
+	else \
+		echo "Container failed to start"; \
+		docker logs tinycooks_test; \
+	fi
+	docker stop tinycooks_test || true
+	docker rmi tinygodsdev/tinycooks:test

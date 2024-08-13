@@ -115,6 +115,10 @@ func PumpkinBuns() *Recipe {
 			Precision: NutritionPrecisionApprox,
 			Benefits:  []string{"Витамины", "Минералы"},
 		},
+		Meta: map[string]string{
+			"type":      "seed",
+			"createdBy": "Dani Polani",
+		},
 	}
 
 	recipe.SlugifyAll()
@@ -175,6 +179,10 @@ func PumpkinSoup() *Recipe {
 			Protein:   13,
 			Precision: NutritionPrecisionApprox,
 			Benefits:  []string{"Белки", "Жиры", "Углеводы"},
+		},
+		Meta: map[string]string{
+			"type":      "seed",
+			"createdBy": "Dani Polani",
 		},
 	}
 

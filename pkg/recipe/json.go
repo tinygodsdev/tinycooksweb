@@ -159,3 +159,12 @@ func (r *Recipe) JSONString() string {
 
 	return string(data)
 }
+
+func (r *Recipe) MetaJSONString() string {
+	data, err := json.MarshalIndent(r.Meta, "", indent)
+	if err != nil {
+		return "{}"
+	}
+
+	return string(data)
+}
