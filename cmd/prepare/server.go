@@ -37,6 +37,12 @@ func Mux(cfg *config.Config, store live.HttpSessionStore, h *handler.Handler) *m
 
 	// static
 	r.HandleFunc("/favicon.ico", faviconHandler)
+	r.HandleFunc("/android-chrome-192x192.png", androidChrome192x192Handler)
+	r.HandleFunc("/android-chrome-512x512.png", androidChrome512x512Handler)
+	r.HandleFunc("/apple-touch-icon.png", appleTouchIconHandler)
+	r.HandleFunc("/favicon-16x16.png", favicon16x16Handler)
+	r.HandleFunc("/favicon-32x32.png", favicon32x32Handler)
+
 	r.HandleFunc("/static/css/styles.css", stylesHandler)
 
 	return r
@@ -59,4 +65,24 @@ func faviconHandler(w http.ResponseWriter, r *http.Request) {
 
 func stylesHandler(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "web/dist/css/styles.css")
+}
+
+func androidChrome192x192Handler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/media/android-chrome-192x192.png")
+}
+
+func androidChrome512x512Handler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/media/android-chrome-512x512.png")
+}
+
+func appleTouchIconHandler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/media/apple-touch-icon.png")
+}
+
+func favicon16x16Handler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/media/favicon-16x16.png")
+}
+
+func favicon32x32Handler(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "web/media/favicon-32x32.png")
 }
