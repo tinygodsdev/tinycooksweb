@@ -32,6 +32,7 @@ type Config struct {
 	AirtableBaseID string `envconfig:"AIRTABLE_BASE_ID" required:"true"`
 	AirtableTable  string `envconfig:"AIRTABLE_TABLE" required:"true"`
 
+	CreateJobs              bool   `envconfig:"CREATE_JOBS" default:"true"`
 	ModerationCheckSchedule string `envconfig:"MODERATION_CHECK_SCHEDULE" default:"12 * * * *"`
 }
 

@@ -44,13 +44,9 @@ func New(
 		scheduler:       s,
 	}
 
-	err := app.addJob("load-approved-recipes", cfg.ModerationCheckSchedule, app.LoadApprovedRecipes)
-	if err != nil {
-		return nil, err
-	}
-
-	if cfg.SaveMocks {
-		if err := app.SaveMocks(); err != nil {
+	if cfg.CreateJobs {
+		err := app.addJob("load-approved-recipes", cfg.ModerationCheckSchedule, app.LoadApprovedRecipes)
+		if err != nil {
 			return nil, err
 		}
 	}
@@ -68,8 +64,18 @@ func (a *App) AddError(err error) {
 
 func (a *App) SaveMocks() error {
 	defer a.Timer("SaveMocks")()
-
 	mocks, _ := recipe.MockRecipes(1999, false)
+	return a.SaveRecipes(mocks)
+}
+
+func (a *App) SaveSeedData() error {
+	defer a.Timer("SaveSeedData")()
+	seedData := recipe.SeedData()
+	return a.SaveRecipes(seedData)
+}
+
+func (a *App) SaveRecipes(recipes []*recipe.Recipe) error {
+	defer a.Timer("SaveRecipes")()
 
 	g, ctx := errgroup.WithContext(context.Background())
 	if a.Cfg.StorageDriver == "sqlite3" {
@@ -78,13 +84,13 @@ func (a *App) SaveMocks() error {
 		g.SetLimit(25) // for postgres it's fine
 	}
 
-	for _, mock := range mocks {
-		mock := mock
+	for _, rec := range recipes {
+		rec := rec
 
 		g.Go(func() error {
-			if err := a.SaveRecipe(ctx, mock); err != nil {
+			if err := a.SaveRecipe(ctx, rec); err != nil {
 				if err == storage.ErrAlreadyExists {
-					a.log.Info("Mock recipe already exists", "slug", mock.Slug)
+					a.log.Info("Recipe already exists", "slug", rec.Slug)
 					return nil
 				}
 				return err

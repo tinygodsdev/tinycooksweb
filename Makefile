@@ -7,6 +7,10 @@ endif
 run: entgen css
 	go run cmd/main.go
 
+.PHONY: seed
+seed: entgen
+	go run cmd/tools/seed/main.go
+
 .PHONY: build
 build:
 	go build -o bin/main cmd/main.go
