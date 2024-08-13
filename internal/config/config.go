@@ -7,7 +7,7 @@ import (
 type Config struct {
 	Env string `envconfig:"ENV" default:"dokku"`
 
-	HTTPHost string `envconfig:"HTTP_HOST" default:"localhost"`
+	HTTPHost string `envconfig:"HTTP_HOST" default:"0.0.0.0"`
 	HTTPPort string `envconfig:"HTTP_PORT" default:"8080"`
 
 	Version string `envconfig:"VERSION" default:"v0.0.1"`
