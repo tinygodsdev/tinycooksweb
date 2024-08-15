@@ -20,10 +20,9 @@ const (
 )
 
 type Recipe struct {
-	ID               uuid.UUID         `json:"-"`
-	Slug             string            `json:"-"`
+	ID               uuid.UUID         `json:"-" yaml:"-"`
+	Slug             string            `json:"-" yaml:"-"`
 	Name             string            `json:"name"`
-	Lang             string            `json:"lang"`
 	Description      string            `json:"description"` // Short description for catalog
 	Text             string            `json:"text"`        // Long description for recipe page
 	Tags             []*Tag            `json:"tags"`
@@ -33,45 +32,46 @@ type Recipe struct {
 	Ideas            []*Idea           `json:"ideas"`        // Ideas for variations
 	Time             time.Duration     `json:"time"`
 	Servings         int               `json:"servings"`
-	Sources          []*Source         `json:"sources"`
-	Rating           float32           `json:"rating"`
 	Nutrition        *Nutrition        `json:"nutrition"`
 	Meta             map[string]string `json:"meta"`
-	ModerationStatus string            `json:"moderation_status"`
+	Lang             string            `json:"lang"`
+	Rating           float32           `json:"rating"`
+	Sources          []*Source         `json:"sources"`
+	ModerationStatus string            `json:"moderation_status" yaml:"-"`
 }
 
 type Ingredient struct {
-	ID       uuid.UUID `json:"-"`
+	ID       uuid.UUID `json:"-" yaml:"-"`
 	Product  *Product  `json:"product"`
 	Quantity string    `json:"quantity"`
 	Unit     string    `json:"unit"`
-	Optional bool      `json:"optional"`
+	Optional bool      `json:"optional,omitempty" yaml:",omitempty"`
 }
 
 type Product struct {
-	ID   uuid.UUID `json:"-"`
+	ID   uuid.UUID `json:"-" yaml:"-"`
 	Name string    `json:"name"`
-	Slug string    `json:"-"`
+	Slug string    `json:"-" yaml:"-"`
 }
 
 type Instruction struct {
-	ID   uuid.UUID `json:"-"`
+	ID   uuid.UUID `json:"-" yaml:"-"`
 	Text string    `json:"text"`
 }
 
 type Equipment struct {
-	ID   uuid.UUID `json:"-"`
+	ID   uuid.UUID `json:"-" yaml:"-"`
 	Name string    `json:"name"`
-	Slug string    `json:"-"`
+	Slug string    `json:"-" yaml:"-"`
 }
 
 type Idea struct {
-	ID   uuid.UUID `json:"-"`
+	ID   uuid.UUID `json:"-" yaml:"-"`
 	Text string    `json:"text"`
 }
 
 type Source struct {
-	ID          uuid.UUID `json:"-"`
+	ID          uuid.UUID `json:"-" yaml:"-"`
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	URL         string    `json:"url"`

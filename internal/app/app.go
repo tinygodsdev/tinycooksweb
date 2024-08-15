@@ -62,16 +62,20 @@ func (a *App) AddError(err error) {
 	a.Errors = append(a.Errors, err)
 }
 
-func (a *App) SaveMocks() error {
-	defer a.Timer("SaveMocks")()
-	mocks, _ := recipe.MockRecipes(1999, false)
-	return a.SaveRecipes(mocks)
-}
-
 func (a *App) SaveSeedData() error {
 	defer a.Timer("SaveSeedData")()
 	seedData := recipe.SeedData()
 	return a.SaveRecipes(seedData)
+}
+
+func (a *App) SeedToYAML() error {
+	defer a.Timer("SeedToYAML")()
+	return recipe.SeedToYAML("")
+}
+
+func (a *App) LoadFromYAML() ([]*recipe.Recipe, error) {
+	defer a.Timer("LoadFromYAML")()
+	return recipe.LoadFromYAML("")
 }
 
 func (a *App) SaveRecipes(recipes []*recipe.Recipe) error {

@@ -12,10 +12,10 @@ const (
 )
 
 type Tag struct {
-	ID    uuid.UUID `json:"-"`
+	ID    uuid.UUID `json:"-" yaml:"-"`
 	Name  string    `json:"name"`
 	Group string    `json:"group"`
-	Slug  string    `json:"-"`
+	Slug  string    `json:"-" yaml:"-"`
 }
 
 func (t *Tag) Title() string {

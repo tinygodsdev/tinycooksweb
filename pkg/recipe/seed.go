@@ -1,38 +1,18 @@
 package recipe
 
 import (
-	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
+
+	"gopkg.in/yaml.v3"
 )
 
-func MockRecipes(recipeCount int, withError bool) ([]*Recipe, error) {
-	if withError {
-		return nil, errors.New("mock error")
-	}
-
-	recipes := []*Recipe{
-		PumpkinBuns(),
-		PumpkinSoup(),
-	}
-
-	originalCount := len(recipes)
-
-	if recipeCount > originalCount {
-		for i := originalCount; i < recipeCount; i++ {
-			originalRecipe := recipes[i%originalCount]
-			newRecipe := *originalRecipe
-			newRecipe.Name = fmt.Sprintf("%s %d", originalRecipe.Name, (i/originalCount)+1)
-			newRecipe.Slug = Slugify(newRecipe.Name)
-			recipes = append(recipes, &newRecipe)
-		}
-	} else {
-		// take only the first N recipes
-		recipes = recipes[:recipeCount]
-	}
-
-	return recipes, nil
-}
+const (
+	defaultDataPath  = "data/seed"
+	dataIgnorePrefix = '_' // ignore files starting with this prefix
+)
 
 func SeedData() []*Recipe {
 	return []*Recipe{
@@ -41,19 +21,71 @@ func SeedData() []*Recipe {
 	}
 }
 
-func MockRecipe(slug string, withError bool) (*Recipe, error) {
-	if withError {
-		return nil, errors.New("mock error")
+// SeedToYAML saves each seed recipe to a file (using Recipe.Slug as file name)
+func SeedToYAML(path string) error {
+	if path == "" {
+		path = defaultDataPath
 	}
 
-	switch slug {
-	case PumpkinBuns().Slug:
-		return PumpkinBuns(), nil
-	case PumpkinSoup().Slug:
-		return PumpkinSoup(), nil
+	recipes := SeedData()
+	for _, recipe := range recipes {
+		filePath := filepath.Join(path, recipe.Slug+".yaml")
+
+		file, err := os.Create(filePath)
+		if err != nil {
+			return fmt.Errorf("error creating file %s: %w", filePath, err)
+		}
+		defer file.Close()
+
+		encoder := yaml.NewEncoder(file)
+		defer encoder.Close()
+
+		if err := encoder.Encode(recipe); err != nil {
+			return fmt.Errorf("error encoding recipe %s to YAML: %w", recipe.Slug, err)
+		}
 	}
 
-	return nil, errors.New("not found")
+	return nil
+}
+
+func LoadFromYAML(path string) ([]*Recipe, error) {
+	if path == "" {
+		path = defaultDataPath
+	}
+
+	var recipes []*Recipe
+
+	files, err := os.ReadDir(path)
+	if err != nil {
+		return nil, fmt.Errorf("error reading directory %s: %w", path, err)
+	}
+
+	for _, file := range files {
+		if file.Name()[0] == dataIgnorePrefix || filepath.Ext(file.Name()) != ".yaml" {
+			continue
+		}
+
+		filePath := filepath.Join(path, file.Name())
+
+		content, err := os.ReadFile(filePath)
+		if err != nil {
+			return nil, fmt.Errorf("error reading file %s: %w", filePath, err)
+		}
+
+		var recipe Recipe
+		err = yaml.Unmarshal(content, &recipe)
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshaling YAML from file %s: %w", filePath, err)
+		}
+
+		recipes = append(recipes, &recipe)
+	}
+
+	for _, recipe := range recipes {
+		recipe.SlugifyAll()
+	}
+
+	return recipes, nil
 }
 
 func PumpkinBuns() *Recipe {

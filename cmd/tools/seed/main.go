@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 
@@ -46,10 +47,25 @@ func main() {
 	}
 	logger.Info("app initialized")
 
-	err = a.SaveSeedData()
+	err = a.SeedToYAML()
 	if err != nil {
 		logger.Fatal("failed to save seed data", "err", err)
 	}
+
+	recipes, err := a.LoadFromYAML()
+	if err != nil {
+		logger.Fatal("failed to load seed data", "err", err)
+	}
+
+	for _, r := range recipes {
+		// fmt.Println(r.JSONString())
+		fmt.Println("Time:", r.Time)
+	}
+
+	// err = a.SaveSeedData()
+	// if err != nil {
+	// 	logger.Fatal("failed to save seed data", "err", err)
+	// }
 
 	log.Println("Seed data saved in", time.Since(start))
 }

@@ -10,7 +10,7 @@ type Config struct {
 	HTTPHost string `envconfig:"HTTP_HOST" default:"0.0.0.0"`
 	HTTPPort string `envconfig:"HTTP_PORT" default:"8080"`
 
-	Version string `envconfig:"VERSION" default:"v0.0.1"`
+	Version string `envconfig:"GIT_REV" default:"v0.0.1"`
 
 	Secret          string `envconfig:"SECRET" required:"true"`
 	Expire          int    `envconfig:"EXPIRE" default:"2592000"` // seconds
@@ -23,8 +23,6 @@ type Config struct {
 	StorageDSN    string `envconfig:"STORAGE_DSN" required:"true"`
 	UseCache      bool   `envconfig:"USE_CACHE" default:"true"`
 	LogDBQueries  bool   `envconfig:"LOG_DB_QUERIES" default:"false"`
-	SaveMocks     bool   `envconfig:"SAVE_MOCKS" default:"false"`
-	SaveSeedData  bool   `envconfig:"SAVE_SEED_DATA" default:"false"`
 
 	PageSize int `envconfig:"PAGE_SIZE" default:"20"`
 

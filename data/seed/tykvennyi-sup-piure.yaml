@@ -1,0 +1,81 @@
+name: Тыквенный суп-пюре
+description: Для супа лучше выбирать тыкву не сладких сортов. При приготовлении тыквы, старайтесь не переварить, иначе она потеряет вкус.
+text: Для супа лучше выбирать тыкву не сладких сортов. При приготовлении тыквы, старайтесь не переварить, иначе она потеряет вкус.
+tags:
+    - name: супы
+      group: тип блюда
+    - name: вегетарианское
+      group: диета
+    - name: легкое
+      group: сложность
+    - name: быстрое
+      group: время
+    - name: соленое
+      group: вкус
+ingredients:
+    - product:
+        name: тыква
+      quantity: "400"
+      unit: г
+    - product:
+        name: лук репчатый
+      quantity: "1"
+      unit: шт.
+    - product:
+        name: молоко
+      quantity: "200"
+      unit: мл
+    - product:
+        name: масло сливочное
+      quantity: "20"
+      unit: г
+    - product:
+        name: петрушка
+      quantity: по вкусу
+      unit: ""
+      optional: true
+    - product:
+        name: приправа
+      quantity: по вкусу
+      unit: ""
+      optional: true
+    - product:
+        name: сливки 35-38%
+      quantity: по вкусу
+      unit: ""
+    - product:
+        name: хлеб белый
+      quantity: по вкусу
+      unit: ""
+equipment:
+    - name: кастрюля
+    - name: блендер
+instructions:
+    - text: Лук измельчить, тыкву нарезать кубиками.
+    - text: На сливочном масле слегка обжарить лук. Добавить тыкву, посолить, приправить и потушить с добавлением небольшого количества воды. Примерно 20 минут.
+    - text: Готовую тыкву переложить в блендер и измельчить. Добавить горячее молоко. И еще раз пробить блендером.
+    - text: Перелить в кастрюльку и прогреть, но не доводить до кипения.
+    - text: Разлить по тарелкам, добавить сухарики, приправить сметаной или жирными сливками и украсить зеленью петрушки.
+ideas:
+    - text: Для пряного вкуса добавьте чеснок, розмарин или тимьян.
+time: 35m0s
+servings: 1
+nutrition:
+    calories: 427
+    fat: 25
+    carbs: 49
+    protein: 13
+    precision: approx
+    benefits:
+        - Белки
+        - Жиры
+        - Углеводы
+meta:
+    createdBy: Dani Polani
+    type: seed
+lang: ru
+rating: 4.5
+sources:
+    - name: edimdoma.ru
+      description: ЕдимДома
+      url: https://www.edimdoma.ru/retsepty/59418-tykvennyy-sup-pyure
