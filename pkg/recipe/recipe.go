@@ -90,7 +90,7 @@ func Slugify(name string) string {
 	return slug.Make(name)
 }
 
-func (r *Recipe) SlugifyAll() {
+func (r *Recipe) slugifyAll() {
 	r.Slug = Slugify(r.Name)
 	for _, i := range r.Ingredients {
 		i.Product.Slug = Slugify(i.Product.Name)
@@ -103,6 +103,30 @@ func (r *Recipe) SlugifyAll() {
 	for _, t := range r.Tags {
 		t.Slug = Slugify(t.Group + " " + t.Name)
 	}
+}
+
+func (r *Recipe) addTimeTag() {
+	trans := locale.NewUITranslation(r.Lang)
+	group := trans.Tag.TimeGroup
+	var timeTag string
+
+	switch {
+	case r.Time.Minutes() < 30:
+		timeTag = trans.Tag.TimeFast
+	case r.Time.Minutes() < 60:
+		timeTag = trans.Tag.TimeMedium
+	case r.Time.Minutes() < 90:
+		timeTag = trans.Tag.TimeLong
+	default:
+		timeTag = trans.Tag.TimeVeryLong
+	}
+
+	r.Tags = append(r.Tags, &Tag{Name: timeTag, Group: group})
+}
+
+func (r *Recipe) PostProcess() {
+	r.addTimeTag()
+	r.slugifyAll()
 }
 
 func (r *Recipe) Link(domain string) string {

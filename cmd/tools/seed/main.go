@@ -58,7 +58,7 @@ func main() {
 	}
 
 	for _, r := range recipes {
-		// fmt.Println(r.JSONString())
+		fmt.Println(r.JSONString())
 		fmt.Println("Time:", r.Time)
 	}
 

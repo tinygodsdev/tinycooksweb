@@ -209,7 +209,7 @@ func (s *AirtableModerationStore) parseRecord(record *airtable.Record) (*recipe.
 		Time:             getFieldMinutes(record, Time),
 	}
 
-	r.SlugifyAll()
+	r.PostProcess()
 	return r, nil
 }
 

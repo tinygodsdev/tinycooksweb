@@ -22,6 +22,7 @@ type (
 		Footer  *UITransFooter
 		Recipe  *UITransRecipe
 		Share   *UITransShare
+		Tag     *UITransTag
 		// 404
 		// privacy
 		// terms
@@ -114,6 +115,14 @@ type (
 		Add          string
 		Clear        string
 		Apply        string
+	}
+
+	UITransTag struct {
+		TimeGroup    string
+		TimeFast     string
+		TimeMedium   string
+		TimeLong     string
+		TimeVeryLong string
 	}
 )
 
@@ -223,6 +232,13 @@ func newTranslationEn() *UITranslation {
 			ExploreMessage: "Explore",
 			ShareMessage:   "Share on",
 		},
+		Tag: &UITransTag{
+			TimeGroup:    "Time",
+			TimeFast:     "Fast",
+			TimeMedium:   "Medium",
+			TimeLong:     "Long",
+			TimeVeryLong: "Very long",
+		},
 	}
 }
 
@@ -304,6 +320,13 @@ func newTranslationRu() *UITranslation {
 			HeaderMessage:  "рецепт 😋",
 			ExploreMessage: "Посмотреть",
 			ShareMessage:   "Поделиться в",
+		},
+		Tag: &UITransTag{
+			TimeGroup:    "Время",
+			TimeFast:     "Быстро",
+			TimeMedium:   "Средне",
+			TimeLong:     "Долго",
+			TimeVeryLong: "Очень долго",
 		},
 	}
 }

@@ -82,7 +82,7 @@ func LoadFromYAML(path string) ([]*Recipe, error) {
 	}
 
 	for _, recipe := range recipes {
-		recipe.SlugifyAll()
+		recipe.PostProcess()
 	}
 
 	return recipes, nil
@@ -123,7 +123,6 @@ func PumpkinBuns() *Recipe {
 			{Name: "выпечка", Group: "тип блюда"},
 			{Name: "вегетарианское", Group: "диета"},
 			{Name: "легкое", Group: "сложность"},
-			{Name: "долгое", Group: "время"},
 			{Name: "сладкое", Group: "вкус"},
 		},
 		Ideas: []*Idea{
@@ -153,7 +152,7 @@ func PumpkinBuns() *Recipe {
 		},
 	}
 
-	recipe.SlugifyAll()
+	recipe.PostProcess()
 	return recipe
 }
 
@@ -189,7 +188,6 @@ func PumpkinSoup() *Recipe {
 			{Name: "супы", Group: "тип блюда"},
 			{Name: "вегетарианское", Group: "диета"},
 			{Name: "легкое", Group: "сложность"},
-			{Name: "быстрое", Group: "время"},
 			{Name: "соленое", Group: "вкус"},
 		},
 		Ideas: []*Idea{
@@ -218,6 +216,6 @@ func PumpkinSoup() *Recipe {
 		},
 	}
 
-	recipe.SlugifyAll()
+	recipe.PostProcess()
 	return recipe
 }
