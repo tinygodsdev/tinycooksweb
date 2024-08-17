@@ -73,6 +73,9 @@
   {{ end }}
   <div class="section">
     {{ template "share-buttons" . }}
+    {{ if .CommentsID }}
+    {{ template "comments" . }}
+    {{ end }}
   </div>
 </main>
 {{ end }}

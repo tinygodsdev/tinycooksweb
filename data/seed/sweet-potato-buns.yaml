@@ -50,12 +50,12 @@ ingredients:
       quantity: "8"
       unit: г
     - product:
-        name: черный кунжут (по желанию)
+        name: черный кунжут
       quantity: ""
       unit: ""
       optional: true
 equipment:
-    - name: печь
+    - name: духовка
     - name: противень
     - name: миксер с насадкой для теста
 instructions:

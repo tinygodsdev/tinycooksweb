@@ -18,6 +18,7 @@ type Config struct {
 	LiveSessionName string `envconfig:"LIVE_SESSION_NAME" default:"tc-go-live-session"`
 
 	GoogleAnalyticsID string `envconfig:"GOOGLE_ANALYTICS_ID" default:""`
+	CommentsID        string `envconfig:"COMMENTS_ID" default:""`
 
 	StorageType   string `envconfig:"STORAGE_TYPE" default:"ent"`
 	StorageDriver string `envconfig:"STORAGE_DRIVER" default:"postgres"`

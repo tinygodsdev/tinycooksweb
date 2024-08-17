@@ -46,7 +46,7 @@ ingredients:
     quantity: "50"
     unit: г
   - product:
-      name: специи по вкусу (например, чесночный порошок, порошок лука, молотый перец)
+      name: специи
     optional: true
 equipment:
   - name: сковорода

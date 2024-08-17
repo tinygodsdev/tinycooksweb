@@ -40,19 +40,14 @@ ingredients:
       quantity: "2"
       unit: ч. л.
     - product:
-        name: сливки (опционально)
+        name: сливки
       quantity: "120"
       unit: мл
       optional: true
     - product:
-        name: сахарная пудра (опционально)
+        name: сахарная пудра
       quantity: "20"
       unit: г
-      optional: true
-    - product:
-        name: апельсиновая цедра (опционально)
-      quantity: "1"
-      unit: ч. л.
       optional: true
 equipment:
     - name: миксер

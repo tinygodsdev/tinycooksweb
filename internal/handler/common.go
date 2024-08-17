@@ -18,6 +18,7 @@ type (
 		CurrentView       string
 		Version           string
 		GoogleAnalyticsID string
+		CommentsID        string
 		UI                *locale.UITranslation
 		ui                map[string]*locale.UITranslation
 		locale            string
@@ -42,6 +43,7 @@ func (h *Handler) NewCommon(s live.Socket, currentView string) *CommonInstance {
 		CurrentView:       currentView,
 		Version:           h.app.Cfg.Version,
 		GoogleAnalyticsID: h.app.Cfg.GoogleAnalyticsID,
+		CommentsID:        h.app.Cfg.CommentsID,
 		ui:                h.ui,
 		locale:            locale.Default(), // it's private because changing requires additional logic
 	}
