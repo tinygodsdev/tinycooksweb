@@ -56,6 +56,7 @@
     {{ end }}
   </div>
   <!-- Ideas -->
+  {{ if .Recipe.Ideas }}
   <div class="section">
     <h4 class="title is-4">{{ .UI.Recipe.Ideas }}</h4>
     {{ range .Recipe.Ideas }}
@@ -68,8 +69,10 @@
       </div>
     </div>
     {{ end }}
-    {{ template "share-buttons" . }}
   </div>
+  {{ end }}
+  <div class="section">
+    {{ template "share-buttons" . }}
   </div>
 </main>
 {{ end }}

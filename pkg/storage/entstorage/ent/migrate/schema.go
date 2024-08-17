@@ -11,7 +11,7 @@ var (
 	// EquipmentColumns holds the columns for the "equipment" table.
 	EquipmentColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 256},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
@@ -137,7 +137,7 @@ var (
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "locale", Type: field.TypeEnum, Enums: []string{"en", "ru"}, Default: "ru"},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 2147483647},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 256},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// ProductsTable holds the schema information for the "products" table.
@@ -165,6 +165,13 @@ var (
 		Name:       "recipes",
 		Columns:    RecipesColumns,
 		PrimaryKey: []*schema.Column{RecipesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "recipe_create_time",
+				Unique:  false,
+				Columns: []*schema.Column{RecipesColumns[1]},
+			},
+		},
 	}
 	// SourcesColumns holds the columns for the "sources" table.
 	SourcesColumns = []*schema.Column{
@@ -191,8 +198,8 @@ var (
 	// TagsColumns holds the columns for the "tags" table.
 	TagsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeUUID},
-		{Name: "name", Type: field.TypeString, Unique: true},
-		{Name: "group", Type: field.TypeString},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 128},
+		{Name: "group", Type: field.TypeString, Size: 128},
 		{Name: "slug", Type: field.TypeString, Unique: true},
 	}
 	// TagsTable holds the schema information for the "tags" table.

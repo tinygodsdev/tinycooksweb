@@ -2,6 +2,7 @@ package recipe
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -93,14 +94,18 @@ func Slugify(name string) string {
 func (r *Recipe) slugifyAll() {
 	r.Slug = Slugify(r.Name)
 	for _, i := range r.Ingredients {
+		i.Product.Name = strings.ToLower(i.Product.Name)
 		i.Product.Slug = Slugify(i.Product.Name)
 	}
 
 	for _, e := range r.Equipment {
+		e.Name = strings.ToLower(e.Name)
 		e.Slug = Slugify(e.Name)
 	}
 
 	for _, t := range r.Tags {
+		t.Group = strings.ToLower(t.Group)
+		t.Name = strings.ToLower(t.Name)
 		t.Slug = Slugify(t.Group + " " + t.Name)
 	}
 }
@@ -115,13 +120,13 @@ func (r *Recipe) addTimeTag() {
 		timeTag = trans.Tag.TimeFast
 	case r.Time.Minutes() < 60:
 		timeTag = trans.Tag.TimeMedium
-	case r.Time.Minutes() < 90:
+	case r.Time.Minutes() >= 60:
 		timeTag = trans.Tag.TimeLong
-	default:
-		timeTag = trans.Tag.TimeVeryLong
 	}
 
-	r.Tags = append(r.Tags, &Tag{Name: timeTag, Group: group})
+	if timeTag != "" {
+		r.Tags = append(r.Tags, &Tag{Name: timeTag, Group: group})
+	}
 }
 
 func (r *Recipe) PostProcess() {
@@ -156,9 +161,11 @@ func (r *Recipe) ShareText() string {
 }
 
 func (e *Equipment) Slugify() {
+	e.Name = strings.ToLower(e.Name)
 	e.Slug = Slugify(e.Name)
 }
 
 func (i *Ingredient) Slugify() {
+	i.Product.Name = strings.ToLower(i.Product.Name)
 	i.Product.Slug = Slugify(i.Product.Name)
 }

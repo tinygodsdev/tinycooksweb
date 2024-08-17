@@ -9,6 +9,7 @@ type Config struct {
 
 	HTTPHost string `envconfig:"HTTP_HOST" default:"0.0.0.0"`
 	HTTPPort string `envconfig:"HTTP_PORT" default:"8080"`
+	BaseURL  string `envconfig:"BASE_URL" default:"https://tinycooks.xyz"`
 
 	Version string `envconfig:"GIT_REV" default:"v0.0.1"`
 

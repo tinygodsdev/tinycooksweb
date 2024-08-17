@@ -92,6 +92,10 @@ func (h *Handler) Ingredient() live.Handler {
 
 		instance.Title = instance.Ingredient.Product.Name
 		instance.Type = instance.UI.Catalog.Ingredient
+		instance.Filter = instance.Filter.WithAddIngredient(
+			instance.Ingredient.Product.Name,
+			recipe.SearchTypeInclude,
+		)
 		instance.Recipes, err = h.app.GetRecipes(ctx, instance.Filter)
 		if err != nil {
 			return instance.withError(err), nil

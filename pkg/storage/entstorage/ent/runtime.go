@@ -26,11 +26,40 @@ func init() {
 	// equipmentDescName is the schema descriptor for name field.
 	equipmentDescName := equipmentFields[1].Descriptor()
 	// equipment.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	equipment.NameValidator = equipmentDescName.Validators[0].(func(string) error)
+	equipment.NameValidator = func() func(string) error {
+		validators := equipmentDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// equipmentDescSlug is the schema descriptor for slug field.
 	equipmentDescSlug := equipmentFields[2].Descriptor()
 	// equipment.SlugValidator is a validator for the "slug" field. It is called by the builders before save.
-	equipment.SlugValidator = equipmentDescSlug.Validators[0].(func(string) error)
+	equipment.SlugValidator = func() func(string) error {
+		validators := equipmentDescSlug.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(slug string) error {
+			for _, fn := range fns {
+				if err := fn(slug); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// equipmentDescID is the schema descriptor for id field.
 	equipmentDescID := equipmentFields[0].Descriptor()
 	// equipment.DefaultID holds the default value on creation for the id field.
@@ -94,11 +123,40 @@ func init() {
 	// productDescName is the schema descriptor for name field.
 	productDescName := productFields[1].Descriptor()
 	// product.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	product.NameValidator = productDescName.Validators[0].(func(string) error)
+	product.NameValidator = func() func(string) error {
+		validators := productDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// productDescSlug is the schema descriptor for slug field.
 	productDescSlug := productFields[2].Descriptor()
 	// product.SlugValidator is a validator for the "slug" field. It is called by the builders before save.
-	product.SlugValidator = productDescSlug.Validators[0].(func(string) error)
+	product.SlugValidator = func() func(string) error {
+		validators := productDescSlug.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(slug string) error {
+			for _, fn := range fns {
+				if err := fn(slug); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// productDescID is the schema descriptor for id field.
 	productDescID := productFields[0].Descriptor()
 	// product.DefaultID holds the default value on creation for the id field.
@@ -151,15 +209,59 @@ func init() {
 	// tagDescName is the schema descriptor for name field.
 	tagDescName := tagFields[1].Descriptor()
 	// tag.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	tag.NameValidator = tagDescName.Validators[0].(func(string) error)
+	tag.NameValidator = func() func(string) error {
+		validators := tagDescName.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(name string) error {
+			for _, fn := range fns {
+				if err := fn(name); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// tagDescGroup is the schema descriptor for group field.
 	tagDescGroup := tagFields[2].Descriptor()
 	// tag.GroupValidator is a validator for the "group" field. It is called by the builders before save.
-	tag.GroupValidator = tagDescGroup.Validators[0].(func(string) error)
+	tag.GroupValidator = func() func(string) error {
+		validators := tagDescGroup.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+			validators[2].(func(string) error),
+		}
+		return func(group string) error {
+			for _, fn := range fns {
+				if err := fn(group); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// tagDescSlug is the schema descriptor for slug field.
 	tagDescSlug := tagFields[3].Descriptor()
 	// tag.SlugValidator is a validator for the "slug" field. It is called by the builders before save.
-	tag.SlugValidator = tagDescSlug.Validators[0].(func(string) error)
+	tag.SlugValidator = func() func(string) error {
+		validators := tagDescSlug.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(slug string) error {
+			for _, fn := range fns {
+				if err := fn(slug); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	// tagDescID is the schema descriptor for id field.
 	tagDescID := tagFields[0].Descriptor()
 	// tag.DefaultID holds the default value on creation for the id field.

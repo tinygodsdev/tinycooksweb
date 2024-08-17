@@ -27,7 +27,7 @@ ingredients:
       unit: г
     - product:
         name: соль
-      quantity: 1/2
+      quantity: "2"
       unit: ч. л.
     - product:
         name: сливочное масло
@@ -58,18 +58,9 @@ ingredients:
       quantity: "300"
       unit: мл
     - product:
-        name: соль
-      quantity: "1 1/2"
-      unit: ч. л.
-    - product:
         name: перец
       quantity: 1/2
       unit: ч. л.
-    - product:
-        name: цукини
-      quantity: 1/2
-      unit: шт.
-      optional: true
 equipment:
     - name: духовка
     - name: форма для киша

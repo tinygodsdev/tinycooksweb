@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"github.com/google/uuid"
 	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
@@ -90,6 +91,12 @@ func (s *EntStorage) GetRecipes(ctx context.Context, filter recipe.Filter) ([]*r
 	if filter.Offset > 0 {
 		q.Offset(filter.Offset)
 	}
+
+	order := sql.OrderAsc()
+	if filter.NewFirst {
+		order = sql.OrderDesc()
+	}
+	q.Order(entRecipe.ByCreateTime(order))
 
 	recipes, err := q.All(ctx)
 	if err != nil {
@@ -326,7 +333,7 @@ func getOrCreateProduct(ctx context.Context, tx *ent.Tx, prod *recipe.Product) (
 func getOrCreateTag(ctx context.Context, tx *ent.Tx, tg *recipe.Tag) (*ent.Tag, error) {
 	t, err := tx.Tag.
 		Query().
-		Where(tag.NameEQ(tg.Name), tag.GroupEQ(tg.Group)).
+		Where(tag.SlugEQ(tg.Slug)).
 		Only(ctx)
 	if err != nil && !ent.IsNotFound(err) {
 		return nil, fmt.Errorf("querying tag: %w", err)
@@ -373,6 +380,7 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 func (s *EntStorage) GetTags(ctx context.Context, loc string) ([]*recipe.Tag, error) {
 	tags, err := s.client.Tag.Query().
 		Where(tag.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		Order(tag.ByGroup(), tag.ByName()).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting tags: %w", err)
@@ -401,6 +409,7 @@ func (s *EntStorage) GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag
 func (s *EntStorage) GetIngredients(ctx context.Context, loc string) ([]*recipe.Ingredient, error) {
 	prods, err := s.client.Product.Query().
 		Where(product.HasIngredientsWith(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc))))).
+		Order(product.ByName()).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting ingredients: %w", err)
@@ -424,6 +433,7 @@ func (s *EntStorage) GetIngredientBySlug(ctx context.Context, slug string) (*rec
 func (s *EntStorage) GetEquipment(ctx context.Context, loc string) ([]*recipe.Equipment, error) {
 	equipment, err := s.client.Equipment.Query().
 		Where(entEquipment.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		Order(entEquipment.ByName()).
 		All(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting equipment: %w", err)

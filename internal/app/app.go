@@ -65,7 +65,7 @@ func (a *App) AddError(err error) {
 func (a *App) SaveSeedData() error {
 	defer a.Timer("SaveSeedData")()
 	seedData := recipe.SeedData()
-	return a.SaveRecipes(seedData)
+	return a.SaveRecipes(seedData, 1)
 }
 
 func (a *App) SeedToYAML() error {
@@ -78,14 +78,14 @@ func (a *App) LoadFromYAML() ([]*recipe.Recipe, error) {
 	return recipe.LoadFromYAML("")
 }
 
-func (a *App) SaveRecipes(recipes []*recipe.Recipe) error {
+func (a *App) SaveRecipes(recipes []*recipe.Recipe, p int) error {
 	defer a.Timer("SaveRecipes")()
 
 	g, ctx := errgroup.WithContext(context.Background())
 	if a.Cfg.StorageDriver == "sqlite3" {
 		g.SetLimit(1) // sqlite3 does not support concurrent writes
 	} else {
-		g.SetLimit(25) // for postgres it's fine
+		g.SetLimit(p) // for postgres it's fine
 	}
 
 	for _, rec := range recipes {

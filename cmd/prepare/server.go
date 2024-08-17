@@ -31,6 +31,10 @@ func Mux(cfg *config.Config, store live.HttpSessionStore, h *handler.Handler) *m
 	sr.Handle("/404", live.NewHttpHandler(store, h.NotFound()))
 	sr.Handle("/", live.NewHttpHandler(store, h.Home()))
 
+	// index
+	r.HandleFunc("/robots.txt", h.RobotsHandler())
+	r.HandleFunc("/sitemap.xml", h.SitemapHandler())
+
 	// live scripts
 	r.Handle("/live.js", live.Javascript{})
 	r.Handle("/auto.js.map", live.JavascriptMap{})

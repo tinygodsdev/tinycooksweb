@@ -29,8 +29,8 @@ func TagFromTitle(tag string) *Tag {
 	}
 
 	return &Tag{
-		Group: parts[0],
-		Name:  parts[1],
+		Group: strings.ToLower(parts[0]),
+		Name:  strings.ToLower(parts[1]),
 		Slug:  Slugify(tag),
 	}
 }
@@ -48,5 +48,7 @@ func FilterTagsByGroup(tags []*Tag, group string) []*Tag {
 }
 
 func (t *Tag) Slugify() {
+	t.Group = strings.ToLower(t.Group)
+	t.Name = strings.ToLower(t.Name)
 	t.Slug = Slugify(t.Title())
 }

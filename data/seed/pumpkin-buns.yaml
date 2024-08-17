@@ -21,7 +21,7 @@ tags:
 ingredients:
     - product:
         name: молоко
-      quantity: "180"
+      quantity: "185"
       unit: мл
     - product:
         name: коричневый сахар
@@ -33,7 +33,7 @@ ingredients:
       unit: г
     - product:
         name: яйцо
-      quantity: "1"
+      quantity: "2"
       unit: шт.
     - product:
         name: рапсовое масло
@@ -55,16 +55,6 @@ ingredients:
         name: корица
       quantity: "1"
       unit: ч. л.
-    - product:
-        name: яйцо
-      quantity: "1"
-      unit: шт.
-      optional: true
-    - product:
-        name: молоко
-      quantity: "5"
-      unit: мл
-      optional: true
     - product:
         name: тыквенные семечки
       quantity: ""

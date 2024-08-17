@@ -20,6 +20,7 @@ type Filter struct {
 	IngredientNot []string
 	Limit         int
 	Offset        int
+	NewFirst      bool
 
 	WithEdges bool
 }

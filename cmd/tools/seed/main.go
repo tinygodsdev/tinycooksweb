@@ -47,11 +47,6 @@ func main() {
 	}
 	logger.Info("app initialized")
 
-	err = a.SeedToYAML()
-	if err != nil {
-		logger.Fatal("failed to save seed data", "err", err)
-	}
-
 	recipes, err := a.LoadFromYAML()
 	if err != nil {
 		logger.Fatal("failed to load seed data", "err", err)
@@ -62,10 +57,10 @@ func main() {
 		fmt.Println("Time:", r.Time)
 	}
 
-	// err = a.SaveSeedData()
-	// if err != nil {
-	// 	logger.Fatal("failed to save seed data", "err", err)
-	// }
+	err = a.SaveRecipes(recipes, 1)
+	if err != nil {
+		logger.Fatal("failed to save seed data", "err", err)
+	}
 
 	log.Println("Seed data saved in", time.Since(start))
 }

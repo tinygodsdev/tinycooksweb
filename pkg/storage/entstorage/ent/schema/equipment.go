@@ -16,8 +16,8 @@ type Equipment struct {
 func (Equipment) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
-		field.String("name").NotEmpty().Unique(),
-		field.String("slug").NotEmpty().Unique(),
+		field.String("name").NotEmpty().Unique().MaxLen(256).Validate(Lowercase),
+		field.String("slug").NotEmpty().Unique().Validate(Lowercase),
 	}
 }
 

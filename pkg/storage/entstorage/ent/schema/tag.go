@@ -17,9 +17,9 @@ type Tag struct {
 func (Tag) Fields() []ent.Field {
 	return []ent.Field{
 		field.UUID("id", uuid.UUID{}).Default(uuid.New),
-		field.String("name").NotEmpty().Unique(),
-		field.String("group").NotEmpty(),
-		field.String("slug").NotEmpty().Unique(),
+		field.String("name").NotEmpty().Unique().MaxLen(128).Validate(Lowercase),
+		field.String("group").NotEmpty().MaxLen(128).Validate(Lowercase),
+		field.String("slug").NotEmpty().Unique().Validate(Lowercase),
 	}
 }
 
