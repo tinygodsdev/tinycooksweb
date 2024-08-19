@@ -172,32 +172,23 @@ func (i *Ingredient) Slugify() {
 }
 
 func LoadRecipeFromString(data string) (*Recipe, error) {
-	// Разделяем строку на строки
 	lines := strings.Split(data, "\n")
 
-	// Проверка на наличие маркера в первой и последней строках
 	if len(lines) > 1 && strings.HasPrefix(lines[0], "```") && strings.HasPrefix(lines[len(lines)-1], "```") {
-		// Удаляем первую и последнюю строки
 		lines = lines[1 : len(lines)-1]
 	}
 
-	// Объединяем строки обратно в одну строку
 	data = strings.Join(lines, "\n")
 
-	// Создаем экземпляр Recipe
 	var r Recipe
 
-	// Парсинг YAML
 	err := yaml.Unmarshal([]byte(data), &r)
 	if err != nil {
 		return nil, err
 	}
 
-	// Установка метки времени для рецепта, если необходимо
 	r.Time = time.Duration(r.Time)
 
-	// Обработка значений, если требуется (например, добавление slug и т.п.)
 	r.PostProcess()
-
 	return &r, nil
 }
