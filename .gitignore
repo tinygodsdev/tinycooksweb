@@ -29,3 +29,5 @@ setup.sh
 
 node_modules/
 bin/*
+
+.vscode/*

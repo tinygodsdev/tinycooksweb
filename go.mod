@@ -17,12 +17,12 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/mehanizm/airtable v0.3.1
+	github.com/nikandfor/assert v0.0.0-20231112165957-bf2ce0a3555a
 	github.com/samber/lo v1.46.0
 	github.com/tinygodsdev/datasdk v0.0.0-20240728194432-f3a87e64e1e3
 	golang.org/x/sync v0.7.0
 	golang.org/x/text v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
-	gotest.tools/v3 v3.5.1
 )
 
 require (
@@ -45,4 +45,6 @@ require (
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
+	tlog.app/go/errors v0.9.0 // indirect
+	tlog.app/go/loc v0.6.1 // indirect
 )
