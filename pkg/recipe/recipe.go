@@ -135,16 +135,16 @@ func (r *Recipe) PostProcess() {
 	r.slugifyAll()
 }
 
-func (r *Recipe) Link(domain string) string {
+func (r *Recipe) Link(baseURL string) string {
 	var params string
 	if r.Lang != locale.Default() {
 		params = fmt.Sprintf("?locale=%s", r.Lang)
 	}
 	path := fmt.Sprintf("/recipe/%s%s", r.Slug, params)
-	if domain == "" {
+	if baseURL == "" {
 		return path
 	}
-	recipeURL := fmt.Sprintf("https://%s%s", domain, path)
+	recipeURL := fmt.Sprintf("%s%s", baseURL, path)
 	return recipeURL
 }
 

@@ -36,7 +36,7 @@ func (h *Handler) NewConstants() *Constants {
 func (h *Handler) NewCommon(s live.Socket, currentView string) *CommonInstance {
 	c := &CommonInstance{
 		Env:               h.app.Cfg.Env,
-		Domain:            h.app.Cfg.HTTPHost,
+		Domain:            h.app.Cfg.BaseURL,
 		Session:           fmt.Sprint(s.Session()),
 		Error:             nil,
 		Message:           nil,
