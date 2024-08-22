@@ -44,5 +44,11 @@
       <p class="level-item">{{ .Recipe.Nutrition.Fat }}</p>
     </div>
   </div>
+  <!-- Benefits -->
+  {{ if .Recipe.Nutrition.Benefits }}
+  <div class="mt-2">
+    <p class="has-text-centered">{{ .Recipe.Nutrition.Benefits }}</p>
+  </div>
+  {{ end }}
 </div>
 {{ end }}

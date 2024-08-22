@@ -11,7 +11,6 @@ import (
 	"github.com/tinygodsdev/tinycooksweb/internal/config"
 	"github.com/tinygodsdev/tinycooksweb/internal/handler"
 	"github.com/tinygodsdev/tinycooksweb/pkg/moderation"
-	"github.com/tinygodsdev/tinycooksweb/pkg/recipe"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/cachedstorage"
 	"github.com/tinygodsdev/tinycooksweb/pkg/storage/entstorage"
@@ -37,13 +36,6 @@ func main() {
 
 	if cfg.Dev() {
 		fmt.Printf("Loaded config: %+v\n", cfg)
-
-		seedData := recipe.SeedData()
-
-		err = moderationStore.Save(context.Background(), seedData)
-		if err != nil {
-			logger.Fatal("failed to save seed data", "err", err)
-		}
 	}
 
 	recipeStore, err := entstorage.NewEntStorage(entstorage.Config{

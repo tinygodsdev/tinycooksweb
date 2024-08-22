@@ -100,6 +100,7 @@ func entNutritionToNutrition(n *ent.Nutrition) *recipe.Nutrition {
 		Carbs:     n.Carbs,
 		Protein:   n.Protein,
 		Precision: n.Precision,
+		Benefits:  n.Benefits,
 	}
 }
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nikandfor/assert"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestLoadRecipeFromString(t *testing.T) {

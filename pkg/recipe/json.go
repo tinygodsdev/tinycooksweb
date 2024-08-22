@@ -1,6 +1,10 @@
 package recipe
 
-import "encoding/json"
+import (
+	"encoding/json"
+
+	"github.com/invopop/jsonschema"
+)
 
 const (
 	indent = "  "
@@ -167,4 +171,8 @@ func (r *Recipe) MetaJSONString() string {
 	}
 
 	return string(data)
+}
+
+func Schema() *jsonschema.Schema {
+	return jsonschema.Reflect(&Recipe{})
 }
