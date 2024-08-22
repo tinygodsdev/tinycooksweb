@@ -46,9 +46,19 @@
   </div>
   <!-- Benefits -->
   {{ if .Recipe.Nutrition.Benefits }}
-  <div class="mt-2">
-    <p class="has-text-centered">{{ .Recipe.Nutrition.Benefits }}</p>
+  <hr>
+  {{ range .Recipe.Nutrition.Benefits }}
+  <div class="level mb-0 is-mobile">
+    <div class="level-left">
+      <div class="level-item">
+        <p class=""><i class="bi bi-award"></i></p>
+      </div>
+    </div>
+    <div class="level-right">
+      <p class="level-item">{{ . }}</p>
+    </div>
   </div>
+  {{ end}}
   {{ end }}
 </div>
 {{ end }}

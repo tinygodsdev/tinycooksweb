@@ -33,7 +33,7 @@ type Config struct {
 	AirtableTable  string `envconfig:"AIRTABLE_TABLE" required:"true"`
 
 	CreateJobs              bool   `envconfig:"CREATE_JOBS" default:"true"`
-	ModerationCheckSchedule string `envconfig:"MODERATION_CHECK_SCHEDULE" default:"12 * * * *"`
+	ModerationCheckSchedule string `envconfig:"MODERATION_CHECK_SCHEDULE" default:"*/10 * * * *"`
 }
 
 func LoadConfig() (*Config, error) {
