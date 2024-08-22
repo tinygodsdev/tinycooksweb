@@ -6,18 +6,18 @@
   <!-- Hero -->
   <div class="section">
     <h1 class="title is-1 is-size-3-mobile">{{ .Recipe.Name }}</h1>
-    {{ template "share-buttons" . }}
     <div class="columns">
       <div class="column">
+        {{ template "share-buttons" . }}
         <p class="content">
           {{ .Recipe.Description }}
         </p>
-        <p class="content">{{ .Recipe.Text }}</p>
       </div>
       <div class="column is-one-third">
         {{ template "nutrition-card" . }}
       </div>
     </div>
+    <p class="content">{{ .Recipe.Text }}</p>
   </div>
   <!-- Requirements -->
   <div class="section">
