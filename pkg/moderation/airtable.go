@@ -31,6 +31,7 @@ const (
 	Moderation   = "Moderation"
 	Error        = "Error"
 	Meta         = "Meta"
+	BaseSource   = "Source"
 )
 
 type Config struct {
@@ -110,6 +111,10 @@ func (s *AirtableModerationStore) Save(ctx context.Context, recipes []*recipe.Re
 
 		records := &airtable.Records{Typecast: true}
 		for _, r := range recipes[i:end] {
+			var firstSource string
+			if len(r.Sources) > 0 {
+				firstSource = r.Sources[0].Name
+			}
 			record := &airtable.Record{
 				Fields: map[string]any{
 					Name:         r.Name,
@@ -127,6 +132,7 @@ func (s *AirtableModerationStore) Save(ctx context.Context, recipes []*recipe.Re
 					Time:         r.Time.Minutes(),
 					Nutrition:    r.Nutrition.JSONString(),
 					Moderation:   ModerationStatusPending,
+					BaseSource:   firstSource,
 					Meta:         r.MetaJSONString(), // may be needed for moderation, not used in the app
 				},
 			}
