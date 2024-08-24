@@ -37,7 +37,7 @@ nutrition:
     protein: 5
     precision: approx
     benefits:
-        - Много витамина E
+        - Питательное преимущество рецепта (если есть)
 meta:
     createdBy: Dani Polani
 ```
