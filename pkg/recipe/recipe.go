@@ -93,6 +93,7 @@ func Slugify(name string) string {
 }
 
 func (r *Recipe) slugifyAll() {
+	r.Name = strings.ToLower(r.Name)
 	r.Slug = Slugify(r.Name)
 	for _, i := range r.Ingredients {
 		i.Product.Name = strings.ToLower(i.Product.Name)
