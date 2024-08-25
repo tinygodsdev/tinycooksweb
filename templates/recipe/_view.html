@@ -5,7 +5,7 @@
   {{ template "back-to-home" }}
   <!-- Hero -->
   <div class="section">
-    <h1 class="title is-1 is-size-3-mobile">{{ .Recipe.Name }}</h1>
+    <h1 class="title is-1 is-size-3-mobile">{{ Capitalize .Recipe.Name }}</h1>
     <div class="columns">
       <div class="column">
         {{ template "share-buttons" . }}

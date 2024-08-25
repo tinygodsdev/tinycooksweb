@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"path/filepath"
 	"time"
+	"unicode"
 
 	"github.com/bradfitz/iter"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
@@ -93,6 +94,15 @@ func funcMap() template.FuncMap {
 		},
 		"Title": func(t string) string {
 			return cases.Title(language.Make(locale.Default())).String(t)
+		},
+		"Capitalize": func(s string) string {
+			if s == "" {
+				return ""
+			}
+
+			r := []rune(s)
+			r[0] = unicode.ToUpper(r[0])
+			return string(r)
 		},
 		"RandomEmoji": func() string {
 			return "🍏"

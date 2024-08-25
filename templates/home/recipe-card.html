@@ -1,7 +1,7 @@
 {{ define "recipe-card" }}
 <section class="card has-equal-height">
   <div class="card-content">
-    <p class="title is-5 is-size-5-mobile mb-2"><a class="has-text-dark" href="/recipe/{{ .Slug }}">{{ .Name }}</a></p>
+    <p class="title is-5 is-size-5-mobile mb-2"><a class="has-text-dark" href="/recipe/{{ .Slug }}">{{ Capitalize .Name }}</a></p>
     <p class="subtitle is-6 is-size-6-mobile m-0">{{ .Description }}</p>
   </div>
   <div class="card-footer has-text-gradient">
