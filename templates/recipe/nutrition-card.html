@@ -1,6 +1,7 @@
 {{ define "nutrition-card" }}
 <div class="box has-shadow has-bg-gradient2 has-text-white has-text-weight-bold is-size-6">
   <!-- Calories -->
+  {{ if .Recipe.Nutrition.Calories }}
   <div class="level mb-0 is-mobile">
     <div class="level-left">
       <div class="level-item">
@@ -11,7 +12,9 @@
       <p class="level-item">{{ .Recipe.Nutrition.Calories }}</p>
     </div>
   </div>
+  {{ end }}
   <!-- Protein -->
+  {{ if .Recipe.Nutrition.Protein }}
   <div class="level mb-0 is-mobile">
     <div class="level-left">
       <div class="level-item">
@@ -22,7 +25,9 @@
       <p class="level-item">{{ .Recipe.Nutrition.Protein }}</p>
     </div>
   </div>
+  {{ end }}
   <!-- Carbs -->
+  {{ if .Recipe.Nutrition.Carbs }}
   <div class="level mb-0 is-mobile">
     <div class="level-left">
       <div class="level-item">
@@ -33,7 +38,9 @@
       <p class="level-item">{{ .Recipe.Nutrition.Carbs }}</p>
     </div>
   </div>
+  {{ end }}
   <!-- Fat -->
+  {{ if .Recipe.Nutrition.Fat }}
   <div class="level mb-0 is-mobile">
     <div class="level-left">
       <div class="level-item">
@@ -44,6 +51,7 @@
       <p class="level-item">{{ .Recipe.Nutrition.Fat }}</p>
     </div>
   </div>
+  {{ end }}
   <!-- Benefits -->
   {{ if .Recipe.Nutrition.Benefits }}
   <hr>
