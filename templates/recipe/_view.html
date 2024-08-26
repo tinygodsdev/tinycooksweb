@@ -15,10 +15,10 @@
       </button>
     </div>
   </div>
-  <!-- Hero -->
   {{ if .ShowSimplified }}
   {{ template "simplified-view" . }}
   {{ else }}
+  <!-- Hero -->
   <div class="section">
     <h1 class="title is-1 is-size-3-mobile">{{ Capitalize .Recipe.Name }}</h1>
     <div class="columns">
