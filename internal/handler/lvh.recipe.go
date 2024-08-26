@@ -10,12 +10,17 @@ import (
 	"github.com/jfyne/live"
 )
 
+const (
+	eventToggleShowSimplified = "toggle-show-simplified"
+)
+
 type (
 	RecipeInstance struct {
 		*CommonInstance
 		*Constants
-		RecipeSlug string
-		Recipe     *recipe.Recipe
+		RecipeSlug     string
+		Recipe         *recipe.Recipe
+		ShowSimplified bool
 	}
 )
 
@@ -89,6 +94,12 @@ func (h *Handler) Recipe() live.Handler {
 
 		instance.Recipe = recipe
 		instance.updateForLocale(ctx, s, h)
+		return instance, nil
+	})
+
+	lvh.HandleEvent(eventToggleShowSimplified, func(ctx context.Context, s live.Socket, p live.Params) (interface{}, error) {
+		instance := h.NewRecipeInstance(s)
+		instance.ShowSimplified = !instance.ShowSimplified
 		return instance, nil
 	})
 

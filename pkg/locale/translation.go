@@ -8,6 +8,7 @@ import (
 
 const (
 	siteTitle    = "TinyCooks"
+	siteDomain   = "tinycooks.xyz"
 	developer    = "TinyGods"
 	developerURL = "https://tinygods.dev"
 )
@@ -32,6 +33,7 @@ type (
 		Title         string
 		Description   string
 		TwitterHandle string
+		SiteDomain    string
 	}
 
 	UITransAbout struct {
@@ -84,7 +86,9 @@ type (
 		Equipment    string
 		Ideas        string
 		Optional     string
+		ByTaste      string
 		Required     string
+		MoreLabel    string
 		Nutrition    *UITransNutrition
 		Filter       *UIFilter
 	}
@@ -159,6 +163,7 @@ func newTranslationEn() *UITranslation {
 			Title:         siteTitle,
 			Description:   "When in doubt - eat",
 			TwitterHandle: "danipolani",
+			SiteDomain:    siteDomain,
 		},
 		Home: &UITransHome{
 			Title:        siteTitle,
@@ -205,6 +210,8 @@ func newTranslationEn() *UITranslation {
 			Equipment:    "Equipment",
 			Ideas:        "Ideas",
 			Optional:     "Optional",
+			ByTaste:      "By taste",
+			MoreLabel:    "More recipes with flexible search on the site: ",
 			Required:     "Required",
 			Filter: &UIFilter{
 				Title:        "Search recipes",
@@ -248,6 +255,7 @@ func newTranslationRu() *UITranslation {
 			Title:         siteTitle,
 			Description:   "Когда вы в сомнениях - ешьте",
 			TwitterHandle: "danipolani",
+			SiteDomain:    siteDomain,
 		},
 		About: &UITransAbout{
 			Title:       "О сайте",
@@ -294,6 +302,8 @@ func newTranslationRu() *UITranslation {
 			Equipment:    "Оборудование",
 			Ideas:        "Идеи",
 			Optional:     "Опционально",
+			ByTaste:      "по вкусу",
+			MoreLabel:    "Больше рецептов с гибким поиском на сайте: ",
 			Required:     "Обязательно",
 			Filter: &UIFilter{
 				Title:        "Поиск рецептов",

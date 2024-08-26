@@ -2,8 +2,23 @@
 {{ define "description" }} {{ .Recipe.Description }} {{ end }}
 {{ define "view" }}
 <main>
-  {{ template "back-to-home" }}
+  <div class="columns is-hidden-mobile">
+    <div class="column">
+      {{ template "back-to-home" }}
+    </div>
+    <div class="column is-narrow">
+      <!-- Simplified View Toggle -->
+      <button class="button is-light" aria-label="hide" live-click="toggle-show-simplified">
+        <span class="icon">
+          <i class="bi bi-book"></i>
+        </span>
+      </button>
+    </div>
+  </div>
   <!-- Hero -->
+  {{ if .ShowSimplified }}
+  {{ template "simplified-view" . }}
+  {{ else }}
   <div class="section">
     <h1 class="title is-1 is-size-3-mobile">{{ Capitalize .Recipe.Name }}</h1>
     <div class="columns">
@@ -75,11 +90,13 @@
     {{ end }}
   </div>
   {{ end }}
+  <!-- Share buttons and comments -->
   <div class="section">
     {{ template "share-buttons" . }}
     {{ if .CommentsID }}
     {{ template "comments" . }}
     {{ end }}
   </div>
+  {{ end }}
 </main>
 {{ end }}

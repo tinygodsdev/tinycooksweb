@@ -1,0 +1,60 @@
+{{ define "simplified-view" }}
+<div class="section">
+    <div class="block">
+        <h1 class="title is-1 is-size-3-mobile">{{ Capitalize .Recipe.Name }}</h1>
+        <p class="content">
+            {{ .Recipe.Description }}
+        </p>
+        <p class="content">{{ .Recipe.Text }}</p>
+    </div>
+    <div class="block">
+        {{ template "site-link" . }}
+    </div>
+    <!-- Requirements -->
+    <div class="block">
+        <h4 class="title is-4">{{ .UI.Recipe.Ingredients }}</h4>
+        {{ range .Recipe.Ingredients }}
+        <div class="">
+            <span class="has-text-weight-bold">{{ Title .Product.Name }}: </span>
+            <span class="">{{ .Quantity }} {{ .Unit }} </span>
+            {{ if .Optional}}
+            <span>{{ $.UI.Recipe.ByTaste }}</span>
+            {{ else}}
+            {{ end }}
+        </div>
+        {{ end }}
+    </div>
+    <div class="block">
+        <h4 class="title is-4">{{ .UI.Recipe.Equipment }}</h4>
+        <ul>
+            {{ range .Recipe.Equipment }}
+            <li>- {{ .Name }}</li>
+            {{ end }}
+        </ul>
+    </div>
+    <!-- Instructions -->
+    <div class="block">
+        <h4 class="title is-4">{{ .UI.Recipe.Instructions }}</h4>
+        {{ range $i, $inst := .Recipe.Instructions }}
+        <p>
+            <span class="has-text-weight-bold">{{ Plus1 $i }}. </span>
+            <span>{{ $inst.Text }}</span>
+        </p>
+        {{ end }}
+    </div>
+    <!-- Ideas -->
+    {{ if .Recipe.Ideas }}
+    <div class="block">
+        <h4 class="title is-4">{{ .UI.Recipe.Ideas }}</h4>
+        {{ range .Recipe.Ideas }}
+        <p>
+            {{ RandomEmoji }} {{ .Text }}
+        </p>
+        {{ end }}
+    </div>
+    {{ end }}
+    <div class="block">
+        {{ template "site-link" . }}
+    </div>
+</div>
+{{ end }}
