@@ -1,6 +1,26 @@
 {{ define "filter" }}
-<h1 class="title is-3 is-size-5-mobile">{{ .UI.Recipe.Filter.Title }}</h1>
-<h3 class="subtitle is-5 is-size-6-mobile">{{ .UI.Recipe.Filter.Description }}</h3>
+<div class="columns">
+  <div class="column">
+    <h1 class="title is-3 is-size-5-mobile">{{ .UI.Recipe.Filter.Title }}</h1>
+    <h3 class="subtitle is-5 is-size-6-mobile">{{ .UI.Recipe.Filter.Description }}</h3>
+  </div>
+  <div class="column is-narrow">
+    {{ if .NewFirst }}
+    <button class="button is-light is-large" title="{{ .UI.Recipe.Filter.OldFirst }}" live-click="toggle-new-first">
+      <span class="icon is-large">
+        <i class="bi bi-sort-numeric-down"></i>
+      </span>
+    </button>
+    {{ else }}
+    <button class="button is-light is-large" title="{{ .UI.Recipe.Filter.NewFirst }}" live-click="toggle-new-first">
+      <span class="icon is-large">
+        <i class="bi bi-sort-numeric-down-alt"></i>
+      </span>
+    </button>
+    {{ end }}
+  </div>
+</div>
+
 <div class="box has-shadow">
   {{ template "filter-name" . }}
   {{ template "filter-tags" . }}

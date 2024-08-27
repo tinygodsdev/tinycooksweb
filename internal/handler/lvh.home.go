@@ -29,6 +29,8 @@ const (
 	eventHomeIngredientsFilterDelete = "ingredients-filter-delete"
 	eventHomeEquipmentFilterDelete   = "equipment-filter-delete"
 
+	eventHomeToggleNewFirst = "toggle-new-first"
+
 	// params
 	paramHomeSearchType   = "searchtype"
 	paramHomeTagGroup     = "group"
@@ -48,6 +50,7 @@ type HomeInstance struct {
 	Ingredients   []*recipe.Ingredient
 	Equipment     []*recipe.Equipment
 	Filter        recipe.Filter
+	NewFirst      bool
 	Pagination    Pagination
 }
 
@@ -268,6 +271,13 @@ func (h *Handler) Home() live.Handler {
 		page := p.Int(paramHomePage)
 		instance.Filter.Offset = onPageClick(page, instance.Filter.Limit)
 		return instance.WithUpdateRecipes(ctx, h, s, false)
+	})
+
+	lvh.HandleEvent(eventHomeToggleNewFirst, func(ctx context.Context, s live.Socket, p live.Params) (interface{}, error) {
+		instance := h.NewHomeInstance(s)
+		instance.NewFirst = !instance.NewFirst
+		instance.Filter = instance.Filter.WithNewFirst(instance.NewFirst)
+		return instance.WithUpdateRecipes(ctx, h, s, true)
 	})
 
 	return lvh

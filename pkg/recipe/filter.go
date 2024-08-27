@@ -114,6 +114,11 @@ func (f Filter) WithName(name string) Filter {
 	return f
 }
 
+func (f Filter) WithNewFirst(b bool) Filter {
+	f.NewFirst = b
+	return f
+}
+
 func (f Filter) IsEmpty() bool {
 	return f.NameContains == "" &&
 		len(f.Equipment) == 0 &&

@@ -19,10 +19,10 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/mehanizm/airtable v0.3.1
 	github.com/samber/lo v1.46.0
-	github.com/sashabaranov/go-openai v1.28.2
 	github.com/stretchr/testify v1.9.0
 	github.com/tinygodsdev/datasdk v0.0.0-20240728194432-f3a87e64e1e3
-	golang.org/x/sync v0.7.0
+	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948
+	golang.org/x/sync v0.8.0
 	golang.org/x/text v0.16.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -51,7 +51,7 @@ require (
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/mod v0.19.0 // indirect
+	golang.org/x/mod v0.20.0 // indirect
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect

@@ -119,6 +119,8 @@ type (
 		Add          string
 		Clear        string
 		Apply        string
+		NewFirst     string
+		OldFirst     string
 	}
 
 	UITransTag struct {
@@ -222,6 +224,8 @@ func newTranslationEn() *UITranslation {
 				Clear:        "Clear",
 				Apply:        "Search!",
 				NameContains: "Name contains",
+				NewFirst:     "New first",
+				OldFirst:     "Old first",
 			},
 			Nutrition: &UITransNutrition{
 				Calories:              "Calories",
@@ -314,6 +318,8 @@ func newTranslationRu() *UITranslation {
 				Clear:        "Очистить",
 				Apply:        "Искать!",
 				NameContains: "Название содержит",
+				NewFirst:     "Сначала новые",
+				OldFirst:     "Сначала старые",
 			},
 			Nutrition: &UITransNutrition{
 				Calories:              "Калории",
