@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
 	"github.com/tinygodsdev/tinycooksweb/pkg/locale"
+	"golang.org/x/exp/rand"
 	"gopkg.in/yaml.v3"
 )
 
@@ -112,7 +113,23 @@ func (r *Recipe) slugifyAll() {
 	}
 }
 
+func (r *Recipe) addRandomRating() {
+	if r.Rating == 0 {
+		rand.Seed(uint64(time.Now().UnixNano()))
+		ratingOptions := []float32{4.5, 4.6, 4.7, 4.8, 4.9, 5.0}
+		r.Rating = ratingOptions[rand.Intn(len(ratingOptions))]
+	}
+}
+
 func (r *Recipe) addTimeTag() {
+	// remove existing time tag
+	for i, t := range r.Tags {
+		if t.Group == locale.NewUITranslation(r.Lang).Tag.TimeGroup {
+			r.Tags = append(r.Tags[:i], r.Tags[i+1:]...)
+			break
+		}
+	}
+
 	trans := locale.NewUITranslation(r.Lang)
 	group := trans.Tag.TimeGroup
 	var timeTag string
@@ -133,6 +150,7 @@ func (r *Recipe) addTimeTag() {
 
 func (r *Recipe) PostProcess() {
 	r.addTimeTag()
+	r.addRandomRating()
 	r.slugifyAll()
 }
 
