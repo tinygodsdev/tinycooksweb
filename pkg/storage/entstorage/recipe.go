@@ -293,6 +293,7 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 			SetCarbs(rec.Nutrition.Carbs).
 			SetProtein(rec.Nutrition.Protein).
 			SetPrecision(rec.Nutrition.Precision).
+			SetBenefits(rec.Nutrition.Benefits).
 			SetRecipe(r).
 			Save(ctx)
 		if err != nil {
