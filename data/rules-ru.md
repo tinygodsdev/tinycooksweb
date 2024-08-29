@@ -30,6 +30,7 @@ ideas:
     - text: Идея для улучшения блюда 
 time: 2h40m0s
 servings: 8
+rating: 4.9
 nutrition:
     calories: 200
     fat: 8
