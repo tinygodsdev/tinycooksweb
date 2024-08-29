@@ -1,39 +1,43 @@
 {{ define "filter-tags" }}
 <form class="my-4" id="tags-filter-form" live-change="tags-filter-form-change" live-submit="tags-filter-form-submit">
   <p class="help">{{ .UI.Recipe.Tags }}</p>
-  <div class="field has-addons">
-    <p class="control">
-      <span class="select">
-        <select name="searchtype">
-          <option value="include">{{ .UI.Recipe.Filter.Include }}</option>
-          <option value="exclude">{{ .UI.Recipe.Filter.Exclude }}</option>
-        </select>
-      </span>
-    </p>
-    <p class="control">
-      <span class="select">
-        <select name="group">
-          <option value=""></option>
-          {{ range $group := .TagGroups }}
-          <option value="{{ $group }}">{{ $group }}</option>
-          {{ end }}
-        </select>
-      </span>
-    </p>
-    <p class="control is-expanded">
-      <span class="select is-fullwidth">
-        <select name="value" {{ if not .FilteredTags }}disabled{{ end}}>
-          {{ range $tag := .FilteredTags }}
-          <option value="{{ $tag.Name }}">{{ $tag.Name }}</option>
-          {{ end }}
-        </select>
-      </span>
-    </p>
-    <p class="control">
-      <button class="button">
-        <i class="bi bi-search"></i>
-      </button>
-    </p>
+  <div class="field is-grouped is-grouped-multiline">
+    {{ template "filter-tags-controls" . }}
   </div>
 </form>
 {{ end}}
+
+{{ define "filter-tags-controls" }}
+<p class="control">
+  <span class="select">
+    <select name="searchtype">
+      <option value="include">{{ .UI.Recipe.Filter.Include }}</option>
+      <option value="exclude">{{ .UI.Recipe.Filter.Exclude }}</option>
+    </select>
+  </span>
+</p>
+<p class="control">
+  <span class="select">
+    <select name="group">
+      <option value=""></option>
+      {{ range $group := .TagGroups }}
+      <option value="{{ $group }}">{{ $group }}</option>
+      {{ end }}
+    </select>
+  </span>
+</p>
+<p class="control is-expanded">
+  <span class="select is-fullwidth">
+    <select name="value" {{ if not .FilteredTags }}disabled{{ end}}>
+      {{ range $tag := .FilteredTags }}
+      <option value="{{ $tag.Name }}">{{ $tag.Name }}</option>
+      {{ end }}
+    </select>
+  </span>
+</p>
+<p class="control">
+  <button class="button">
+    <i class="bi bi-search"></i>
+  </button>
+</p>
+{{ end }}

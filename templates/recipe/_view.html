@@ -28,9 +28,12 @@
           {{ .Recipe.Description }}
         </p>
       </div>
+      {{ if .Recipe.Nutrition.IsEmpty }}
+      {{ else }}
       <div class="column is-one-third">
         {{ template "nutrition-card" . }}
       </div>
+      {{ end }}
     </div>
     <p class="content">{{ .Recipe.Text }}</p>
   </div>

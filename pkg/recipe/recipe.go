@@ -193,3 +193,7 @@ func LoadRecipeFromString(data string) (*Recipe, error) {
 	r.PostProcess()
 	return &r, nil
 }
+
+func (n *Nutrition) IsEmpty() bool {
+	return n.Calories == 0 && n.Fat == 0 && n.Carbs == 0 && n.Protein == 0 && len(n.Benefits) == 0
+}
