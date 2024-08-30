@@ -53,6 +53,7 @@
         </div>
         {{ end }}
       </div>
+      {{ if .Recipe.Equipment }}
       <div class="column is-4">
         <h4 class="title is-4">{{ .UI.Recipe.Equipment }}</h4>
         <ul>
@@ -61,6 +62,7 @@
           {{ end }}
         </ul>
       </div>
+      {{ end }}
     </div>
   </div>
   <!-- Instructions -->
