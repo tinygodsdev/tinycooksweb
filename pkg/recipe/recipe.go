@@ -41,6 +41,7 @@ type Recipe struct {
 	Rating           float32           `json:"rating"`
 	Sources          []*Source         `json:"sources"`
 	ModerationStatus string            `json:"moderation_status" yaml:"-"`
+	Published        bool              `json:"published"`
 }
 
 type Ingredient struct {

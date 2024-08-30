@@ -188,6 +188,7 @@ func (s *EntStorage) SaveRecipe(ctx context.Context, rec *recipe.Recipe) error {
 		SetRating(rec.Rating).
 		SetNillableServings(servings).
 		SetNillableTime(recipeTime).
+		SetPublished(rec.Published).
 		Save(ctx)
 	if err != nil {
 		return rollback(tx, fmt.Errorf("creating recipe: %w", err))

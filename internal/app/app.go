@@ -223,6 +223,7 @@ func (a *App) LoadApprovedRecipes(ctx context.Context) error {
 	var success, fail int
 	for _, mr := range moderationRecords {
 		rec := mr.Recipe()
+		rec.Published = true
 		if err := a.SaveRecipe(ctx, rec); err != nil {
 			a.log.Error("Failed to save recipe", "slug", rec.Slug, "error", err)
 			mrErr := mr.Errored(ctx, err)
