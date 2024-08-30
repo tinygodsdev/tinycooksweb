@@ -9,7 +9,7 @@
     </h3>
     <div class="tags">
       {{ range $i, $tag := .Tags }}
-      <span class="tag is-link is-hoverable is-medium">
+      <span class="tag is-link is-hoverable is-light">
         <a class="has-text-grey-dark" href="/tag/{{ $tag.Slug }}">{{ $tag.Group }}:{{ $tag.Name }}</a>
       </span>
       {{ end }}
@@ -20,7 +20,7 @@
     </h3>
     <div class="tags">
       {{ range $i, $ingredient := .Ingredients }}
-      <span class="tag is-success is-hoverable is-medium">
+      <span class="tag is-warning is-hoverable is-light">
         <a class="has-text-grey-dark" href="/ingredient/{{ $ingredient.Product.Slug }}">{{ $ingredient.Product.Name }}</a>
       </span>
       {{ end }}
@@ -31,7 +31,7 @@
     </h3>
     <div class="tags">
       {{ range $i, $equipment := .Equipment }}
-      <span class="tag is-info is-hoverable is-medium">
+      <span class="tag is-info is-hoverable is-light">
         <a class="has-text-grey-dark" href="/equipment/{{ $equipment.Slug }}">{{ $equipment.Name }}</a>
       </span>
       {{ end }}
