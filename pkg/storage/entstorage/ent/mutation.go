@@ -3887,6 +3887,7 @@ type RecipeMutation struct {
 	addservings              *int
 	time                     *time.Duration
 	addtime                  *time.Duration
+	published                *bool
 	clearedFields            map[string]struct{}
 	required_products        map[uuid.UUID]struct{}
 	removedrequired_products map[uuid.UUID]struct{}
@@ -4482,6 +4483,42 @@ func (m *RecipeMutation) ResetTime() {
 	delete(m.clearedFields, recipe.FieldTime)
 }
 
+// SetPublished sets the "published" field.
+func (m *RecipeMutation) SetPublished(b bool) {
+	m.published = &b
+}
+
+// Published returns the value of the "published" field in the mutation.
+func (m *RecipeMutation) Published() (r bool, exists bool) {
+	v := m.published
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPublished returns the old "published" field's value of the Recipe entity.
+// If the Recipe object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *RecipeMutation) OldPublished(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPublished is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPublished requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPublished: %w", err)
+	}
+	return oldValue.Published, nil
+}
+
+// ResetPublished resets all changes to the "published" field.
+func (m *RecipeMutation) ResetPublished() {
+	m.published = nil
+}
+
 // AddRequiredProductIDs adds the "required_products" edge to the Product entity by ids.
 func (m *RecipeMutation) AddRequiredProductIDs(ids ...uuid.UUID) {
 	if m.required_products == nil {
@@ -4933,7 +4970,7 @@ func (m *RecipeMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *RecipeMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.create_time != nil {
 		fields = append(fields, recipe.FieldCreateTime)
 	}
@@ -4964,6 +5001,9 @@ func (m *RecipeMutation) Fields() []string {
 	if m.time != nil {
 		fields = append(fields, recipe.FieldTime)
 	}
+	if m.published != nil {
+		fields = append(fields, recipe.FieldPublished)
+	}
 	return fields
 }
 
@@ -4992,6 +5032,8 @@ func (m *RecipeMutation) Field(name string) (ent.Value, bool) {
 		return m.Servings()
 	case recipe.FieldTime:
 		return m.Time()
+	case recipe.FieldPublished:
+		return m.Published()
 	}
 	return nil, false
 }
@@ -5021,6 +5063,8 @@ func (m *RecipeMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldServings(ctx)
 	case recipe.FieldTime:
 		return m.OldTime(ctx)
+	case recipe.FieldPublished:
+		return m.OldPublished(ctx)
 	}
 	return nil, fmt.Errorf("unknown Recipe field %s", name)
 }
@@ -5099,6 +5143,13 @@ func (m *RecipeMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTime(v)
+		return nil
+	case recipe.FieldPublished:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPublished(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Recipe field %s", name)
@@ -5238,6 +5289,9 @@ func (m *RecipeMutation) ResetField(name string) error {
 		return nil
 	case recipe.FieldTime:
 		m.ResetTime()
+		return nil
+	case recipe.FieldPublished:
+		m.ResetPublished()
 		return nil
 	}
 	return fmt.Errorf("unknown Recipe field %s", name)

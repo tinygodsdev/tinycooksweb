@@ -194,6 +194,10 @@ func init() {
 	recipeDescServings := recipeFields[6].Descriptor()
 	// recipe.ServingsValidator is a validator for the "servings" field. It is called by the builders before save.
 	recipe.ServingsValidator = recipeDescServings.Validators[0].(func(int) error)
+	// recipeDescPublished is the schema descriptor for published field.
+	recipeDescPublished := recipeFields[8].Descriptor()
+	// recipe.DefaultPublished holds the default value on creation for the published field.
+	recipe.DefaultPublished = recipeDescPublished.Default.(bool)
 	// recipeDescID is the schema descriptor for id field.
 	recipeDescID := recipeFields[0].Descriptor()
 	// recipe.DefaultID holds the default value on creation for the id field.

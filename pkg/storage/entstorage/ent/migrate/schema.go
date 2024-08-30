@@ -159,6 +159,7 @@ var (
 		{Name: "rating", Type: field.TypeFloat32, Nullable: true},
 		{Name: "servings", Type: field.TypeInt, Nullable: true},
 		{Name: "time", Type: field.TypeInt64, Nullable: true},
+		{Name: "published", Type: field.TypeBool, Default: false},
 	}
 	// RecipesTable holds the schema information for the "recipes" table.
 	RecipesTable = &schema.Table{

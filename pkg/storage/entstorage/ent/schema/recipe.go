@@ -27,6 +27,7 @@ func (Recipe) Fields() []ent.Field {
 		field.Float32("rating").Optional().Positive(),
 		field.Int("servings").Optional().Nillable().NonNegative(),
 		field.Int64("time").Optional().Nillable().GoType(time.Duration(0)),
+		field.Bool("published").Default(false),
 	}
 }
 

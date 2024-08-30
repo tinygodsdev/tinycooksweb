@@ -39,6 +39,8 @@ type Recipe struct {
 	Servings *int `json:"servings,omitempty"`
 	// Time holds the value of the "time" field.
 	Time *time.Duration `json:"time,omitempty"`
+	// Published holds the value of the "published" field.
+	Published bool `json:"published,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the RecipeQuery when eager-loading is set.
 	Edges        RecipeEdges `json:"edges"`
@@ -147,6 +149,8 @@ func (*Recipe) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case recipe.FieldPublished:
+			values[i] = new(sql.NullBool)
 		case recipe.FieldRating:
 			values[i] = new(sql.NullFloat64)
 		case recipe.FieldServings, recipe.FieldTime:
@@ -239,6 +243,12 @@ func (r *Recipe) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				r.Time = new(time.Duration)
 				*r.Time = time.Duration(value.Int64)
+			}
+		case recipe.FieldPublished:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field published", values[i])
+			} else if value.Valid {
+				r.Published = value.Bool
 			}
 		default:
 			r.selectValues.Set(columns[i], values[i])
@@ -349,6 +359,9 @@ func (r *Recipe) String() string {
 		builder.WriteString("time=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("published=")
+	builder.WriteString(fmt.Sprintf("%v", r.Published))
 	builder.WriteByte(')')
 	return builder.String()
 }

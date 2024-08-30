@@ -18,7 +18,7 @@ import (
 )
 
 func (s *EntStorage) buildFilterQuery(filter recipe.Filter) *ent.RecipeQuery {
-	q := s.client.Recipe.Query()
+	q := s.client.Recipe.Query().Where(entRecipe.PublishedEQ(true))
 
 	if filter.NameContains != "" {
 		q.Where(entRecipe.NameContains(filter.NameContains))
@@ -380,7 +380,10 @@ func getOrCreateEquipment(ctx context.Context, tx *ent.Tx, equip *recipe.Equipme
 
 func (s *EntStorage) GetTags(ctx context.Context, loc string) ([]*recipe.Tag, error) {
 	tags, err := s.client.Tag.Query().
-		Where(tag.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		Where(
+			tag.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc))),
+			tag.HasRecipesWith(entRecipe.PublishedEQ(true)),
+		).
 		Order(tag.ByGroup(), tag.ByName()).
 		All(ctx)
 	if err != nil {
@@ -409,7 +412,10 @@ func (s *EntStorage) GetTagBySlug(ctx context.Context, slug string) (*recipe.Tag
 
 func (s *EntStorage) GetIngredients(ctx context.Context, loc string) ([]*recipe.Ingredient, error) {
 	prods, err := s.client.Product.Query().
-		Where(product.HasIngredientsWith(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc))))).
+		Where(
+			product.HasIngredientsWith(ingredient.HasRecipeWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))),
+			product.HasIngredientsWith(ingredient.HasRecipeWith(entRecipe.PublishedEQ(true))),
+		).
 		Order(product.ByName()).
 		All(ctx)
 	if err != nil {
@@ -433,7 +439,10 @@ func (s *EntStorage) GetIngredientBySlug(ctx context.Context, slug string) (*rec
 
 func (s *EntStorage) GetEquipment(ctx context.Context, loc string) ([]*recipe.Equipment, error) {
 	equipment, err := s.client.Equipment.Query().
-		Where(entEquipment.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc)))).
+		Where(
+			entEquipment.HasRecipesWith(entRecipe.LocaleEQ(entRecipe.Locale(loc))),
+			entEquipment.HasRecipesWith(entRecipe.PublishedEQ(true)),
+		).
 		Order(entEquipment.ByName()).
 		All(ctx)
 	if err != nil {

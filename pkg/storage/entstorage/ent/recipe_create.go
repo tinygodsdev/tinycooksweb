@@ -137,6 +137,20 @@ func (rc *RecipeCreate) SetNillableTime(t *time.Duration) *RecipeCreate {
 	return rc
 }
 
+// SetPublished sets the "published" field.
+func (rc *RecipeCreate) SetPublished(b bool) *RecipeCreate {
+	rc.mutation.SetPublished(b)
+	return rc
+}
+
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (rc *RecipeCreate) SetNillablePublished(b *bool) *RecipeCreate {
+	if b != nil {
+		rc.SetPublished(*b)
+	}
+	return rc
+}
+
 // SetID sets the "id" field.
 func (rc *RecipeCreate) SetID(u uuid.UUID) *RecipeCreate {
 	rc.mutation.SetID(u)
@@ -322,6 +336,10 @@ func (rc *RecipeCreate) defaults() {
 		v := recipe.DefaultLocale
 		rc.mutation.SetLocale(v)
 	}
+	if _, ok := rc.mutation.Published(); !ok {
+		v := recipe.DefaultPublished
+		rc.mutation.SetPublished(v)
+	}
 	if _, ok := rc.mutation.ID(); !ok {
 		v := recipe.DefaultID()
 		rc.mutation.SetID(v)
@@ -375,6 +393,9 @@ func (rc *RecipeCreate) check() error {
 		if err := recipe.ServingsValidator(v); err != nil {
 			return &ValidationError{Name: "servings", err: fmt.Errorf(`ent: validator failed for field "Recipe.servings": %w`, err)}
 		}
+	}
+	if _, ok := rc.mutation.Published(); !ok {
+		return &ValidationError{Name: "published", err: errors.New(`ent: missing required field "Recipe.published"`)}
 	}
 	return nil
 }
@@ -450,6 +471,10 @@ func (rc *RecipeCreate) createSpec() (*Recipe, *sqlgraph.CreateSpec) {
 	if value, ok := rc.mutation.Time(); ok {
 		_spec.SetField(recipe.FieldTime, field.TypeInt64, value)
 		_node.Time = &value
+	}
+	if value, ok := rc.mutation.Published(); ok {
+		_spec.SetField(recipe.FieldPublished, field.TypeBool, value)
+		_node.Published = value
 	}
 	if nodes := rc.mutation.RequiredProductsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

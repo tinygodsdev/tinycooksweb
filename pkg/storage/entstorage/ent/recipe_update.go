@@ -180,6 +180,20 @@ func (ru *RecipeUpdate) ClearTime() *RecipeUpdate {
 	return ru
 }
 
+// SetPublished sets the "published" field.
+func (ru *RecipeUpdate) SetPublished(b bool) *RecipeUpdate {
+	ru.mutation.SetPublished(b)
+	return ru
+}
+
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (ru *RecipeUpdate) SetNillablePublished(b *bool) *RecipeUpdate {
+	if b != nil {
+		ru.SetPublished(*b)
+	}
+	return ru
+}
+
 // AddRequiredProductIDs adds the "required_products" edge to the Product entity by IDs.
 func (ru *RecipeUpdate) AddRequiredProductIDs(ids ...uuid.UUID) *RecipeUpdate {
 	ru.mutation.AddRequiredProductIDs(ids...)
@@ -576,6 +590,9 @@ func (ru *RecipeUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if ru.mutation.TimeCleared() {
 		_spec.ClearField(recipe.FieldTime, field.TypeInt64)
+	}
+	if value, ok := ru.mutation.Published(); ok {
+		_spec.SetField(recipe.FieldPublished, field.TypeBool, value)
 	}
 	if ru.mutation.RequiredProductsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -1105,6 +1122,20 @@ func (ruo *RecipeUpdateOne) ClearTime() *RecipeUpdateOne {
 	return ruo
 }
 
+// SetPublished sets the "published" field.
+func (ruo *RecipeUpdateOne) SetPublished(b bool) *RecipeUpdateOne {
+	ruo.mutation.SetPublished(b)
+	return ruo
+}
+
+// SetNillablePublished sets the "published" field if the given value is not nil.
+func (ruo *RecipeUpdateOne) SetNillablePublished(b *bool) *RecipeUpdateOne {
+	if b != nil {
+		ruo.SetPublished(*b)
+	}
+	return ruo
+}
+
 // AddRequiredProductIDs adds the "required_products" edge to the Product entity by IDs.
 func (ruo *RecipeUpdateOne) AddRequiredProductIDs(ids ...uuid.UUID) *RecipeUpdateOne {
 	ruo.mutation.AddRequiredProductIDs(ids...)
@@ -1531,6 +1562,9 @@ func (ruo *RecipeUpdateOne) sqlSave(ctx context.Context) (_node *Recipe, err err
 	}
 	if ruo.mutation.TimeCleared() {
 		_spec.ClearField(recipe.FieldTime, field.TypeInt64)
+	}
+	if value, ok := ruo.mutation.Published(); ok {
+		_spec.SetField(recipe.FieldPublished, field.TypeBool, value)
 	}
 	if ruo.mutation.RequiredProductsCleared() {
 		edge := &sqlgraph.EdgeSpec{

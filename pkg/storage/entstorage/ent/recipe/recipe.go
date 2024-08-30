@@ -36,6 +36,8 @@ const (
 	FieldServings = "servings"
 	// FieldTime holds the string denoting the time field in the database.
 	FieldTime = "time"
+	// FieldPublished holds the string denoting the published field in the database.
+	FieldPublished = "published"
 	// EdgeRequiredProducts holds the string denoting the required_products edge name in mutations.
 	EdgeRequiredProducts = "required_products"
 	// EdgeInstructions holds the string denoting the instructions edge name in mutations.
@@ -119,6 +121,7 @@ var Columns = []string{
 	FieldRating,
 	FieldServings,
 	FieldTime,
+	FieldPublished,
 }
 
 var (
@@ -158,6 +161,8 @@ var (
 	RatingValidator func(float32) error
 	// ServingsValidator is a validator for the "servings" field. It is called by the builders before save.
 	ServingsValidator func(int) error
+	// DefaultPublished holds the default value on creation for the "published" field.
+	DefaultPublished bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -244,6 +249,11 @@ func ByServings(opts ...sql.OrderTermOption) OrderOption {
 // ByTime orders the results by the time field.
 func ByTime(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTime, opts...).ToFunc()
+}
+
+// ByPublished orders the results by the published field.
+func ByPublished(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPublished, opts...).ToFunc()
 }
 
 // ByRequiredProductsCount orders the results by required_products count.

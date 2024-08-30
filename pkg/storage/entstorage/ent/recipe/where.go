@@ -102,6 +102,11 @@ func Time(v time.Duration) predicate.Recipe {
 	return predicate.Recipe(sql.FieldEQ(FieldTime, vc))
 }
 
+// Published applies equality check predicate on the "published" field. It's identical to PublishedEQ.
+func Published(v bool) predicate.Recipe {
+	return predicate.Recipe(sql.FieldEQ(FieldPublished, v))
+}
+
 // CreateTimeEQ applies the EQ predicate on the "create_time" field.
 func CreateTimeEQ(v time.Time) predicate.Recipe {
 	return predicate.Recipe(sql.FieldEQ(FieldCreateTime, v))
@@ -624,6 +629,16 @@ func TimeIsNil() predicate.Recipe {
 // TimeNotNil applies the NotNil predicate on the "time" field.
 func TimeNotNil() predicate.Recipe {
 	return predicate.Recipe(sql.FieldNotNull(FieldTime))
+}
+
+// PublishedEQ applies the EQ predicate on the "published" field.
+func PublishedEQ(v bool) predicate.Recipe {
+	return predicate.Recipe(sql.FieldEQ(FieldPublished, v))
+}
+
+// PublishedNEQ applies the NEQ predicate on the "published" field.
+func PublishedNEQ(v bool) predicate.Recipe {
+	return predicate.Recipe(sql.FieldNEQ(FieldPublished, v))
 }
 
 // HasRequiredProducts applies the HasEdge predicate on the "required_products" edge.
